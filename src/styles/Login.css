@@ -1,0 +1,50 @@
+#header {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4));
+        border-style: none;
+  }
+#cardLogin {
+    background: var(--surface-card);
+    padding-left: 25px;
+    padding-right: 25px;
+    padding-top: 0px;
+    padding-bottom: 4px;
+    border-radius: 10px;
+    margin-bottom: 50px;
+    margin-left: 35%;
+    margin-top: 15%;
+    width: 400px;
+    height: 350px;
+    text-align: justify;
+    background-color: white;
+    font-family:system-ui;
+  }
+  #pIniciar {
+    text-align: center;
+    color: rgb(0, 0, 0);
+    font-weight: bold;
+    font-size: 20px;
+  }
+#inputLogin{
+    display: flex;
+    justify-content: center;
+    padding: 15px;
+    margin-bottom: 5px;
+    margin-left: 45px;
+}
+ .p-button.google {
+    background: linear-gradient(to left, var(--purple-600) 50%, var(--purple-700) 50%);
+    background-size: 200% 100%;
+    background-position: right bottom;
+    transition: background-position 0.5s ease-out;
+    color: #fff;
+    border-color: var(--purple-700);
+}
+ .p-button.google:hover {
+    background-position: left bottom;
+}
+ .p-button.google i {
+    background-color: var(--purple-700);
+}
+.p-button.google:focus {
+    box-shadow: 0 0 0 1px var(--purple-400);
+}
