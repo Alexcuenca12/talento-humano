@@ -1,1 +1,32 @@
-export {};
+export interface IPersona {
+  id_persona?: Number;
+  ci_pasaporte: String;
+  apellidos: String;
+  nombres: String;
+  pais_nacimiento: String;
+  edad: String;
+  genero: String;
+  sexo: String;
+  estado_civil: String;
+  etnia: String;
+  tipo_sangre: String;
+  celular: String;
+  correo: String;
+  correo_institucional: String;
+  pais_residencia: String;
+  parroquia_recidencial: String;
+  calle_principal: String;
+  calle_secundaria: String;
+  numero_casa: String;
+  sector: String;
+  referencia: String;
+  telefono: String;
+  idioma_raiz: String;
+  idioma_secundario: String;
+  foto: String;
+  discapacidad: Boolean;
+  tipo_discapacidad: String;
+  porcentaje_discapacidad: String;
+  carnet_conadis: String;
+  foto_carnet: String;
+}
