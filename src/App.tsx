@@ -5,10 +5,11 @@ import Login from './views/Login/LoginContext';
 import CargaFamiliar from "./views/CargaFamiliar/CargaFamiliar";
 
 import 'bootstrap/dist/css/bootstrap.css';
+import CapacitacionesContext from "./views/Capacitaciones/CapacitacionesContext";
 
 function App() {
   return (
-  <CargaFamiliar/>
+  <CapacitacionesContext/>
   );
 }
 
