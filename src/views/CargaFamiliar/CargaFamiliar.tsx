@@ -26,9 +26,9 @@ export default function CargaFamiliar() {
                     </div>
                     <div className="col">
                         <div className="form-group row">
-                            <label htmlFor="input3" className="col-sm col-form-label">Apellidos: </label>
+                            <label htmlFor="apellidos" className="col-sm col-form-label">Apellidos: </label>
                             <div className="col-sm-8">
-                                <input type="text" className="form-control" id="input3" />
+                                <input type="text" className="form-control" id="apellidos" />
                             </div>
                         </div>
                     </div>
@@ -36,9 +36,9 @@ export default function CargaFamiliar() {
                 <div className="row">
                     <div className="col">
                         <div className="form-group row">
-                            <label htmlFor="fecha" className="col-sm col-form-label">Fecha de nacimiento: </label>
+                            <label htmlFor="fechaN" className="col-sm col-form-label">Fecha de nacimiento: </label>
                             <div className="col-sm-8">
-                            <input type="date" className="form-control" id="fecha" />
+                            <input type="date" className="form-control" id="fechaN" />
                             </div>
                         </div>
                     </div>

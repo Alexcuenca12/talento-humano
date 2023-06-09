@@ -10,9 +10,9 @@ export default function CapacitacionesContext() {
 
                     <div className="col">
                         <div className="form-group row">
-                            <label htmlFor="cedula" className="col-sm col-form-label">Institucion:</label>
+                            <label htmlFor="institucion" className="col-sm col-form-label">Institucion:</label>
                             <div className="col-sm-auto">
-                                <select className="col-sm form-select" id="validationCustom04" required>
+                                <select className="col-sm form-select" id="institucion" required>
                                     <option selected disabled value="">Escoger Opcion</option>
                                     <option>...</option>
                                 </select>
@@ -25,9 +25,9 @@ export default function CapacitacionesContext() {
 
                     <div className="col">
                         <div className="form-group row">
-                            <label htmlFor="nombres" className="col-sm col-form-label">Tipo de Evento: </label>
+                            <label htmlFor="tEvento" className="col-sm col-form-label">Tipo de Evento: </label>
                             <div className="col-sm-auto">
-                                <select className="col-sm form-select" id="validationCustom04" required>
+                                <select className="col-sm form-select" id="tEvento" required>
                                     <option selected disabled value="">Escoger Opcion</option>
                                     <option>...</option>
                                 </select>
@@ -40,9 +40,9 @@ export default function CapacitacionesContext() {
 
                     <div className="col">
                         <div className="form-group row">
-                            <label htmlFor="input3" className="col-sm col-form-label">Area de Estudio: </label>
+                            <label htmlFor="aEstudio" className="col-sm col-form-label">Area de Estudio: </label>
                             <div className="col-sm-auto">
-                                <select className="col-sm form-select" id="validationCustom04" required>
+                                <select className="col-sm form-select" id="aEstudio" required>
                                     <option selected disabled value="">Escoger Opcion</option>
                                     <option>...</option>
                                 </select>
@@ -75,9 +75,9 @@ export default function CapacitacionesContext() {
                     </div>
                     <div className="col">
                         <div className="form-group row">
-                            <label htmlFor="input3" className="col-sm col-form-label">Numero de dias: </label>
+                            <label htmlFor="nDias" className="col-sm col-form-label">Numero de dias: </label>
                             <div className="col-sm-auto">
-                                <input type="text" className="form-control" id="input3"/>
+                                <input type="text" className="form-control" id="nDias"/>
                             </div>
                         </div>
                     </div>
@@ -87,18 +87,18 @@ export default function CapacitacionesContext() {
 
                     <div className="col">
                         <div className="form-group row">
-                            <label htmlFor="input3" className="col-sm-auto col-form-label">Nombre de evento:</label>
+                            <label htmlFor="nEvento" className="col-sm-auto col-form-label">Nombre de evento:</label>
                             <div className="col-sm-auto">
-                                <input type="text" className="form-control" id="input3"/>
+                                <input type="text" className="form-control" id="nEvento"/>
                             </div>
                         </div>
                     </div>
 
                     <div className="col">
                         <div className="form-group row">
-                            <label htmlFor="input3" className="col-sm-auto col-form-label">Tipo de certificado: </label>
+                            <label htmlFor="tCertificado" className="col-sm-auto col-form-label">Tipo de certificado: </label>
                             <div className="col-sm-auto">
-                                <select className="col-sm form-select" id="validationCustom04" required>
+                                <select className="col-sm form-select" id="tCertificado" required>
                                     <option selected disabled value="">Escoger Opcion</option>
                                     <option>...</option>
                                 </select>
@@ -111,9 +111,9 @@ export default function CapacitacionesContext() {
 
                     <div className="col">
                         <div className="form-group row">
-                            <label htmlFor="input3" className="col-sm-auto col-form-label">N de Horas Totales: </label>
+                            <label htmlFor="nHoras" className="col-sm-auto col-form-label">N° de Horas Totales: </label>
                             <div className="col-sm-auto">
-                                <input type="text" className="form-control" id="input3"/>
+                                <input type="text" className="form-control" id="nHoras"/>
                             </div>
                         </div>
                     </div>
