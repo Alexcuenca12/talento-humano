@@ -1,163 +1,123 @@
-import "primeicons/primeicons.css";
-import "primereact/resources/themes/lara-light-indigo/theme.css";
-import "primereact/resources/primereact.css";
-import "primeflex/primeflex.css";
-import "../../index.css";
-import ReactDOM from "react-dom";
-
 import React from "react";
-import { Menubar } from "primereact/menubar";
-import { InputText } from "primereact/inputtext";
+import "../styles/NavbarHome.css";
+import { Link } from "react-router-dom";
 
-const MenubarDemo = () => {
-    const handleImageError = (e: React.SyntheticEvent<HTMLImageElement, Event>) => {
-        e.currentTarget.src = 'https://www.primefaces.org/wp-content/uploads/2020/05/placeholder.png';
-      };
-  const items = [
-    {
-      label: "File",
-      icon: "pi pi-fw pi-file",
-      items: [
-        {
-          label: "New",
-          icon: "pi pi-fw pi-plus",
-          items: [
-            {
-              label: "Bookmark",
-              icon: "pi pi-fw pi-bookmark",
-            },
-            {
-              label: "Video",
-              icon: "pi pi-fw pi-video",
-            },
-          ],
-        },
-        {
-          label: "Delete",
-          icon: "pi pi-fw pi-trash",
-        },
-        {
-          separator: true,
-        },
-        {
-          label: "Export",
-          icon: "pi pi-fw pi-external-link",
-        },
-      ],
-    },
-    {
-      label: "Edit",
-      icon: "pi pi-fw pi-pencil",
-      items: [
-        {
-          label: "Left",
-          icon: "pi pi-fw pi-align-left",
-        },
-        {
-          label: "Right",
-          icon: "pi pi-fw pi-align-right",
-        },
-        {
-          label: "Center",
-          icon: "pi pi-fw pi-align-center",
-        },
-        {
-          label: "Justify",
-          icon: "pi pi-fw pi-align-justify",
-        },
-      ],
-    },
-    {
-      label: "Users",
-      icon: "pi pi-fw pi-user",
-      items: [
-        {
-          label: "New",
-          icon: "pi pi-fw pi-user-plus",
-        },
-        {
-          label: "Delete",
-          icon: "pi pi-fw pi-user-minus",
-        },
-        {
-          label: "Search",
-          icon: "pi pi-fw pi-users",
-          items: [
-            {
-              label: "Filter",
-              icon: "pi pi-fw pi-filter",
-              items: [
-                {
-                  label: "Print",
-                  icon: "pi pi-fw pi-print",
-                },
-              ],
-            },
-            {
-              icon: "pi pi-fw pi-bars",
-              label: "List",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      label: "Events",
-      icon: "pi pi-fw pi-calendar",
-      items: [
-        {
-          label: "Edit",
-          icon: "pi pi-fw pi-pencil",
-          items: [
-            {
-              label: "Save",
-              icon: "pi pi-fw pi-calendar-plus",
-            },
-            {
-              label: "Delete",
-              icon: "pi pi-fw pi-calendar-minus",
-            },
-          ],
-        },
-        {
-          label: "Archieve",
-          icon: "pi pi-fw pi-calendar-times",
-          items: [
-            {
-              label: "Remove",
-              icon: "pi pi-fw pi-calendar-minus",
-            },
-          ],
-        },
-      ],
-    },
-    {
-      label: "Quit",
-      icon: "pi pi-fw pi-power-off",
-    },
-  ];
-
-  const start = (
-    <div>
-      <img
-        alt="logo"
-        src="showcase/images/logo.png"
-        onError={handleImageError}
-        height="40"
-        className="mr-2"
-      />
-    </div>
-  );
-  const end = <InputText placeholder="Search" type="text" />;
-
+export const NavBar: React.FC = () => {
+  const eliminarUser = () => {
+    sessionStorage.removeItem("user");
+  };
   return (
-    <div>
-      <div className="card">
-        <Menubar model={items} start={start} end={end} />
+    <>
+      <div>
+        <body className="body2">
+          <nav>
+            <div className="icon_digital"></div>
+            <label htmlFor="drop" className="toggle">
+              Menu
+            </label>
+            <input type="checkbox" id="drop" />
+            <ul className="navbar-nav">
+              <li className="nav-item">
+                <Link
+                  className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
+                  to="/home"
+                >
+                  HOME
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
+                  to="/ficha"
+                >
+                  FICHA PERSONAL
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
+                  to="/contrato"
+                >
+                  CONTRATO
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
+                  to="/instruccion"
+                >
+                  INSTRUCCION FORMAL
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
+                  to="/horario"
+                >
+                  HORARIO
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
+                  to="/carga"
+                >
+                  CARGA FAMILIAR
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
+                  to="/capacitaciones"
+                >
+                  CAPACITACIONES
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
+                  to="/experiencia"
+                >
+                  EXPERIENCIA
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
+                  to="/evaluacion"
+                >
+                  EVALUACION DOCENTE
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
+                  to="/habilidad"
+                >
+                  HABILIDADES
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
+                  to="/resumen"
+                >
+                  RESUMEN DOCENTE
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
+                  to="/inicio"
+                  onClick={eliminarUser}
+                >
+                  LOG OUT
+                </Link>
+              </li>
+            </ul>
+          </nav>
+        </body>
       </div>
-    </div>
+    </>
   );
 };
-
-const rootElement = document.getElementById("root");
-ReactDOM.render(<MenubarDemo />, rootElement);
