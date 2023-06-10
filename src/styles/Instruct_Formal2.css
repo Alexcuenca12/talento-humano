@@ -3,10 +3,7 @@
   align-items: center;
   justify-content: center;
   margin-bottom: 16px;
-  
 }
-
-
 
 .form-title {
   margin: 0 16px;
@@ -44,15 +41,18 @@ form {
   width: 100%;
   max-width: 900px;
 }
-
+label {
+  margin-bottom: 8px;
+}
 .form-row {
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-gap: 20px;
   margin-bottom: 20px;
 }
 
 .small-input {
-  width: 250px;
+  width: 100%;
   border-radius: 20px;
 }
 
@@ -98,6 +98,11 @@ form {
   background-color: #ffffff;
 }
 
+.additional-button-container {
+  position: relative;
+  margin-top: 50px;
+}
+
 .additional-button {
   position: absolute;
   bottom: -100px;
@@ -105,4 +110,10 @@ form {
   width: calc(20% - 30px);
   border-radius: 20px;
 }
-
+.additional-button {
+  position: absolute;
+  bottom: -100px;
+  right: 50px;
+  width: calc(20% - 30px);
+  border-radius: 20px;
+}
