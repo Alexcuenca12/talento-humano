@@ -1,5 +1,5 @@
 export interface IRol {
-  id_rol?: Number;
+  idRol?: Number;
   nombreRol: String;
   descripcionRol: String;
 }
