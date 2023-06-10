@@ -1,3 +1,4 @@
+
 import React, { createContext, useEffect, useState } from "react";
 import { ContratoService } from "../../services/ContratoService";
 import { IContrato } from "../../interfaces/Primary/IContrato";
@@ -87,3 +88,4 @@ const ContratoContextProvider = (props: any) => {
   
 };
 export default ContratoContextProvider;
+
