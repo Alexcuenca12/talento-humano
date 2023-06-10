@@ -1,0 +1,86 @@
+.input {
+    padding: 10px
+  }
+  
+  .card {
+    display: flex;
+    flex-direction: row;
+  }
+  
+  .input-container {
+    flex-basis: calc(100% / 3);
+    /* Divide el ancho en 3 columnas iguales */
+    display: flex;
+    justify-content: center;
+    padding: 15px;
+  }
+  
+  .input-container2 {
+    flex-basis: calc(100% / 2);
+    /* Divide el ancho en 3 columnas iguales */
+    display: flex;
+    justify-content: end;
+    padding: 15px;
+  }
+  
+  .input-container3 {
+    flex-basis: calc(100% / 2);
+    /* Divide el ancho en 3 columnas iguales */
+    display: flex;
+    justify-content: center;
+    padding: 15px;
+  }
+  
+  .elementosDialog {
+    width: 100%;
+  }
+  
+  
+  .flexx {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  
+  .div {
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    text-align: center;
+    border-radius: 50px;
+    border: 2px solid black;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+    
+  }
+
+  .div2 {
+    background-color: rgb(241, 230, 230);
+    border-radius: 50px;
+  }
+
+  .div3 {
+    background-color: rgb(148, 19, 19);
+  }
+
+  .contenedor{
+    display: flex;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+    justify-content: space-between;
+    
+  }
+
+  .tabla{
+    padding: 50px;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-bottom: 20px;
+  }
+
+  .boton{
+    padding: 50px;
+  }
