@@ -2,8 +2,6 @@
 import React from "react";
 import LoginContext from "../views/Login/LoginContext";
 import ContratoContext from "../views/Contrato/ContratoContext";
-import ContratoForm from "../views/Contrato/ContratoForm";
-import ContratoList from "../views/Contrato/ContratoList";
 import { useContext } from "react";
 import {
   BrowserRouter as Router,
@@ -34,8 +32,6 @@ export function AppRouter() {
     // Es el componente que envuelve toda la aplicación y le permite manejar la navegación mediante la actualización de la URL en el navegador.
     <Router>
 
-
-      <ContratoList/>
       
       
 
