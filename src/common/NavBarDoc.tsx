@@ -23,6 +23,7 @@ export const NavBarDoc: React.FC = () => {
               <Link
                 className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
                 to="/home"
+                style={{borderTopLeftRadius:"10px", borderBottomLeftRadius:"10px"}}
               >
                 HOME
               </Link>
@@ -111,6 +112,7 @@ export const NavBarDoc: React.FC = () => {
               <Link
                 className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
                 to="/resumen"
+                style={{borderTopRightRadius:"10px", borderBottomRightRadius:"10px",marginRight:"5px"}}
                 onClick={eliminarUser}
               >
                 LOG OUT
