@@ -130,7 +130,12 @@ export default function CapacitacionesContext() {
                         </div>
                     </div>
                 </div>
-
+                <div className="row">
+                    <div className="col">
+                        <button type="button" className="btn btn-primary m-5">Agregar</button>
+                        <button type="button" className="btn btn-danger">Cancelar</button>
+                    </div>
+                </div>
             </div>
         </div>
     )
