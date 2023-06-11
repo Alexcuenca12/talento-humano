@@ -11,6 +11,7 @@ import Instrucc_FormalContext from "../Instruc_Formal/Instrucc_FormalContext";
 import HorarioContext from "../Horario/HorarioContext";
 import CapacitacionesContext from "../Capacitaciones/CapacitacionesContext";
 import Eva_DocenteContext from "../Eva_Docente/Eva_DocenteContext";
+import CargaFamiliarContext from "../CargaFamiliar/CargaFamiliarContext";
 import ExperienciaContext from "../Experiencia/ExperienciaContext";
 import HabilidadesContext from "../Habilidades/HabilidadesContext";
 import Resumen from "../Resumen/Resumen";
@@ -147,6 +148,8 @@ export const DashboardRouter = () => {
                 {rol === 1 ?(
                   <>
                     <NavBarDoc />
+                    <CargaFamiliarContext/>
+
                   </>
                 ) : rol === 2 ?(
                   <>
