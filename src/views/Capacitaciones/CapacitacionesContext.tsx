@@ -4,6 +4,8 @@ import { Calendar } from 'primereact/calendar';
 import { Dropdown } from 'primereact/dropdown';
 import { FileUpload } from 'primereact/fileupload';
 import { Button } from 'primereact/button';
+import { DataTable } from 'primereact/datatable';
+import { Column } from 'primereact/column';
 
 const Capacitaciones = () => {
   const [nombre, setNombre] = useState('');
@@ -25,51 +27,85 @@ const Capacitaciones = () => {
   ];
 
   return (
-      <div className="p-grid p-fluid">
-        <div className="p-col-12 p-md-4">
-          <label>Label 1</label>
-          <Dropdown options={comboOptions} placeholder="Combo Box 1" />
-        </div>
-        <div className="p-col-12 p-md-4">
-          <label>Label 2</label>
-          <Dropdown options={comboOptions} placeholder="Combo Box 2" />
-        </div>
-        <div className="p-col-12 p-md-4">
-          <label>Label 3</label>
-          <Dropdown options={comboOptions} placeholder="Combo Box 3" />
-        </div>
+      <div className="fgrid col ">
+          <h1 className="text-center  mb-auto">Capacitaciones</h1>
 
-        <div className="p-col-12 p-md-4">
-          <label>Label 4</label>
-          <Calendar placeholder="Fecha 1" showIcon={true} />
-        </div>
-        <div className="p-col-12 p-md-4">
-          <label>Label 5</label>
-          <Calendar placeholder="Fecha 2" showIcon={true} />
-        </div>
-        <div className="p-col-12 p-md-4">
-          <label>Label 6</label>
-          <InputText type="number" placeholder="Número" />
-        </div>
+          <div className="formgroup-inline text-center">
+              <div className="field col-5 md:col-4">
+                  <label className="text-center" >Institucion: </label>
+                  <Dropdown options={comboOptions} placeholder="" id="institucion" className="border-round appearance-none outline-none"/>
+              </div>
+                  <div className="field col-4 md:col-4">
+                      <label className="text-center">Tipo de evento:</label>
+                      <Dropdown options={comboOptions} placeholder="" />
+                  </div>
+                  <div className="field col-5 md:col-3">
+                      <label className="">Area de estudio:</label>
+                      <Dropdown options={comboOptions} placeholder="" />
+                  </div>
 
-        <div className="p-col-12 p-md-4">
-          <label>Label 7</label>
-          <Dropdown options={comboOptions} placeholder="Combo Box 4" />
-        </div>
-        <div className="p-col-12 p-md-4"></div>
-        <div className="p-col-12 p-md-4"></div>
+          </div>
 
-        <div className="p-col-12">
-          <label>Label 8</label>
-          <FileUpload name="pdf" chooseLabel="Seleccionar archivo" />
-        </div>
+          <div className="formgroup-inline text-center">
+              <div className="field col-5 md:col-4">
+                  <label>Desde:</label>
+                  <Calendar placeholder="" showIcon={true} />
+              </div>
+              <div className="field col-5 md:col-4">
+                  <label>Hasta:</label>
+                  <Calendar placeholder="" showIcon={true} />
+              </div>
+              <div className="field col-5 md:col-3">
+                  <label>Numero de dias:</label>
+                  <InputText type="number" placeholder="" />
+              </div>
+          </div>
 
-        <div className="p-col-12 p-md-6">
-          <Button label="Agregar" />
-        </div>
-        <div className="p-col-12 p-md-6">
-          <Button label="Cancelar" />
-        </div>
+          <div className="formgroup-inline text-center">
+              <div className="field col-5 md:col-3">
+                  <label>Nombre de evento:</label>
+                  <InputText type="text" placeholder="" />
+              </div>
+
+              <div className="field col-5 md:col-4">
+                  <label>Tipo de certificado:</label>
+                  <Dropdown options={comboOptions} placeholder="" />
+              </div>
+              <div className="field col-5 md:col-4">
+                  <label>N° de horas totales: </label>
+                  <InputText type="number" placeholder="" />
+              </div>
+
+          </div>
+
+          <div className="formgroup-inline text-center">
+              <div className="field col-5 md:col-4">
+                  <label>Subir PDF:</label>
+                  <FileUpload name="pdf" chooseLabel="Seleccionar archivo" />
+              </div>
+          </div>
+
+          <div className="formgroup-inline grid">
+              <div className="field col-6 md:col-4">
+                  <Button label="Agregar" />
+              </div>
+              <div className="field col-6 md:col-4">
+                  <Button label="Cancelar" />
+              </div>
+          </div>
+
+          <div className="formgroup-inline p-grid p-justify-center">
+              <div className="card p-col-12">
+                  <DataTable  tableStyle={{ minWidth: '50rem' }}>
+                      <Column field="Capacitaciones" header="Capacitaciones"></Column>
+                      <Column field="PDF" header="PDF"></Column>
+                      <Column field="Acciones" header="Acciones"></Column>
+
+                  </DataTable>
+              </div>
+          </div>
+
+
       </div>
   );
 };
