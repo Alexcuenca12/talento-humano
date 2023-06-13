@@ -33,15 +33,15 @@ const Persona = () => {
         <div className="formgroup-inline text-center">
           <div className="field col-5 md:col-4">
             <label className="text-center" >Cedula: </label>
-            <Dropdown options={comboOptions} placeholder="" className="border-round appearance-none outline-none"/>
+            <InputText type="number" placeholder="" />
           </div>
           <div className="field col-4 md:col-4">
             <label className="">Nombres:</label>
-            <Dropdown options={comboOptions} placeholder="" />
+            <InputText type="text" placeholder="" />
           </div>
           <div className="field col-5 md:col-3">
             <label className="">Apellidos:</label>
-            <Dropdown options={comboOptions} placeholder="" />
+            <InputText type="text" placeholder="" />
           </div>
 
         </div>
