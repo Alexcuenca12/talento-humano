@@ -1,11 +1,11 @@
 export interface IContrato {
   id_contrato?: Number;
-  fecha_inicio: String;
-  fecha_fin: String;
-  anio_duracion: String;
-  horas_diarias: String;
-  cargo: String;
-  salario: Date;
-  evidencia: Date;
+  fecha_inicio: string;
+  fecha_fin: string;
+  anio_duracion: string;
+  horas_diarias: string;
+  cargo: string;
+  salario: string;
+  evidencia: string;
   persona: Object;
 }

@@ -54,7 +54,7 @@ export function Login() {
     <>
       <div className="header flex flex-col" id="header">
         <Toast ref={toast} />
-        <AuthCard>
+        <AuthCard >
           <form onSubmit={handleSubmit} autoComplete="off">
             <br />
             <div className="mb-2 p-1 d-flex border rounded">

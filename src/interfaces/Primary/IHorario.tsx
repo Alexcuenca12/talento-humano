@@ -1,10 +1,10 @@
 export interface IHorario{
     id_horario?: Number;
-    periodo: String;
-    horario: String;
-    dias: String;
-    distributivo: Date;
-    periodoAc: Object;
-    persona: Object;
+    periodo: string;
+    horario: string;
+    dias: string;
+    distributivo: string;
+    //periodoAc: Object;
+    //persona: Object;
   }
   

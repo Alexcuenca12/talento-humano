@@ -1,13 +1,10 @@
 import React from "react";
 import "../styles/NavbarHome.css";
 import { Link } from "react-router-dom";
-
-
 export const NavBarDoc: React.FC = () => {
   const eliminarUser = () => {
     sessionStorage.removeItem("user");
   };
-
   return (
     <>
     <div>
@@ -55,7 +52,7 @@ export const NavBarDoc: React.FC = () => {
             <li className="nav-item">
               <Link
                 className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
-                to="/horario"
+                to="/contrato"
               >
                 HORARIO
               </Link>

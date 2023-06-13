@@ -4,7 +4,7 @@ import "./index.css";
 import App from "./App";
 
 import "primereact/resources/themes/lara-light-indigo/theme.css";
-import 'primeflex/primeflex.css';
+//import 'primeflex/primeflex.css';
 
 
 //core
