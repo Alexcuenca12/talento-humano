@@ -32,12 +32,13 @@ function App() {
 
   return (
 
-  //<ContratoFinal/>
+  //
   //<HorarioFinal/>
 
     <AuthContext.Provider value={{ user, dispatchUser }}>
       <AppRouter />
     </AuthContext.Provider>
+    
 
   );
 }

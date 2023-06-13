@@ -9,13 +9,13 @@ import swal from 'sweetalert';
 
 const ContratoForm = (props: any) => {
 
-    const {setIsVisible } = props;
+    const { setIsVisible } = props;
     const [confirm, setConfirm] = useState(false);
     const [requiredFieldsEmpty, setRequiredFieldsEmpty] = useState(false);
     //For the register of a contract
     const initialContratoState = {
         id_contrato: 0,
-        fecha_inicio:  '' ,
+        fecha_inicio: '',
         fecha_fin: '',
         anio_duracion: "",
         horas_diarias: "",
@@ -74,7 +74,7 @@ const ContratoForm = (props: any) => {
                 horas_diarias: editContrato.horas_diarias,
                 cargo: editContrato.cargo,
                 salario: editContrato.salario,
-                evidencia:editContrato.evidencia,
+                evidencia: editContrato.evidencia,
                 persona: editContrato.persona
             });
     }, [editContrato]);
@@ -84,30 +84,30 @@ const ContratoForm = (props: any) => {
             ...contratoData,
         });
     }, []);
-    
+
 
 
     const saveContrato = () => {
         //console.log(contratoData);
         if (validateInputs()) {
-        
+
             createContrato(contratoData);
             setContratoData(initialContratoState);
             swal({
                 title: "Contrato",
-                text:"Datos Guardados Correctamente",
+                text: "Datos Guardados Correctamente",
                 icon: "success"
             });
             console.log(contratoData);
-            
-            
+
+
         } else {
             return swal({
                 title: "Contrato",
-                text:"Falta completar los datos requeridos del Contrato",
+                text: "Falta completar los datos requeridos del Contrato",
                 icon: "warning"
             });
-            
+
         }
     };
     const _deleteContrato = () => {
@@ -118,10 +118,10 @@ const ContratoForm = (props: any) => {
             setConfirm(false);
             swal({
                 title: "Contrato",
-                text:"Error al Eliminar",
+                text: "Error al Eliminar",
                 icon: "error"
             });
-            
+
         }
     };
     //If the input in the form change
@@ -137,7 +137,7 @@ const ContratoForm = (props: any) => {
             !contratoData.anio_duracion ||
             !contratoData.horas_diarias ||
             !contratoData.cargo ||
-            !contratoData.salario
+            !contratoData.salario 
             //!contratoData.evidencia ||
             //!contratoData.persona
         ) {
@@ -155,93 +155,107 @@ const ContratoForm = (props: any) => {
                 <Divider />
             </div >
             <div className="div">
-                <div className="bg-slate-300 max-w-md rounded-e-md p-3  mx-10 mt-5">
-                    <div className="input-container">
-                        <div className="p-inputgroup">
-                            <span className="p-float-label card flex justify-content-center">
-                                <InputText
-                                    
-                                    id="fecha_inicio"
-                                    name="fecha_inicio"
-                                    value={contratoData.fecha_inicio}
-                                    onChange={(e) => onInputChange(e.target.value, "fecha_inicio")}
-                                />
-                                <label htmlFor="fecha_inicio">FECHA INICIO</label>
-                            </span>
+                <div className="divisor">
+                    <div className="bg-slate-300 max-w-2xl rounded-e-lg selection:p-1  mx-50 mt-10">
+                        <div className="input-container">
+                            <div className="p-inputgroup">
+                                <span className="p-float-label card flex justify-content-center">
+                                    <InputText
+                                        className="ingreso"
+                                        id="fecha_inicio"
+                                        name="fecha_inicio"
+                                        value={contratoData.fecha_inicio}
+                                        onChange={(e) => onInputChange(e.target.value, "fecha_inicio")}
+                                    />
+                                    <label htmlFor="fecha_inicio">FECHA INICIO</label>
+                                </span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="input-container">
-                        <div className="p-inputgroup">
-                            <span className="p-float-label card flex justify-content-center">
-                                <InputText
-                                    id="fecha_fin"
-                                    name="fecha_fin"
-                                    value={contratoData.fecha_fin}
-                                    onChange={(e) => onInputChange(e.target.value, "fecha_fin")}
-                                />
-                                <label htmlFor="fecha_fin">FECHA FIN</label>
-                            </span>
+                        <div className="input-container">
+                            <div className="p-inputgroup">
+                                <span className="p-float-label card flex justify-content-center">
+                                    <InputText
+                                        id="fecha_fin"
+                                        name="fecha_fin"
+                                        value={contratoData.fecha_fin}
+                                        onChange={(e) => onInputChange(e.target.value, "fecha_fin")}
+                                    />
+                                    <label htmlFor="fecha_fin">FECHA FIN</label>
+                                </span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="input-container">
-                        <div className="p-inputgroup">
-                            <span className="p-float-label card flex justify-content-center">
-                                <InputText
-                                    id="anio_duracion"
-                                    name="anio_duracion"
-                                    value={contratoData.anio_duracion}
-                                    onChange={(e) => onInputChange(e.target.value, "anio_duracion")}
-                                />
-                                <label htmlFor="anio_duracion">AÑOS DE DURACION</label>
-                            </span>
+                        <div className="input-container">
+                            <div className="p-inputgroup">
+                                <span className="p-float-label card flex justify-content-center">
+                                    <InputText
+                                        id="anio_duracion"
+                                        name="anio_duracion"
+                                        value={contratoData.anio_duracion}
+                                        onChange={(e) => onInputChange(e.target.value, "anio_duracion")}
+                                    />
+                                    <label htmlFor="anio_duracion">AÑOS DE DURACION</label>
+                                </span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="input-container">
-                        <div className="p-inputgroup">
-                            <span className="p-float-label card flex justify-content-center">
-                                <InputText
-                                    id="horas_diarias"
-                                    name="horas_diarias"
-                                    value={contratoData.horas_diarias}
-                                    onChange={(e) => onInputChange(e.target.value, "horas_diarias")}
-                                />
-                                <label htmlFor="horas_diarias">HORAS DIARIAS</label>
-                            </span>
+                        <div className="input-container">
+                            <div className="p-inputgroup">
+                                <span className="p-float-label card flex justify-content-center">
+                                    <InputText
+                                        id="horas_diarias"
+                                        name="horas_diarias"
+                                        value={contratoData.horas_diarias}
+                                        onChange={(e) => onInputChange(e.target.value, "horas_diarias")}
+                                    />
+                                    <label htmlFor="horas_diarias">HORAS DIARIAS</label>
+                                </span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="input-container">
-                        <div className="p-inputgroup">
-                            <span className="p-float-label card flex justify-content-center">
-                                <InputText
-                                    id="cargo"
-                                    name="cargo"
-                                    value={contratoData.cargo}
-                                    onChange={(e) => onInputChange(e.target.value, "cargo")}
-                                />
-                                <label htmlFor="cargo">CARGO</label>
-                            </span>
+                        <div className="input-container">
+                            <div className="p-inputgroup">
+                                <span className="p-float-label card flex justify-content-center">
+                                    <InputText
+                                        id="cargo"
+                                        name="cargo"
+                                        value={contratoData.cargo}
+                                        onChange={(e) => onInputChange(e.target.value, "cargo")}
+                                    />
+                                    <label htmlFor="cargo">CARGO</label>
+                                </span>
+                            </div>
                         </div>
-                    </div>
 
-                    <div className="input-container">
-                        <div className="p-inputgroup">
-                            <span className="p-float-label card flex justify-content-center">
-                                <InputText
-                                    id="salario"
-                                    name="salario"
-                                    value={contratoData.salario}
-                                    onChange={(e) => onInputChange(e.target.value, "salario")}
-                                />
-                                <label htmlFor="salario">SALARIO</label>
-                            </span>
+                        <div className="input-container">
+                            <div className="p-inputgroup">
+                                <span className="p-float-label card flex justify-content-center">
+                                    <InputText
+                                        id="salario"
+                                        name="salario"
+                                        value={contratoData.salario}
+                                        onChange={(e) => onInputChange(e.target.value, "salario")}
+                                    />
+                                    <label htmlFor="salario">SALARIO</label>
+                                </span>
+                            </div>
                         </div>
-                    </div>
 
+                    </div>
+                    <div className="pdf">
+                        <p>
+                            Sube un archivo:
+                            <br />
+                            <input type="file" name="evidencia" accept="application/pdf, .doc, .docx, .odf" 
+                            required/>
+                            
+    
+                        </p>
+                    </div>
                 </div>
+                <br/>
+
 
                 <div className="input-container2">
                     <Button
@@ -256,6 +270,7 @@ const ContratoForm = (props: any) => {
                         }}
                     />
                 </div>
+
             </div>
 
 

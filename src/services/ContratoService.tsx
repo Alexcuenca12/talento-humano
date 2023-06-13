@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export class ContratoService {
-    baseUrl = "localhost:8080/api/contrato/";
+    baseUrl = "http://localhost:8080/api/contrato/";
 
     //Metodo para listar todas los Contratos
     getAll() {
