@@ -1,37 +1,142 @@
-import React, { useState } from 'react';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
+import React from 'react'
 
-const Capacitaciones = () => {
-  const [nombre, setNombre] = useState('');
-  const [email, setEmail] = useState('');
+export default function CapacitacionesContext() {
+    return (
+        <div>
+            <h1 className="text-center mb-4 ">Capacitaciones</h1>
+            <div className="container text-center">
 
-  const handleSubmit = (e: { preventDefault: () => void; }) => {
-    e.preventDefault();
-    // Aquí puedes realizar las acciones necesarias con los datos del formulario, como enviarlos a un servidor
+                <div className="row row-cols-auto mb-4">
 
-    // Limpia los campos después de enviar el formulario
-    setNombre('');
-    setEmail('');
-  };
+                    <div className="col">
+                        <div className="form-group row">
+                            <label htmlFor="institucion" className="col-sm col-form-label">Institucion:</label>
+                            <div className="col-sm-auto">
+                                <select className="col-sm form-select" id="institucion" required>
+                                    <option selected disabled value="">Escoger Opcion</option>
+                                    <option>...</option>
+                                </select>
+                                <div className="invalid-feedback">
+                                    Please select a valid state.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-  return (
-    <form onSubmit={handleSubmit}>
-      <div className="p-fluid">
-        <div className="p-field">
-          <label htmlFor="nombre">Nombre</label>
-          <InputText id="nombre" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+                    <div className="col">
+                        <div className="form-group row">
+                            <label htmlFor="tEvento" className="col-sm col-form-label">Tipo de Evento: </label>
+                            <div className="col-sm-auto">
+                                <select className="col-sm form-select" id="tEvento" required>
+                                    <option selected disabled value="">Escoger Opcion</option>
+                                    <option>...</option>
+                                </select>
+                                <div className="invalid-feedback">
+                                    Please select a valid state.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col">
+                        <div className="form-group row">
+                            <label htmlFor="aEstudio" className="col-sm col-form-label">Area de Estudio: </label>
+                            <div className="col-sm-auto">
+                                <select className="col-sm form-select" id="aEstudio" required>
+                                    <option selected disabled value="">Escoger Opcion</option>
+                                    <option>...</option>
+                                </select>
+                                <div className="invalid-feedback">
+                                    Please select a valid state.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div className="row row-cols-auto mb-4">
+
+                    <div className="col">
+                        <div className="form-group row">
+                            <label htmlFor="fechaD" className="col-sm col-form-label">Desde: </label>
+                            <div className="col-sm-auto">
+                                <input type="date" className="form-control" id="fechaD"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div className="form-group row">
+                            <label htmlFor="fechaH" className="col-sm col-form-label">Hasta: </label>
+                            <div className="col-sm-auto">
+                                <input type="date" className="form-control" id="fechaH"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col">
+                        <div className="form-group row">
+                            <label htmlFor="nDias" className="col-sm col-form-label">Numero de dias: </label>
+                            <div className="col-sm-auto">
+                                <input type="text" className="form-control" id="nDias"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div className="row row-cols mb-4">
+
+                    <div className="col">
+                        <div className="form-group row">
+                            <label htmlFor="nEvento" className="col-sm-auto col-form-label">Nombre de evento:</label>
+                            <div className="col-sm-auto">
+                                <input type="text" className="form-control" id="nEvento"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col">
+                        <div className="form-group row">
+                            <label htmlFor="tCertificado" className="col-sm-auto col-form-label">Tipo de certificado: </label>
+                            <div className="col-sm-auto">
+                                <select className="col-sm form-select" id="tCertificado" required>
+                                    <option selected disabled value="">Escoger Opcion</option>
+                                    <option>...</option>
+                                </select>
+                                <div className="invalid-feedback">
+                                    Please select a valid state.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="col">
+                        <div className="form-group row">
+                            <label htmlFor="nHoras" className="col-sm-auto col-form-label">N° de Horas Totales: </label>
+                            <div className="col-sm-auto">
+                                <input type="text" className="form-control" id="nHoras"/>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div className="row row-cols-auto">
+                    <div className="col">
+                        <div className="form-group row">
+                            <label htmlFor="archivo" className="col-sm-auto col-form-label">Subir PDF: </label>
+                            <div className="col-sm-auto">
+                                <input type="file" className="form-control" id="archivo"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col">
+                        <button type="button" className="btn btn-primary m-5">Agregar</button>
+                        <button type="button" className="btn btn-danger">Cancelar</button>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div className="p-field">
-          <label htmlFor="email">Email</label>
-          <InputText id="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        </div>
-        <div className="p-field">
-          <Button label="Enviar" type="submit" />
-        </div>
-      </div>
-    </form>
-  );
-};
-
-export default Capacitaciones;
+    )
+}
