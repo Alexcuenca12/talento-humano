@@ -1,140 +1,94 @@
 import React from 'react'
-
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
+import {Dropdown} from "primereact/dropdown";
+import {Calendar} from "primereact/calendar";
+import {FileUpload} from "primereact/fileupload";
+import {DataTable} from "primereact/datatable";
+import {Column} from "primereact/column";
+import '../../styles/Capacitacitaciones.css'
 export default function CapacitacionesContext() {
+    const comboOptions = [
+        { label: 'Opción 1', value: 'opcion1' },
+        { label: 'Opción 2', value: 'opcion2' },
+        { label: 'Opción 3', value: 'opcion3' }
+    ];
     return (
-        <div>
-            <h1 className="text-center mb-4 ">Capacitaciones</h1>
-            <div className="container text-center">
+        <div className="fgrid col ">
+            <h1 className="text-center  mb-auto">Capacitaciones</h1>
 
-                <div className="row row-cols-auto mb-4">
-
-                    <div className="col">
-                        <div className="form-group row">
-                            <label htmlFor="institucion" className="col-sm col-form-label">Institucion:</label>
-                            <div className="col-sm-auto">
-                                <select className="col-sm form-select" id="institucion" required>
-                                    <option selected disabled value="">Escoger Opcion</option>
-                                    <option>...</option>
-                                </select>
-                                <div className="invalid-feedback">
-                                    Please select a valid state.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="col">
-                        <div className="form-group row">
-                            <label htmlFor="tEvento" className="col-sm col-form-label">Tipo de Evento: </label>
-                            <div className="col-sm-auto">
-                                <select className="col-sm form-select" id="tEvento" required>
-                                    <option selected disabled value="">Escoger Opcion</option>
-                                    <option>...</option>
-                                </select>
-                                <div className="invalid-feedback">
-                                    Please select a valid state.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="col">
-                        <div className="form-group row">
-                            <label htmlFor="aEstudio" className="col-sm col-form-label">Area de Estudio: </label>
-                            <div className="col-sm-auto">
-                                <select className="col-sm form-select" id="aEstudio" required>
-                                    <option selected disabled value="">Escoger Opcion</option>
-                                    <option>...</option>
-                                </select>
-                                <div className="invalid-feedback">
-                                    Please select a valid state.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
+            <div className="formgroup-inline text-center">
+                <div className="field col-5 md:col-4">
+                    <label className="text-center" >Institucion: </label>
+                    <Dropdown options={comboOptions} placeholder="" id="institucion" className="border-round appearance-none outline-none"/>
+                </div>
+                <div className="field col-4 md:col-4">
+                    <label className="text-center">Tipo de evento:</label>
+                    <Dropdown options={comboOptions} placeholder="" />
+                </div>
+                <div className="field col-5 md:col-3">
+                    <label className="">Area de estudio:</label>
+                    <Dropdown options={comboOptions} placeholder="" />
                 </div>
 
-                <div className="row row-cols-auto mb-4">
+            </div>
 
-                    <div className="col">
-                        <div className="form-group row">
-                            <label htmlFor="fechaD" className="col-sm col-form-label">Desde: </label>
-                            <div className="col-sm-auto">
-                                <input type="date" className="form-control" id="fechaD"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col">
-                        <div className="form-group row">
-                            <label htmlFor="fechaH" className="col-sm col-form-label">Hasta: </label>
-                            <div className="col-sm-auto">
-                                <input type="date" className="form-control" id="fechaH"/>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col">
-                        <div className="form-group row">
-                            <label htmlFor="nDias" className="col-sm col-form-label">Numero de dias: </label>
-                            <div className="col-sm-auto">
-                                <input type="text" className="form-control" id="nDias"/>
-                            </div>
-                        </div>
-                    </div>
-
+            <div className="formgroup-inline text-center">
+                <div className="field col-5 md:col-4">
+                    <label>Desde:</label>
+                    <Calendar placeholder="" showIcon={true} />
                 </div>
-                <div className="row row-cols mb-4">
+                <div className="field col-5 md:col-4">
+                    <label>Hasta:</label>
+                    <Calendar placeholder="" showIcon={true} />
+                </div>
+                <div className="field col-5 md:col-3">
+                    <label>Numero de dias:</label>
+                    <InputText type="number" placeholder="" />
+                </div>
+            </div>
 
-                    <div className="col">
-                        <div className="form-group row">
-                            <label htmlFor="nEvento" className="col-sm-auto col-form-label">Nombre de evento:</label>
-                            <div className="col-sm-auto">
-                                <input type="text" className="form-control" id="nEvento"/>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="col">
-                        <div className="form-group row">
-                            <label htmlFor="tCertificado" className="col-sm-auto col-form-label">Tipo de certificado: </label>
-                            <div className="col-sm-auto">
-                                <select className="col-sm form-select" id="tCertificado" required>
-                                    <option selected disabled value="">Escoger Opcion</option>
-                                    <option>...</option>
-                                </select>
-                                <div className="invalid-feedback">
-                                    Please select a valid state.
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="col">
-                        <div className="form-group row">
-                            <label htmlFor="nHoras" className="col-sm-auto col-form-label">N° de Horas Totales: </label>
-                            <div className="col-sm-auto">
-                                <input type="text" className="form-control" id="nHoras"/>
-                            </div>
-                        </div>
-                    </div>
-
+            <div className="formgroup-inline text-center">
+                <div className="field col-5 md:col-3">
+                    <label>Nombre de evento:</label>
+                    <InputText type="text" placeholder="" />
                 </div>
 
-                <div className="row row-cols-auto">
-                    <div className="col">
-                        <div className="form-group row">
-                            <label htmlFor="archivo" className="col-sm-auto col-form-label">Subir PDF: </label>
-                            <div className="col-sm-auto">
-                                <input type="file" className="form-control" id="archivo"/>
-                            </div>
-                        </div>
-                    </div>
+                <div className="field col-5 md:col-4">
+                    <label>Tipo de certificado:</label>
+                    <Dropdown options={comboOptions} placeholder="" />
                 </div>
-                <div className="row">
-                    <div className="col">
-                        <button type="button" className="btn btn-primary m-5">Agregar</button>
-                        <button type="button" className="btn btn-danger">Cancelar</button>
-                    </div>
+                <div className="field col-5 md:col-4">
+                    <label>N° de horas totales: </label>
+                    <InputText type="number" placeholder="" />
+                </div>
+
+            </div>
+
+            <div className="formgroup-inline text-center">
+                <div className="field col-5 md:col-4">
+                    <label>Subir PDF:</label>
+                    <FileUpload name="pdf" chooseLabel="Seleccionar archivo" />
+                </div>
+            </div>
+
+            <div className="formgroup-inline center-table">
+                <div className="field ">
+                    <Button label="Agregar" />
+                </div>
+                <div className="field ">
+                    <Button label="Cancelar" />
+                </div>
+            </div>
+
+            <div className="formgroup-inline center-table">
+                <div className="card p-col-12">
+                    <DataTable  tableStyle={{ minWidth: '50rem' }}>
+                        <Column field="Capacitaciones" header="Capacitaciones"></Column>
+                        <Column field="PDF" header="PDF"></Column>
+                        <Column field="Acciones" header="Acciones"></Column>
+
+                    </DataTable>
                 </div>
             </div>
         </div>
