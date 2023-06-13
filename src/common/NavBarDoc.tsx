@@ -1,14 +1,10 @@
 import React from "react";
 import "../styles/NavbarHome.css";
 import { Link } from "react-router-dom";
-
-
-
 export const NavBarDoc: React.FC = () => {
   const eliminarUser = () => {
     sessionStorage.removeItem("user");
   };
-
   return (
     <>
     <div>
