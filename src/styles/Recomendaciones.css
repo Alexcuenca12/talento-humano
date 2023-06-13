@@ -1,0 +1,124 @@
+.title-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+  }
+  
+  .form-title {
+    margin: 0 16px;
+  }
+  
+  .title-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 100px;
+  }
+  
+  .title-line {
+    flex-grow: 1;
+    height: 10px;
+    background-color: #000;
+  }
+  
+  .page-title {
+    margin: 0 16px;
+  }
+  
+  .centered-form {
+    border: 2px solid #000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    padding: 40px;
+    margin-left: 50px;
+    margin-right: 50px;
+    border-radius: 15px;
+  }
+  
+  form {
+    width: 100%;
+    max-width: 900px;
+  }
+  label {
+    margin-bottom: 8px;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .small-input {
+    width: 100%;
+    border-radius: 20px;
+  }
+  
+  .form-row label {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+  }
+  
+  .form-row-buttons {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 50px;
+    margin-top: 50px;
+    justify-content: space-between;
+    margin-left: 90px;
+    margin-right: 90px;
+    
+  }
+  
+  .small-button {
+    width: calc(30% - 10px);
+    margin-right: 10px;
+    border-radius: 20px;
+  }
+  
+  .table-container {
+    margin-top: 50px;
+    width: 100%;
+    max-width: 800px; /* ajusta el valor según tu necesidad */
+    margin: 0 auto; /* para centrar horizontalmente */
+    
+    
+  }
+  
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+   
+    
+  }
+ 
+  
+  .data-table th {
+    background-color: #f0f0f0;
+    text-align: left;
+    padding: 8px;
+  }
+  
+  .data-table td {
+    padding: 8px;
+  }
+  
+  .data-table tr:nth-child(even) {
+    background-color: #ffffff;
+  }
+  
+  .additional-button-container {
+    position: relative;
+    margin-top: 50px;
+  }
+  
+  .additional-button {
+    position: absolute;
+    bottom: -100px;  
+    left: 350px;
+    width: calc(10% - -100px);
+    border-radius: 20px;
+  }
