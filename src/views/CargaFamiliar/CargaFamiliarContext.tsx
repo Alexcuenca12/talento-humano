@@ -6,6 +6,7 @@ import {Calendar} from "primereact/calendar";
 import {FileUpload} from "primereact/fileupload";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
+import '../../styles/CargaFamiliar.css'
 
 const Persona = () => {
   const [nombre, setNombre] = useState('');
@@ -59,16 +60,18 @@ const Persona = () => {
 
 
 
-        <div className="formgroup-inline text-center">
-          <div className="field col-5 md:col-4">
+        <div className="formgroup-inline center-table">
+          <div className="field">
             <Button label="Agregar" />
           </div>
-          <div className="field col-5 md:col-4">
+          <div className="field">
             <Button label="Cancelar" />
           </div>
         </div>
 
-        <div className="formgroup-inline p-grid p-justify-center">
+
+
+        <div className="formgroup-inline   center-table">
           <div className="card p-col-12">
             <DataTable  tableStyle={{ minWidth: '50rem' }}>
               <Column field="Carga Familiar" header="Carga Familiar"></Column>
@@ -78,7 +81,6 @@ const Persona = () => {
             </DataTable>
           </div>
         </div>
-
 
       </div>
   );

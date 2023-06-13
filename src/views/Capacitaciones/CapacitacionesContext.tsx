@@ -6,7 +6,7 @@ import { FileUpload } from 'primereact/fileupload';
 import { Button } from 'primereact/button';
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-
+import '../../styles/Capacitacitaciones.css'
 const Capacitaciones = () => {
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
@@ -85,16 +85,16 @@ const Capacitaciones = () => {
               </div>
           </div>
 
-          <div className="formgroup-inline grid">
-              <div className="field col-6 md:col-4">
+          <div className="formgroup-inline center-table">
+              <div className="field ">
                   <Button label="Agregar" />
               </div>
-              <div className="field col-6 md:col-4">
+              <div className="field ">
                   <Button label="Cancelar" />
               </div>
           </div>
 
-          <div className="formgroup-inline p-grid p-justify-center">
+          <div className="formgroup-inline center-table">
               <div className="card p-col-12">
                   <DataTable  tableStyle={{ minWidth: '50rem' }}>
                       <Column field="Capacitaciones" header="Capacitaciones"></Column>
