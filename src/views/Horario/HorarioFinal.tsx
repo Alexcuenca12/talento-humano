@@ -127,7 +127,7 @@ const HorarioForm = (props: any) => {
             <div className="div">
                 <div className="div2">
                     <div className="contenedor">
-                        <div className="bg-slate-300  rounded-e-md p-2 w-2/5 mx-9 mt-5 m-4 ">
+                        <div className="escrito">
                             <div className="input-container">
                                 <div className="p-inputgroup">
                                     <span className="p-float-label card flex justify-content-center">
@@ -187,7 +187,7 @@ const HorarioForm = (props: any) => {
                                     </span>
                                 </div>
                             </div>
-                            
+
                         </div>
 
 
@@ -222,23 +222,23 @@ const HorarioForm = (props: any) => {
                                 </Card>
                             </div>
                             <br />
-                            <Button
-                                className="boton"
-                                label="Guardar"
-                                icon="pi pi-check"
-                                onClick={saveHorario}
-                                autoFocus
-                                style={{
-                                    fontFamily:
-                                        "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif",
-                                    background: "black ",
-                                }}
-                            />
+
                         </div>
 
 
                     </div>
-
+                    <Button
+                        className="boton"
+                        label="Guardar"
+                        icon="pi pi-check"
+                        onClick={saveHorario}
+                        autoFocus
+                        style={{
+                            fontFamily:
+                                "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif",
+                            background: "black ",
+                        }}
+                    />
 
                 </div>
 

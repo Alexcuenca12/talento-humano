@@ -156,7 +156,7 @@ const ContratoForm = (props: any) => {
             </div >
             <div className="div">
                 <div className="divisor">
-                    <div className="bg-slate-300 max-w-2xl rounded-e-lg selection:p-1  mx-50 mt-10">
+                    <div className="datos">
                         <div className="input-container">
                             <div className="p-inputgroup">
                                 <span className="p-float-label card flex justify-content-center">

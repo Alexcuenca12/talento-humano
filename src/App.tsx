@@ -10,7 +10,7 @@ import HorarioFinal from './views/Horario/HorarioFinal';
 
 //import 'bootstrap/dist/css/bootstrap.css';
 //import "primereact/dist/css/primereact.css";
-import 'primeflex/primeflex.css';
+//import 'primeflex/primeflex.css';
 
 import { useReducer } from "react";
 import { AppRouter } from "./router/AppRouter";
