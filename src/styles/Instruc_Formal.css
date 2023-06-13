@@ -35,8 +35,8 @@
   align-items: center;
   height: 100vh;
   padding: 40px;
-  margin-left: 50px;
-  margin-right: 50px;
+  margin-left: 10px;
+  margin-right: 10px;
   border-radius: 15px;
 }
 
@@ -54,12 +54,13 @@ form {
 .small-input {
   width: 250px;
   border-radius: 20px;
+  
 }
 
 .form-row label {
   display: flex;
   align-items: center;
-  margin-right: 10px;
+  margin-right: 0px;
 }
 
 .form-row-buttons {
@@ -67,12 +68,16 @@ form {
   justify-content: center;
   margin-bottom: 50px;
   margin-top: 50px;
+  justify-content: space-between;
+  margin-left: 90px;
+  margin-right: 90px;
+  
 }
 
 .small-button {
-  width: calc(30% - 10px);
+  width: calc(40% - 10px);
   margin-right: 10px;
-  border-radius: 20px;
+  border-radius: 30px;
 }
 
 .table-container {
@@ -100,9 +105,8 @@ form {
 
 .additional-button {
   position: absolute;
-  bottom: -100px;
-  right: 50px;
-  width: calc(20% - 30px);
+  bottom: -100px;  
+  left: 390px;
+  width: calc(80% - 10px);
   border-radius: 20px;
 }
-
