@@ -2,7 +2,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 15px;
   
 }
 
@@ -23,7 +23,8 @@
 }
 
 .page-title {
-  margin: 0 16px;
+  margin-bottom: -25px;
+  margin-top: -5px;
 }
 
 .centered-form {
@@ -35,6 +36,7 @@
   padding: 40px;
   margin-left: 10px;
   margin-right: 10px;
+  margin-top: -100px;
   border-radius: 15px;
 }
 

@@ -48,24 +48,7 @@ export function AppRouter() {
            {/* Ruta para direccionarse al router de login */}
           <AuthRouter />
         </Route>
-        <Route path="/contrato">
-           {/* Ruta para direccionarse a la vista de contrato */}
-          <ContratoFinal/>
-        </Route>
 
-        <Route path="/instruccion">
-           {/* Ruta para direccionarse a la vista de contrato */}
-          <Inst/>
-        </Route>
-        
-        <Route path="/horario">
-           {/* Ruta para direccionarse a la vista de horasrio */}
-          <HorarioFinal/>
-        </Route>
-        <Route path="/habilidad">
-           {/* Ruta para direccionarse a la vista de horasrio */}
-          <Habilidades/>
-        </Route>
         {/* Acceso a las rutas privadas del sistema solamente cuando este logueado */}
         <PrivateRouter loggedIn={user?.loggedIn} component={DashboardRouter} />
         {/* Si no se encuentra logueado se direcciona al Inicio */}

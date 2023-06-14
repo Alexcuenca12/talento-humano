@@ -137,9 +137,6 @@ a{
   background-color: var(--dark-color);
 }
 
-/* letter spacing */
-.ls-1{letter-spacing: 1px;}
-.ls-2{letter-spacing: 2px;}
 
 .mx-auto{
   margin-right: auto;

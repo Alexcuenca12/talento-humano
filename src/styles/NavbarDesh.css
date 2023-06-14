@@ -104,8 +104,8 @@ nav:after {
 nav ul {
 	float: right;
 	padding: 0;
-	margin-bottom: -27px;
-	margin-top: -5px;
+	margin-bottom: -14px;
+	margin-top: -4px;
 	list-style: none;
 	position: relative;
 	overflow: hidden;
@@ -113,9 +113,9 @@ nav ul {
 
 nav a {
 	display: block;
-	padding: 18px 8px;
+	padding: 12px 4px;
 	color: white;
-	font-size: 17px;
+	font-size: 19px;
 	text-decoration: none;
 
 	
