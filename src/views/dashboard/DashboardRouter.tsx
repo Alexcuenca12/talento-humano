@@ -15,8 +15,6 @@ import CargaFamiliarContext from "../CargaFamiliar/CargaFamiliarContext";
 import ExperienciaContext from "../Experiencia/ExperienciaContext";
 import HabilidadesContext from "../Habilidades/HabilidadesContext";
 import Resumen from "../Resumen/Resumen";
-import {ListadoDocentes} from "../Resumen/ListadoDocentes";
-
 
 export const DashboardRouter = () => {
   //Datos del sessionStorage
@@ -217,8 +215,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <Resumen/>
-                    <ListadoDocentes/>
+                    <Resumen />
                   </>
                 ) : rol === 2 ? (
                   <>
