@@ -12,9 +12,9 @@ import Instrucc_FormalContext from "../Instruc_Formal/Instrucc_FormalContext";
 import HorarioContext from "../Horario/HorarioContext";
 import HorarioFinal from "../Horario/HorarioContext";
 import CapacitacionesContext from "../Capacitaciones/CapacitacionesContext";
-import Eva_DocenteContext from "../Eva_Docente/Eva_DocenteContext";
+import EvaDocente from "../Eva_Docente/EvaDocente";
 import CargaFamiliarContext from "../CargaFamiliar/CargaFamiliarContext";
-import ExperienciaContext from "../Experiencia/ExperienciaContext";
+import Experiencia from "../Experiencia/Experiencia";
 import HabilidadesContext from "../Habilidades/HabilidadesContext";
 import {ListadoDocentes} from "../Resumen/ListadoDocentes";
 
@@ -172,7 +172,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <ExperienciaContext />
+                    <Experiencia />
                   </>
                 ) : rol === 2 ? (
                   <>
@@ -186,7 +186,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <Eva_DocenteContext />
+                    <EvaDocente />
                   </>
                 ) : rol === 2 ? (
                   <>
