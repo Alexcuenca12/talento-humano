@@ -121,7 +121,7 @@ const HorarioForm = (props: any) => {
         <>
             {/* Dialogo para la creacion de una Horario*/}
             <div>
-                <h1 className="font-bold text-xl text-center" >Horario</h1>
+                <h1 className="font-bold text-xl text-center" style={{marginTop:"5px"}} >Horario</h1>
                 <Divider />
             </div >
             <div className="div">
