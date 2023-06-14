@@ -114,7 +114,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <Instrucc_FormalContext />
+                    <Instrucc_FormalContext/>
                   </>
                 ) : rol === 2 ? (
                   <>

@@ -1,13 +1,5 @@
-.input {
-    padding: 10px
-  }
-  
-  .card {
-    display: flex;
-    flex-direction: row;
-  }
-  
-  .input-container {
+
+  .input-container-horario {
     flex-basis: calc(100% / 3);
     /* Divide el ancho en 3 columnas iguales */
     display: flex;
@@ -15,37 +7,7 @@
     padding: 15px;
   }
   
-  .input-container2 {
-    flex-basis: calc(100% / 2);
-    /* Divide el ancho en 3 columnas iguales */
-    display: flex;
-    justify-content: end;
-    padding: 15px;
-  }
-  
-  .input-container3 {
-    flex-basis: calc(100% / 2);
-    /* Divide el ancho en 3 columnas iguales */
-    display: flex;
-    justify-content: center;
-    padding: 15px;
-  }
-  
-  .elementosDialog {
-    width: 100%;
-  }
-  
-  
-  .flexx {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 10px;
-  }
-  
-  .div {
-    background-color: rgb(255, 255, 255);
+  .div-contenedor-horario {
     padding: 20px;
     text-align: center;
     border-radius: 50px;
@@ -55,45 +17,123 @@
     margin-bottom: 20px;
     
   }
-
-  .div2 {
-    background-color: rgb(241, 230, 230);
-    border-radius: 50px;
-  }
-
-  .div3 {
-    background-color: rgb(148, 19, 19);
-  }
-
-  .contenedor{
+  .contenedor-horario{
     flex-basis: calc(100% / 2);
     height: 50%;
     display: flex;
     justify-content:center;
+    padding: 0%;
   
     
   }
 
-  .tabla{
-    height: 50%;
-    padding: 30px;
-    margin-left: 10px;
-    margin-right: 10px;
-    margin-bottom: 20px;
-    display: table-footer-group;
-    justify-content: space-between;
-    
-  }
 
-  .boton{
-    padding: 60px;
-    margin-bottom: 20px;
+.title-container-horario {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+  
+}
 
-  }
+.title-line-horario {
+  flex-grow: 1;
+  height: 10px;
+  background-color: #000;
+}
 
-.escrito{
-  padding: 20px;
-  margin-left: 5px;
-  margin-right: 10px;
+.page-title-horario {
+  margin: 0 16px;
+}
+
+
+.form-rows-horario {
+  display: flex;
+  justify-content: space-between;
   margin-bottom: 20px;
 }
+
+.small-input-horario {
+  width: 290px;
+  border-radius: 20px;
+  
+}
+.small-input-horas-horario {
+  width: 200px;
+  border-radius: 20px;
+  
+}
+
+.form-rows-horario label {
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+}
+
+.form-row-buttons-horario {
+  display: contents;
+  justify-content: flex-end;
+  margin-bottom: 50px;
+  margin-top: 50px;
+  justify-content: space-between;
+  margin-left: 90px;
+  margin-right: 90px;
+  
+}
+.div-general-horario{
+  background-color: rgb(219, 224, 234);
+}
+
+.button-horario{
+  
+  width: calc(20% - 18px);
+  margin-right: 20px;
+  border-radius: 30px;
+  align-items: end;
+  
+  
+  
+}
+
+.table-container-horario {
+  margin-top: 50px;
+}
+
+.data-table-horario {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table-horario th {
+  background-color: #f0f0f0;
+  text-align: left;
+  padding: 8px;
+}
+
+.data-table-horario td {
+  padding: 8px;
+}
+
+.data-table-horario tr:nth-child(even) {
+  background-color: #ffffff;
+}
+
+.div-button-horario{
+  position: relative;
+  bottom: 10px;  
+  left: 750px;
+  width: calc(80% - 10px);
+  border-radius: 20px;
+}
+
+.div-ingreso-horario{
+  position: relative;
+  left: -150px;
+
+}
+
+.div-tabla-horario{
+  position: relative;
+  left: 100px;
+}
+

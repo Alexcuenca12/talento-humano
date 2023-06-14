@@ -1,91 +1,111 @@
+import React from 'react';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
+import '../../styles/Horario.css';
 
-import React, { createContext, useEffect, useState } from "react";
-import { HorarioService } from "../../services/HorarioService";
-import { IHorario } from "../../interfaces/Primary/IHorario";
-import '../../styles/Horario.css'
-//Exportaciones
-interface IHorarioContext {
-  hor: IHorario[];
-  editHorario: IHorario | null;
-  createHorario: (horario: IHorario) => void;
-  deleteHorario: (horario: IHorario) => void;
-  findHorario: (id: number) => void;
-  updateHorario: (horario: IHorario) => void;
-  setEditHorario: React.Dispatch<React.SetStateAction<IHorario | null>>;
+
+class HorarioCont extends React.Component {
+    constructor(props: {} | Readonly<{}>) {
+        super(props);
+        this.state = {
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: ''
+        };
+    }
+
+    handleChange = (event: { target: { name: any; value: any; }; }) => {
+        const { name, value } = event.target;
+        this.setState({ [name]: value });
+    }
+
+    handleSubmit = (event: { preventDefault: () => void; }) => {
+        event.preventDefault();
+        // Aquí puedes agregar la lógica para enviar los datos del formulario
+    }
+
+    render() {
+        return (
+            <div>
+                <div className='div-contenedor-horario div-general-horario'>
+                    <div className="title-container-horario ">
+                        <div className="title-line-horario"></div>
+                        <h1 className="page-title-horario">HORARIO</h1>
+                        <div className="title-line-horario"></div>
+                    </div>
+                    <div className='contenedor-horario'>
+                        <div className='div-ingreso-horario'>
+                            <form onSubmit={this.handleSubmit}>
+                                <div className="form-rows-horario">
+
+                                </div>
+                                <div className="input-container-horario">
+                                    <label htmlFor="materia">Materia:</label>
+                                    <InputText className="small-input-horario" id="materia" name="materia" onChange={this.handleChange} />
+                                </div>
+                                <div className="input-container-horario">
+                                    <label htmlFor="horas">Horas Semanales:</label>
+                                    <InputText className="small-input-horas-horario" id="horas" name="horas" onChange={this.handleChange} />
+                                </div>
+                                <div className="input-container-horario">
+                                    <label htmlFor="ciclo">Ciclo:</label>
+                                    <InputText className="small-input-horario" id="ciclo" name="ciclo" onChange={this.handleChange} />
+                                </div>
+                                <div className="input-container-horario">
+                                    <label htmlFor="curso">Curso:</label>
+                                    <InputText className="small-input-horario" id="curso" name="curso" onChange={this.handleChange} />
+                                </div>
+                                <div className="input-container-horario">
+                                    <label htmlFor="carrera">Carrera:</label>
+                                    <InputText className="small-input-horario" id="carrera" name="carrera" onChange={this.handleChange} />
+                                </div>
+
+                            </form>
+                        </div>
+                        <div className='div-tabla-horario'>
+                            <div className="table-container-horario">
+                                <table className="data-table-horario">
+                                    <thead>
+                                        <tr>
+                                            <th>Materia</th>
+                                            <th>Nombre</th>
+                                            <th>Horas Semanales</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>mate</td>
+                                            <td>Maria</td>
+                                            <td>80 horas</td>
+                                        </tr>
+                                        <tr>
+                                            <td>lengua</td>
+                                            <td>Pepe</td>
+                                            <td>80 horas</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br/>
+                            <div className="form-row-buttons-horario">
+                                <Button type="submit" label="AGREGAR" style={{ background: 'black' }} />
+                            </div>
+                        </div>
+
+                    </div>
+                    <br/>
+                    <div className='div-button-horario'>
+                        <Button type="button" label="GUARDAR ➠"className='button-horario' style={{ background: 'black' }} />
+                    </div>
+                    <div>
+                    </div>
+
+                </div>
+            </div>
+        );
+    }
 }
-//Contexto exportable con las operaciones vacias
-export const HorarioContext = createContext<IHorarioContext>({
-  hor: [],
-  editHorario: null,
-  createHorario: (horario: IHorario) => { },
-  deleteHorario: (horario: IHorario) => { },
-  findHorario: (id: number) => { },
-  updateHorario: (horario: IHorario) => { },
-  setEditHorario: () => { },
-});
 
-const HorarioContextProvider = (props: any) => {
-  //Objeto para usar los servicios
-  const horarioService = new HorarioService();
-  //Lista para almacenar los horarios
-  const [hor, setHorario] = useState<IHorario[]>([]);
-  //Variable para almacenar un Horario transitorio
-  const [editHorario, setEditHorario] = useState<IHorario | null>(null);
-  //LLena el array de Horarios cada que se refresca la pagina
-  useEffect(() => {
-    horarioService.getAll().then((data) => {
-      setHorario(data);
-    });
-  }, []);
-
-  //Operacion de creacion
-  const createHorario = (horario: any) => {
-    horarioService.save(horario).then((data) => {
-      setHorario([...hor, data]);
-    });
-  };
-  //Operacion de eliminacion
-  const deleteHorario = (id: any) => {
-    horarioService
-      .delete(id)
-      .then(() => setHorario(hor.filter((p) => p.id_horario !== id)));
-    setEditHorario(null);
-  };
-  //Operacion de busqueda
-  const findHorario = (id: number) => {
-    const horario = hor.find((p) => p.id_horario === id);
-    setEditHorario(horario || null);
-  };
-  //Operacion de actualizacion
-  const updateHorario = (horario: any) => {
-    horarioService
-      .update(horario)
-      .then((data) =>
-        setHorario(
-          hor.map((e) => (e.id_horario === horario.id_horario ? data : e))
-        )
-      );
-
-    setEditHorario(null);
-  };
-  //Se envia los metodos dentro de la etiqueta de contexto
-  return (
-    <HorarioContext.Provider
-      value={{
-        createHorario,
-        deleteHorario,
-        findHorario,
-        updateHorario,
-        editHorario,
-        hor,
-        setEditHorario,
-      }}
-    >
-      {props.children}
-    </HorarioContext.Provider>
-  );
-  
-  
-};
-export default HorarioContextProvider;
-
+export default HorarioCont;

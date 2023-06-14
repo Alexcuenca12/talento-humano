@@ -3,9 +3,7 @@ import React from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Login from './views/Login/LoginContext';
-import ContratoContextProvider from './views/Contrato/ContratoContext';
-import ContratoFinal from './views/Contrato/ContratoFinal';
-import HorarioFinal from './views/Horario/HorarioFinal';
+
 
 
 //import 'bootstrap/dist/css/bootstrap.css';
