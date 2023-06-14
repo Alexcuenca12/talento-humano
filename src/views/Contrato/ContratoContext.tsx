@@ -29,7 +29,7 @@ class ContratoCont extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className='div-page-contrato'>
                 <div className='div-contenedor-contrato div-general-contrato'>
                     <div className="title-container-contrato">
                         <div className="title-line-contrato"></div>

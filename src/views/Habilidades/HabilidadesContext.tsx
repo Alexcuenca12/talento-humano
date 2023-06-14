@@ -27,7 +27,7 @@ class HabilidadesContext extends React.Component {
 
   render() {
     return (
-      <div>
+      <div className='div-page-habilidad'>
         <div className='div-contenedor-habilidad div-general-habilidad'>
           <div className="title-container-habilidad">
             <div className="title-line-habilidad"></div>

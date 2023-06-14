@@ -27,7 +27,7 @@ class HorarioCont extends React.Component {
 
     render() {
         return (
-            <div>
+            <div className='div-page-horario'>
                 <div className='div-contenedor-horario div-general-horario'>
                     <div className="title-container-horario ">
                         <div className="title-line-horario"></div>

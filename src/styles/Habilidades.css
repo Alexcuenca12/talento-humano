@@ -4,7 +4,9 @@
     left: 6cm;
     
   }
-
+.div-page-habilidad{
+  padding: 2%;
+}
 .title-container-habilidad{
     display: flex;
     align-items: center;
@@ -81,7 +83,7 @@
 .div-button-habilidad{
   position: relative;
   bottom: 10px;  
-  left: 750px;
+  left: 720px;
   width: calc(80% - 10px);
   border-radius: 20px;
 }

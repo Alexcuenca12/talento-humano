@@ -6,7 +6,9 @@
     justify-content: center;
     padding: 15px;
   }
-  
+  .div-page-horario{
+    padding: 2%;
+  }
   .div-contenedor-horario {
     padding: 20px;
     text-align: center;
@@ -122,7 +124,7 @@
 .div-button-horario{
   position: relative;
   bottom: 10px;  
-  left: 750px;
+  left: 720px;
   width: calc(80% - 10px);
   border-radius: 20px;
 }

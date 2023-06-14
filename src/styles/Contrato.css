@@ -5,10 +5,12 @@
   padding: 20px;
 
 }
+.div-page-contrato{
+  padding: 1%;
+}
 .div-contenedor-contrato {
   background-color: rgb(244, 236, 236);
-  padding: 10px;
-
+  padding: 5%;
   text-align: center;
   border-radius: 50px;
   border: 2px solid black;
@@ -16,6 +18,7 @@
   margin-right: 10px;
   margin-bottom: 20px;
   margin-top: -5px;
+  
 }
 .div-general-contrato{
   background-color: rgb(219, 224, 234);
