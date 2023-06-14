@@ -75,13 +75,6 @@ export const DashboardRouter = () => {
                   <NavBarUserDisabled />
                 )}
               </Route>
-              {/* Aquí se define una ruta /category utilizando Route y se renderiza 
-              un conjunto de componentes diferentes en función de las variables rol y enabled. 
-              Se utiliza CategoryContextProvider para proporcionar un contexto compartido entre 
-              los componentes NavBarDoc o NavBar y CategoryList.
-              En caso de que  enabled es falso o rol no es igual a 1 o 2, se renderiza NavBarUserDisabled, 
-              que es un componente que muestra un mensaje de usuario deshabilitado. Y asi sucesivamente para
-              el resto de componentes*/}
               <Route path="/ficha">
                 {rol === 1 ? (
                   <>
@@ -99,7 +92,7 @@ export const DashboardRouter = () => {
               <Route path="/contrato">
                 {rol === 1 ? (
                   <>
-                    <NavBarDoc />
+                    <NavBar />
                     <ContratoContext />
                   </>
                 ) : rol === 2 ? (
@@ -217,7 +210,6 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <Resumen/>
                     <ListadoDocentes/>
                   </>
                 ) : rol === 2 ? (
