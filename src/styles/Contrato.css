@@ -46,14 +46,14 @@
 
 .div {
   background-color: rgb(255, 255, 255);
-  padding: 10px;
+  padding: 15px;
   text-align: center;
   border-radius: 50px;
   border: 2px solid black;
   margin-left: 5px;
   margin-right: 10px;
   margin-bottom: 20px;
-  
+  margin-top: -5px;
 }
 
 .divisor{

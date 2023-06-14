@@ -7,14 +7,17 @@ import { NavBarUserDisabled } from "../../common/NavBarUserDisabled";
 import { NavBar } from "../../common/NavBar";
 import PersonaContext from "../Persona/PersonaContext";
 import ContratoContext from "../Contrato/ContratoContext";
+import ContratoFinal from "../Contrato/ContratoFinal";
 import Instrucc_FormalContext from "../Instruc_Formal/Instrucc_FormalContext";
 import HorarioContext from "../Horario/HorarioContext";
+import HorarioFinal from "../Horario/HorarioFinal";
 import CapacitacionesContext from "../Capacitaciones/CapacitacionesContext";
 import Eva_DocenteContext from "../Eva_Docente/Eva_DocenteContext";
 import CargaFamiliarContext from "../CargaFamiliar/CargaFamiliarContext";
 import ExperienciaContext from "../Experiencia/ExperienciaContext";
 import HabilidadesContext from "../Habilidades/HabilidadesContext";
-import Resumen from "../Resumen/Resumen";
+import {ListadoDocentes} from "../Resumen/ListadoDocentes";
+
 
 export const DashboardRouter = () => {
   //Datos del sessionStorage
@@ -73,13 +76,6 @@ export const DashboardRouter = () => {
                   <NavBarUserDisabled />
                 )}
               </Route>
-              {/* Aquí se define una ruta /category utilizando Route y se renderiza 
-              un conjunto de componentes diferentes en función de las variables rol y enabled. 
-              Se utiliza CategoryContextProvider para proporcionar un contexto compartido entre 
-              los componentes NavBarDoc o NavBar y CategoryList.
-              En caso de que  enabled es falso o rol no es igual a 1 o 2, se renderiza NavBarUserDisabled, 
-              que es un componente que muestra un mensaje de usuario deshabilitado. Y asi sucesivamente para
-              el resto de componentes*/}
               <Route path="/ficha">
                 {rol === 1 ? (
                   <>
@@ -97,8 +93,10 @@ export const DashboardRouter = () => {
               <Route path="/contrato">
                 {rol === 1 ? (
                   <>
-                    <NavBarDoc />
-                    <ContratoContext />
+                    <NavBar />
+                    <ContratoContext>
+                    <ContratoFinal/>
+                    </ContratoContext>
                   </>
                 ) : rol === 2 ? (
                   <>
@@ -129,7 +127,8 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <HorarioContext />
+                      <HorarioFinal/>
+
                   </>
                 ) : rol === 2 ? (
                   <>
@@ -215,7 +214,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <Resumen />
+                    <ListadoDocentes/>
                   </>
                 ) : rol === 2 ? (
                   <>

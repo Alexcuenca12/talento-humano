@@ -151,7 +151,7 @@ const ContratoForm = (props: any) => {
         <>
             {/* Dialogo para la creacion de una contrato*/}
             <div>
-                <h1 className="font-bold text-xl text-center" >CONTRATO</h1>
+                <h1 className="font-bold text-xl text-center"  style={{marginTop:"5px"}}>CONTRATO</h1>
                 <Divider />
             </div >
             <div className="div">
@@ -195,7 +195,7 @@ const ContratoForm = (props: any) => {
                                         value={contratoData.anio_duracion}
                                         onChange={(e) => onInputChange(e.target.value, "anio_duracion")}
                                     />
-                                    <label htmlFor="anio_duracion">AÑOS DE DURACION</label>
+                                    <label htmlFor="anio_duracion">AÑOS</label>
                                 </span>
                             </div>
                         </div>
