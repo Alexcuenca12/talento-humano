@@ -7,6 +7,7 @@ import {FileUpload} from "primereact/fileupload";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import '../../styles/CargaFamiliar.css'
+import {Panel} from "primereact/panel";
 
 const Persona = () => {
   const [nombre, setNombre] = useState('');
@@ -27,60 +28,78 @@ const Persona = () => {
   ];
 
   return (
-      <div className="fgrid col-fixed ">
-        <h1 className="text-center  mb-auto">Carga Familiar</h1>
+      <div className="fgrid col-fixed  ">
+        <Panel>
+          <h4 className="text-center  mb-auto">Carga Familiar</h4>
 
-        <div className="formgroup-inline text-center">
-          <div className="field col-5 md:col-4">
-            <label className="text-center" >Cedula: </label>
-            <InputText type="number" placeholder="" />
+          <div className="formgroup-inline center-table ">
+            <div className="center-table">
+              <div className="field col md:col-4">
+                <label className="">Cedula: </label>
+                <InputText type="number" placeholder="Ingrese su cedula" />
+              </div>
+            </div>
+            <div className="center-table">
+              <div className="field col md:col-4">
+                <label className="">Nombres:</label>
+                <InputText type="text" placeholder="Ingrese sus nombres" />
+              </div>
+            </div>
+            <div className="center-table">
+              <div className="field col md:col-3">
+                <label className="">Apellidos:</label>
+                <InputText type="text" placeholder="Ingrese sus apellidos" />
+              </div>
+            </div>
+
+
           </div>
-          <div className="field col-4 md:col-4">
-            <label className="">Nombres:</label>
-            <InputText type="text" placeholder="" />
+
+          <div className="formgroup-inline center-table">
+            <div className="center-table">
+              <div className="field col-5 md:col-4">
+                <label>Fecha de nacimiento:</label>
+                <Calendar placeholder="Ingrese su Fecha de Nacimiento" showIcon={true}  className="color-calendario" />
+              </div>
+            </div>
+
+
+            <div className="field col-5 md:col-4">
+              <label>Subir PDF:</label>
+              <FileUpload name="pdf"
+                          chooseLabel="Escoger"
+                          uploadLabel="Cargar"
+                          cancelLabel="Cancelar"
+                          emptyTemplate={<p className="m-0">Arrastre y suelte los archivos aquí para cargarlos.</p>} />
+
+            </div>
           </div>
-          <div className="field col-5 md:col-3">
-            <label className="">Apellidos:</label>
-            <InputText type="text" placeholder="" />
+
+
+
+          <div className="formgroup-inline center-table">
+            <div className="field">
+              <Button label="Agregar" />
+            </div>
+            <div className="field">
+              <Button label="Cancelar" />
+            </div>
           </div>
 
-        </div>
 
-        <div className="formgroup-inline text-center">
-          <div className="field col-5 md:col-4">
-            <label>Fecha de nacimiento:</label>
-            <Calendar placeholder="" showIcon={true} />
+
+          <div className="formgroup-inline   center-table">
+            <div className="card p-col-12">
+              <DataTable  tableStyle={{ minWidth: '50rem' }}>
+                <Column field="Carga Familiar" header="Carga Familiar"></Column>
+                <Column field="PDF" header="PDF"></Column>
+                <Column field="Acciones" header="Acciones"></Column>
+
+              </DataTable>
+            </div>
           </div>
+        </Panel>
 
-          <div className="field col-5 md:col-4">
-            <label>Subir PDF:</label>
-            <FileUpload name="pdf" chooseLabel="Seleccionar archivo" />
-          </div>
-        </div>
-
-
-
-        <div className="formgroup-inline center-table">
-          <div className="field">
-            <Button label="Agregar" />
-          </div>
-          <div className="field">
-            <Button label="Cancelar" />
-          </div>
-        </div>
-
-
-
-        <div className="formgroup-inline   center-table">
-          <div className="card p-col-12">
-            <DataTable  tableStyle={{ minWidth: '50rem' }}>
-              <Column field="Carga Familiar" header="Carga Familiar"></Column>
-              <Column field="PDF" header="PDF"></Column>
-              <Column field="Acciones" header="Acciones"></Column>
-
-            </DataTable>
-          </div>
-        </div>
 
       </div>
   );
