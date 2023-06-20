@@ -3,7 +3,6 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import '../../styles/Habilidades.css';
 
-
 class HabilidadesContext extends React.Component {
   constructor(props: {} | Readonly<{}>) {
     super(props);
@@ -38,7 +37,7 @@ class HabilidadesContext extends React.Component {
             <form onSubmit={this.handleSubmit}>
               <div className="div-ingreso-habilidad">
                 <label htmlFor="descripcion">Descripcion de Habilidad:</label>
-                <InputText className="small-input-habilidad" id="descripcion" name="descripcion" onChange={this.handleChange} />
+                <InputText className="small-input-habilidad" id="descripcion" placeholder='Ingrese una descripción' name="descripcion" onChange={this.handleChange} />
               </div>
               <br />
               <div className='div-botons-habilidad'>

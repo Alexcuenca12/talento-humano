@@ -17,6 +17,7 @@ import { PrivateRouter } from "../router/PrivateRouter";
 import { AuthContext } from "../reducers/AuthContext";
 import { DashboardRouter } from "../views/dashboard/DashboardRouter";
 import Bienvenida from "../views/VentanaInicial/Bienvenida";
+import HabilidadesContext from "../views/Habilidades/HabilidadesContext";
 
 interface Context {
   dispatchUser?: any;
@@ -48,7 +49,22 @@ export function AppRouter() {
            {/* Ruta para direccionarse al router de login */}
           <AuthRouter />
         </Route>
-
+        <Route path="/contrato">
+           {/* Ruta para direccionarse al router de login */}
+          <ContratoFinal/>
+        </Route>
+        <Route path="/horario">
+           {/* Ruta para direccionarse al router de login */}
+          <HorarioFinal />
+        </Route>
+        <Route path="/habilidad">
+           {/* Ruta para direccionarse al router de login */}
+          <HabilidadesContext/>
+        </Route>
+        <Route path="/instruccion">
+           {/* Ruta para direccionarse al router de login */}
+          <Inst/>
+        </Route>
         {/* Acceso a las rutas privadas del sistema solamente cuando este logueado */}
         <PrivateRouter loggedIn={user?.loggedIn} component={DashboardRouter} />
         {/* Si no se encuentra logueado se direcciona al Inicio */}

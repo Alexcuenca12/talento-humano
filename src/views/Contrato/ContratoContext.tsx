@@ -31,80 +31,179 @@ class ContratoCont extends React.Component {
         return (
             <div className='div-page-contrato'>
                 <div className='div-contenedor-contrato div-general-contrato'>
+                    <div>
+                        <h1 className="page-title-contrato">INSTITULO SUPERIOR TECNOLOGICO DEL AZUAY</h1>
+
+                    </div>
                     <div className="title-container-contrato">
+
+                        <br />
                         <div className="title-line-contrato"></div>
+                        <br />
                         <h1 className="page-title-contrato">CONTRATO</h1>
                         <div className="title-line-contrato"></div>
                     </div>
-                    <div className='divisor-contrato'>
-                        <div className='div-ingreso-contrato'>
 
-                            <form onSubmit={this.handleSubmit}>
-                                <div className="form-rows-contrato">
+                    <div className='divisor-contrato  '>
 
+
+                        <form onSubmit={this.handleSubmit}>
+                            <div className="form-rows-contrato">
+                                <div className="input-container-contrato">
+                                    <div className="p-inputgroup">
+                                        <span className="p-float-label card flex justify-content-center">
+                                            <Calendar
+                                                id="inicio"
+                                                name="inicio"
+
+                                            />
+                                            <label htmlFor="inicio">Fecha Inicio</label>
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <div className="input-container-contrato">
+                                    <div className="p-inputgroup">
+                                        <span className="p-float-label card flex justify-content-center">
+                                            <Calendar
+                                                id="fin"
+                                                name="fin"
+                                            />
+                                            <label htmlFor="fin">Fecha Fin</label>
+                                        </span>
+                                    </div>
+                                </div>
 
-                                    <label htmlFor="inicio">Fecha Inicio:</label>
-                                    <Calendar
-                                        className="small-input-contrato"
-                                        id="inicio"
-                                        name="inicio"
-                                        required
-                                        dateFormat="dd/mm/yy"
-                                        showIcon
-                                        onChange={this.handleChange}
-                                    />
+                                <div className="input-container-contrato">
+                                    <div className="p-inputgroup">
+                                        <span className="p-float-label card flex justify-content-center">
+                                            <InputText
+                                                id="anios"
+                                                name="anios"
+                                            />
+                                            <label htmlFor="anios">Años de Duracion</label>
+                                        </span>
+                                    </div>
                                 </div>
                                 <div className="input-container-contrato">
+                                    <div className="p-inputgroup">
+                                        <span className="p-float-label card flex justify-content-center">
+                                            <InputText
+                                                id="hora"
+                                                name="hora"
+                                            />
+                                            <label htmlFor="hora">Horas</label>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className="input-container-contrato">
+                                    <div className="p-inputgroup">
+                                        <span className="p-float-label card flex justify-content-center">
+                                            <InputText
+                                                id="cargo"
+                                                name="cargo"
+                                            />
+                                            <label htmlFor="cargo">Cargo</label>
+                                        </span>
+                                    </div>
+                                </div>
 
-                                    <label htmlFor="fin">Fecha Fin:</label>
-                                    <Calendar
-                                        className="small-input-contrato"
-                                        id="fin"
-                                        name="fin"
-                                        required
-                                        dateFormat="dd/mm/yy"
-                                        showIcon
-                                        onChange={this.handleChange}
-                                    />
-                                </div>
                                 <div className="input-container-contrato">
-                                    <label htmlFor="anios">Años de duracion:</label>
-                                    <InputText className="anios-contrato" id="anios" required name="anios" onChange={this.handleChange} />
+                                    <div className="p-inputgroup">
+                                        <span className="p-float-label card flex justify-content-center">
+                                            <InputText
+                                                id="salario"
+                                                name="salario"
+                                            />
+                                            <label htmlFor="salario">Salario</label>
+                                        </span>
+                                    </div>
+                                </div>
 
-                                </div>
                                 <div className="input-container-contrato">
-                                    <label htmlFor="horas">Horas:</label>
-                                    <InputText className="small-input-contrato" id="horas" name="horas" onChange={this.handleChange} />
+                                    <div className="p-inputgroup">
+                                        <span className="p-float-label card flex justify-content-center">
+                                            <p>
+                                                SUBIR PDF:
+                                                <br />
+                                                <input type="file" name="evidencia" accept="pdf"
+                                                    required />
+                                            </p>
+                                        </span>
+                                    </div>
                                 </div>
-                                <div className="input-container-contrato">
-                                    <label htmlFor="cargo">Cargo:</label>
-                                    <InputText className="small-input-contrato" id="cargo" name="cargo" onChange={this.handleChange} />
+                                <div className="">
+                                    <Button type="button" className='button-contrato' label="GUARDAR" style={{
+                                        background: '#ff9800',
+                                        borderRadius: '10%',
+                                        fontSize:'10px',
+                                        justifyContent:'center'
+                                    }} />
                                 </div>
-                                <div className="input-container-contrato">
-                                    <label htmlFor="salario">Salario:</label>
-                                    <InputText className="small-input-contrato" id="salario" name="salario" onChange={this.handleChange} />
-                                </div>
-                            </form>
-                        </div>
-                        <div className='div-pdf-contrato'>
-                            <div className="input-containerinput-container-contrato">
-                                <p>
-                                    SUBIR PDF:
-                                    <br />
-                                    <input type="file" name="evidencia" accept="pdf"
-                                        required />
-
-                                </p>
                             </div>
-                        </div>
+
+                            <div className=''>
+                                <div className="table-container-contrato">
+                                    <table className="data-table-contrato">
+                                        <thead>
+                                            <tr>
+                                                <th>Fecha Inicio</th>
+                                                <th>Fecha Fin </th>
+                                                <th>Años de Duración</th>
+                                                <th>Horas</th>
+                                                <th>Cargo</th>
+                                                <th>Salario</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>06/09/2023</td>
+                                                <td>06/10/2023</td>
+                                                <td>3 Años</td>
+                                                <td>805 horas</td>
+                                                <td>Ninguno</td>
+                                                <td>900</td>
+
+
+                                            </tr>
+                                            <tr>
+                                                <td>18/02/2023</td>
+                                                <td>26/05/2024</td>
+                                                <td>8 Años</td>
+                                                <td>2305 horas</td>
+                                                <td>Ninguno</td>
+                                                <td>990</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <br />
+                                <div className='dividir-botons-final-contrato'>
+                                    <div className="">
+                                        <Button className='button-circular-contrato' label="AGREGAR" style={{
+                                            background: '#ff9800',
+                                            borderRadius: '10%',
+                                            fontSize:'10px',
+                                            justifyContent:'center'
+                                        }} />
+                                    </div>
+                                    <br />
+                                    <div className="">
+                                        <Button className='button-circular-contrato' label="GUARDAR" style={{
+                                            background: '#ff9800',
+                                            borderRadius: '10%',
+                                            fontSize:'10px',
+                                            justifyContent:'center'
+                                        }} />
+                                    </div>
+                                </div>
+
+                            </div>
+                        </form>
 
                     </div>
-                    <div className="div-button-contrato">
-                        <Button type="button" className='button-contrato' label="CONTINUAR ➠" style={{ background: 'black' }} />
-                    </div>
+
                 </div>
 
 

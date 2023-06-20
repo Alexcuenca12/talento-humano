@@ -1,33 +1,40 @@
 
   .input-container-horario {
-    flex-basis: calc(100% / 3);
-    /* Divide el ancho en 3 columnas iguales */
+    flex-basis: calc(100% / 2);
     display: flex;
-    justify-content: center;
+    justify-content: baseline;
     padding: 15px;
+
+    
   }
   .div-page-horario{
-    padding: 2%;
+    margin: 100px 50px 50px 350px;
   }
   .div-contenedor-horario {
-    padding: 20px;
+    background-color: rgb(249, 248, 248);
+    padding: 5%;
     text-align: center;
-    border-radius: 50px;
-    border: 2px solid black;
-    margin-left: 10px;
+    border-radius: 10px;
+    border: 2px solid #0C3255;
+  border-left: 5px solid #0C3255;
+  border-right: 5px solid #0C3255;
+    margin-left: 5px;
     margin-right: 10px;
     margin-bottom: 20px;
     margin-top: -5px;
     
   }
+
   .contenedor-horario{
-    flex-basis: calc(100% / 2);
-    height: 50%;
-    display: flex;
-    justify-content:center;
-    padding: 0%;
+ 
+  flex-basis: calc(100% / 2);
+  display: flex;
+  justify-content:center;
+  padding: 20px;
+  margin-left: 20px;
+  margin-right: 50px;
+  margin-bottom: 50px;
   
-    
   }
 
 
@@ -35,14 +42,14 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 16px;
+  margin-bottom: 15px;
   
 }
 
 .title-line-horario {
   flex-grow: 1;
-  height: 10px;
-  background-color: #000;
+  height: 4px;
+  background-color: #0C3255;
 }
 
 .page-title-horario {
@@ -51,14 +58,15 @@
 
 
 .form-rows-horario {
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 20px;
+  
+  column-count: 3;
+  column-gap: 20px;
 }
 
 .small-input-horario {
   width: 290px;
   border-radius: 20px;
+  
   
 }
 .small-input-horas-horario {
@@ -84,59 +92,78 @@
   
 }
 .div-general-horario{
-  background-color: rgb(219, 224, 234);
+  background-color: rgb(226, 233, 241);
 }
 
 .button-horario{
-  
-  width: calc(20% - 18px);
-  margin-right: 20px;
-  border-radius: 30px;
-  align-items: end;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background-color: #e0e0e0;
+  font-size: 24px;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   
   
   
 }
 
 .table-container-horario {
-  margin-top: 50px;
+  margin-top: 40px;
 }
 
 .data-table-horario {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
 }
 
 .data-table-horario th {
-  background-color: #f0f0f0;
+  background-color: #0C3255;
+  color:aliceblue;
   text-align: left;
   padding: 8px;
 }
 
 .data-table-horario td {
+  color: #0C3255;
   padding: 8px;
 }
 
-.data-table-horario tr:nth-child(even) {
-  background-color: #ffffff;
+.data-table-horario tr  {
+  background-color: #c1cff7;
 }
 
 .div-button-horario{
-  position: relative;
-  bottom: 10px;  
-  left: 720px;
-  width: calc(80% - 10px);
-  border-radius: 20px;
+  display: flex;
 }
 
 .div-ingreso-horario{
   position: relative;
-  left: -150px;
+  left: -140px;
 
 }
 
 .div-tabla-horario{
-  position: relative;
+  position: absolute;
   left: 100px;
+}
+.button-circular-horario{
+  width: 70px;
+  height: 40px;
+  border-radius: 90%; 
+  color: #ff9800;
+  ;
+  
+
+}
+.dividir-botons-final-horario{
+  column-count: 2;
+  column-gap: 10px;
+  position: relative;
+  
 }
 
