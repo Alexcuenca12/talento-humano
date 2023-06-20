@@ -28,11 +28,13 @@ class PrimeReactForm extends React.Component {
 
   render() {
     return (
-      <div>
-        <div style={{ marginBottom: '120px' }}></div>
-  
+      <div >
+        <div  className='totalcontainer'></div>
+        
         <div className="centered-form">
+        <div className="icono_insti"></div>
           <div className="title-container">
+          
             <div className="title-line"></div>
             <h1 className="page-title">INSTRUCCION FORMAL</h1>
             <div className="title-line"></div>
@@ -51,8 +53,8 @@ class PrimeReactForm extends React.Component {
               <InputText className="small-input" id="phone" name="phone" onChange={this.handleChange} />
             </div>
             <div className="form-row-buttons">
-              <Button type="submit" label="Submit" className="small-button p-button-success" style={{ background: 'black' }} />
-              <Button type="button" label="Cancel" className="small-button p-button-secondary" style={{ background: 'black' }} />
+              <Button type="submit" label="Submit" className="small-button p-button-success" style={{ background: '#0C3255' }} />
+              <Button type="button" label="Cancel" className="small-button p-button-secondary" style={{ background: '#FF9800' }} />
             </div>
           </form>
           <div className="table-container">
@@ -92,7 +94,7 @@ class PrimeReactForm extends React.Component {
             </table>
           </div>
           <div className="additional-button-container">
-          <Button type="button" label="Additional Button" className="small-button p-button-secondary additional-button" style={{ background: 'black' }} />
+          <Button type="button" label="Additional Button" className="small-button p-button-secondary additional-button" style={{ background: '#0C3255' }} />
 </div>
         </div>
       </div>

@@ -38,34 +38,35 @@ class Recomendaciones extends React.Component {
       <div style={{ marginBottom: '120px' }}></div>
 
       <div className="centered-form">
+      <div className="icono_insti"></div>
         <div className="title-container">
           <div className="title-line"></div>
           <h1 className="page-title">RECOMENDACIONES PERSONALES</h1>
           <div className="title-line"></div>
         </div>
-        <form onSubmit={this.handleSubmit}>
+        <form className='formulario' onSubmit={this.handleSubmit}>
           <div className="form-row">
             <div className="input-container">
-              <label htmlFor="level">Nombres:</label>
+              <label className="etiqueta"htmlFor="level">Nombres:</label>
               <InputText className="small-input" id="level" name="level" onChange={this.handleChange} />
             </div>
             <div className="input-container">
-              <label htmlFor="title">Apellidos:</label>
+              <label className="etiqueta" htmlFor="title">Apellidos:</label>
               <InputText className="small-input" id="title" name="title" onChange={this.handleChange} />
             </div>
             <div className="input-container">
-  <label htmlFor="institution">Email:</label>
+  <label className="etiqueta" htmlFor="institution">Email:</label>
   <InputText className="small-input" id="title" name="title" onChange={this.handleChange} />
 </div>
           </div>
           <div className="form-row">
             <div className="input-container">
-              <label htmlFor="duration">Telefono:</label>
+              <label className="etiqueta" htmlFor="duration">Telefono:</label>
               <InputText className="small-input" id="duration" name="duration" onChange={this.handleChange} />
             </div>
             
             <div className="input-container">
-  <label htmlFor="pdf">Subir PDF:</label>
+  <label className="etiqueta" htmlFor="pdf">Subir PDF:</label>
   <FileUpload
     className="small-input"
     id="pdf"
@@ -89,8 +90,8 @@ class Recomendaciones extends React.Component {
  
           </div>
           <div className="form-row-buttons">
-            <Button type="submit" label="Agregar" className="small-button p-button-success" style={{ background: 'black' }} />
-            <Button type="button" label="Cancelar" className="small-button p-button-secondary" style={{ background: 'black' }} />
+            <Button type="submit" label="Agregar" className="small-button p-button-success" style={{ background: '#0C3255' }} />
+            <Button type="button" label="Cancelar" className="small-button p-button-secondary" style={{background: '#FF9800' }} />
           </div>
         </form>
         <div className="table-container">
@@ -122,7 +123,7 @@ class Recomendaciones extends React.Component {
           </table>
         </div>
         <div className="">
-          <Button type="button" label="Continuar" className="small-button p-button-secondary additional-button" style={{ background: 'black' }} />
+          <Button type="button" label="Continuar" className="small-button p-button-secondary additional-button" style={{ background: '#0C3255'}} />
         </div>
       </div>
     </div>
