@@ -96,7 +96,7 @@ export const DashboardRouter = () => {
                   <>
                     <NavBar />
                     <ContratoContext/>
-                    <ContratoFinal/>
+
                   </>
                 ) : rol === 2 ? (
                   <>

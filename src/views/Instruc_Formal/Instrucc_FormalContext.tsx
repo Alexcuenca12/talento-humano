@@ -1,103 +1,102 @@
-
 import React from 'react';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-import '../../styles/Instruc_Formal.css'; 
+import {InputText} from 'primereact/inputtext';
+import {Button} from 'primereact/button';
+import '../../styles/Instruc_Formal.css';
+import {Fieldset} from "primereact/fieldset";
+import cardHeader from "../../shared/CardHeader";
+import {Card} from "primereact/card";
+import {Divider} from "primereact/divider";
+import {DataTable} from "primereact/datatable";
+import {Column} from "primereact/column";
 
 
 class PrimeReactForm extends React.Component {
-  constructor(props: {} | Readonly<{}>) {
-    super(props);
-    this.state = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: ''
-    };
-  }
+    constructor(props: {} | Readonly<{}>) {
+        super(props);
+        this.state = {
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: ''
+        };
+    }
 
-  handleChange = (event: { target: { name: any; value: any; }; }) => {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
-  }
+    handleChange = (event: { target: { name: any; value: any; }; }) => {
+        const {name, value} = event.target;
+        this.setState({[name]: value});
+    }
 
-  handleSubmit = (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
-    // Aquí puedes agregar la lógica para enviar los datos del formulario
-  }
+    handleSubmit = (event: { preventDefault: () => void; }) => {
+        event.preventDefault();
+        // Aquí puedes agregar la lógica para enviar los datos del formulario
+    }
 
-  render() {
-    return (
-      <div>
-        <div style={{ marginBottom: '120px' }}></div>
-  
-        <div className="centered-form">
-          <div className="title-container">
-            <div className="title-line"></div>
-            <h1 className="page-title">INSTRUCCION FORMAL</h1>
-            <div className="title-line"></div>
-          </div>
-          <form onSubmit={this.handleSubmit}>
-            <div className="form-row">
-              <label htmlFor="firstName">Nivel de Institución:</label>
-              <InputText className="small-input" id="firstName" name="firstName" onChange={this.handleChange} />
-              <label htmlFor="lastName">Titulo Obtenido:</label>
-              <InputText className="small-input" id="lastName" name="lastName" onChange={this.handleChange} />
-            </div>
-            <div className="form-row">
-              <label htmlFor="email">Institucion Educativa:</label>
-              <InputText className="small-input" id="email" name="email" onChange={this.handleChange} />
-              <label htmlFor="phone">Tiempo de Estudio:</label>
-              <InputText className="small-input" id="phone" name="phone" onChange={this.handleChange} />
-            </div>
-            <div className="form-row-buttons">
-              <Button type="submit" label="Submit" className="small-button p-button-success" style={{ background: 'black' }} />
-              <Button type="button" label="Cancel" className="small-button p-button-secondary" style={{ background: 'black' }} />
-            </div>
-          </form>
-          <div className="table-container">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>Nivel de Institución</th>
-                  <th>Institución Educativa</th>
-                  <th>Título Obtenido</th>
-                  <th>Tiempo de Estudio</th>
-                  <th>Valores</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Primaria</td>
-                  <td>Escuela XYZ</td>
-                  <td>Graduado en Primaria</td>
-                  <td>6 años</td>
-                  <td>Responsabilidad, Honestidad</td>
-                </tr>
-                <tr>
-                  <td>Secundaria</td>
-                  <td>Colegio ABC</td>
-                  <td>Graduado en Secundaria</td>
-                  <td>4 años</td>
-                  <td>Trabajo en equipo, Disciplina</td>
-                </tr>
-                <tr>
-                  <td>Universidad</td>
-                  <td>Universidad 123</td>
-                  <td>Título Universitario</td>
-                  <td>5 años</td>
-                  <td>Perseverancia, Liderazgo</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div className="additional-button-container">
-          <Button type="button" label="Additional Button" className="small-button p-button-secondary additional-button" style={{ background: 'black' }} />
-</div>
-        </div>
-      </div>
-    );
-  }
+    render() {
+        return (
+            <Fieldset className="fgrid col-fixed">
+
+                <Card
+                    header={cardHeader}
+                    className="border-solid border-blue-800 border-3">
+                    <div className="h1-rem">
+                        <Divider align='center'>
+                            <h1 className="text-7xl font-smibold lg:md-2">Instrucción Formal</h1>
+                        </Divider>
+                    </div>
+
+                    <div className="formgroup-inline center-table ">
+
+                        <form onSubmit={this.handleSubmit} className="formgroup-inline text-center">
+                            <div className="field col md:col-4">
+                                <label htmlFor="firstName">Nivel de Institución:</label>
+                                <InputText className="" id="firstName" name="firstName"
+                                           onChange={this.handleChange}/>
+                            </div>
+                            <div className="field col md:col-4">
+                                <label htmlFor="lastName">Titulo Obtenido:</label>
+                                <InputText className="" id="lastName" name="lastName"
+                                           onChange={this.handleChange}/>
+                            </div>
+
+                            <div className="field col md:col-4">
+                                <label htmlFor="email">Institucion Educativa:</label>
+                                <InputText className="" id="email" name="email"
+                                           onChange={this.handleChange}/>
+                            </div>
+                            <div className="field col md:col-4">
+                                <label htmlFor="phone">Tiempo de Estudio:</label>
+                                <InputText className="" id="phone" name="phone"
+                                           onChange={this.handleChange}/>
+                            </div>
+
+                        </form>
+
+                    </div>
+                    <div className="formgroup-inline center-table">
+                        <div className="field">
+                            <Button type="submit" label="Agregar"/>
+                        </div>
+                        <div className="field">
+                            <Button type="button" label="Cancel"/>
+                        </div>
+                    </div>
+                        <DataTable tableStyle={{minWidth: '50rem'}} className="mt-5 ">
+                            <Column field="Nivel de Institución" header="Nivel de Institución"
+                                    headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                            <Column field="Institución Educativa" header="Institución Educativa"
+                                    headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                            <Column field="Título Obtenido" header="Título Obtenido"
+                                    headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                            <Column field="Tiempo de Estudio" header="Tiempo de Estudio"
+                                    headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                            <Column field="Valores" header="Valores"
+                                    headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+
+                        </DataTable>
+                </Card>
+            </Fieldset>
+        );
+    }
 }
 
 export default PrimeReactForm;

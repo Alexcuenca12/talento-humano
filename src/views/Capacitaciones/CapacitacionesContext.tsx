@@ -7,10 +7,10 @@ import {FileUpload} from "primereact/fileupload";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import '../../styles/Capacitacitaciones.css'
-import {Badge} from "primereact/badge";
 import cardHeader from "../../shared/CardHeader";
 import {Fieldset} from "primereact/fieldset";
 import {Card} from "primereact/card";
+import {Divider} from "primereact/divider";
 export default function CapacitacionesContext() {
     const legendTemplate = (
         <div className="flex align-items-center gap-2">
@@ -31,7 +31,9 @@ export default function CapacitacionesContext() {
 
                 <Card className="text-center ">
                     <div className="h1-rem">
-                        <h1 className="text-7xl lg:md-2">Capacitaciones</h1>
+                        <Divider align="center">
+                            <h1 className="text-7xl font-smibold lg:md-2">Capacitaciones</h1>
+                        </Divider>
                     </div>
                     <div className="formgroup-inline text-center">
                         <div className="field col-5 md:col-4">
@@ -82,27 +84,32 @@ export default function CapacitacionesContext() {
                     </div>
 
                     <div className="formgroup-inline text-center">
-                        <div className="field col-5 md:col-4">
+                        <div className="field col-5 md:col-4" >
                             <label>Subir PDF:</label>
-                            <FileUpload name="pdf" chooseLabel="Seleccionar archivo" />
+                            <FileUpload className="p-button-rounded" name="pdf" chooseLabel="Seleccionar archivo"
+                                        uploadLabel="Cargar"
+                                        cancelLabel="Cancelar"/>
                         </div>
                     </div>
 
                     <div className="formgroup-inline center-table">
                         <div className="field ">
-                            <Button label="Agregar" />
+                            <Button label="Agregar" rounded/>
                         </div>
                         <div className="field ">
-                            <Button label="Cancelar" />
+                            <Button label="Cancelar" rounded />
                         </div>
                     </div>
 
                     <div className="formgroup-inline center-table">
                         <div className="card p-col-12">
                             <DataTable  tableStyle={{ minWidth: '50rem' }}>
-                                <Column field="Capacitaciones" header="Capacitaciones"></Column>
-                                <Column field="PDF" header="PDF"></Column>
-                                <Column field="Acciones" header="Acciones"></Column>
+                                <Column field="Capacitaciones" header="Capacitaciones"
+                                        headerStyle={{backgroundColor: '#0C3255', color:'white'}}></Column>
+                                <Column field="PDF" header="PDF"
+                                        headerStyle={{backgroundColor: '#0C3255', color:'white'}}></Column>
+                                <Column field="Acciones" header="Acciones"
+                                        headerStyle={{backgroundColor: '#0C3255', color:'white'}}></Column>
 
                             </DataTable>
                         </div>

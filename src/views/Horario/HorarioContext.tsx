@@ -1,7 +1,13 @@
 import React from 'react';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
+import {InputText} from 'primereact/inputtext';
+import {Button} from 'primereact/button';
 import '../../styles/Horario.css';
+import {Fieldset} from "primereact/fieldset";
+import {Card} from "primereact/card";
+import cardHeader from "../../shared/CardHeader";
+import {Divider} from "primereact/divider";
+import {Column} from "primereact/column";
+import {DataTable} from "primereact/datatable";
 
 
 class HorarioCont extends React.Component {
@@ -16,8 +22,8 @@ class HorarioCont extends React.Component {
     }
 
     handleChange = (event: { target: { name: any; value: any; }; }) => {
-        const { name, value } = event.target;
-        this.setState({ [name]: value });
+        const {name, value} = event.target;
+        this.setState({[name]: value});
     }
 
     handleSubmit = (event: { preventDefault: () => void; }) => {
@@ -27,83 +33,74 @@ class HorarioCont extends React.Component {
 
     render() {
         return (
-            <div className='div-page-horario'>
-                <div className='div-contenedor-horario div-general-horario'>
-                    <div className="title-container-horario ">
-                        <div className="title-line-horario"></div>
-                        <h1 className="page-title-horario">HORARIO</h1>
-                        <div className="title-line-horario"></div>
-                    </div>
-                    <div className='contenedor-horario'>
-                        <div className='div-ingreso-horario'>
-                            <form onSubmit={this.handleSubmit}>
-                                <div className="form-rows-horario">
-
-                                </div>
-                                <div className="input-container-horario">
-                                    <label htmlFor="materia">Materia:</label>
-                                    <InputText className="small-input-horario" id="materia" name="materia" onChange={this.handleChange} />
-                                </div>
-                                <div className="input-container-horario">
-                                    <label htmlFor="horas">Horas Semanales:</label>
-                                    <InputText className="small-input-horas-horario" id="horas" name="horas" onChange={this.handleChange} />
-                                </div>
-                                <div className="input-container-horario">
-                                    <label htmlFor="ciclo">Ciclo:</label>
-                                    <InputText className="small-input-horario" id="ciclo" name="ciclo" onChange={this.handleChange} />
-                                </div>
-                                <div className="input-container-horario">
-                                    <label htmlFor="curso">Curso:</label>
-                                    <InputText className="small-input-horario" id="curso" name="curso" onChange={this.handleChange} />
-                                </div>
-                                <div className="input-container-horario">
-                                    <label htmlFor="carrera">Carrera:</label>
-                                    <InputText className="small-input-horario" id="carrera" name="carrera" onChange={this.handleChange} />
-                                </div>
-
-                            </form>
+            <Fieldset className="m-5">
+                <Card header={cardHeader}
+                      className="border-solid border-blue-800 border-3">
+                    <Card className="text-center">
+                        <div className="h1-rem">
+                            <Divider align="center">
+                                <h1 className="text-7xl font-smibold lg:md-2">Horario</h1>
+                            </Divider>
                         </div>
-                        <div className='div-tabla-horario'>
-                            <div className="table-container-horario">
-                                <table className="data-table-horario">
-                                    <thead>
-                                        <tr>
-                                            <th>Materia</th>
-                                            <th>Nombre</th>
-                                            <th>Horas Semanales</th>
 
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr>
-                                            <td>mate</td>
-                                            <td>Maria</td>
-                                            <td>80 horas</td>
-                                        </tr>
-                                        <tr>
-                                            <td>lengua</td>
-                                            <td>Pepe</td>
-                                            <td>80 horas</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                        <div className="flex">
+                            <div className="flex-1 align-items-center">
+                                <form onSubmit={this.handleSubmit} className="formgroup-inline ">
+
+                                    <div className="field col md:col-4 align-items-start">
+                                        <label htmlFor="materia">Materia:</label>
+                                        <InputText className="" id="materia" name="materia"
+                                                   onChange={this.handleChange}/>
+                                    </div>
+                                    <div className="field col md:col-4 align-items-start">
+                                        <label htmlFor="horas">Horas Semanales:</label>
+                                        <InputText className="" id="horas" name="horas"
+                                                   onChange={this.handleChange}/>
+                                    </div>
+                                    <div className="field col md:col-4 align-items-start">
+                                        <label htmlFor="ciclo">Ciclo:</label>
+                                        <InputText className="" id="ciclo" name="ciclo"
+                                                   onChange={this.handleChange}/>
+                                    </div>
+                                    <div className="field col md:col-4 align-items-start">
+                                        <label htmlFor="curso">Curso:</label>
+                                        <InputText className="" id="curso" name="curso"
+                                                   onChange={this.handleChange}/>
+                                    </div>
+                                    <div className="field col md:col-4 align-items-start">
+                                        <label htmlFor="carrera">Carrera:</label>
+                                        <InputText className="" id="carrera" name="carrera"
+                                                   onChange={this.handleChange}/>
+                                    </div>
+
+                                </form>
                             </div>
-                            <br/>
-                            <div className="form-row-buttons-horario">
-                                <Button type="submit" label="AGREGAR" style={{ background: 'black' }} />
+                            <div className='flex-none'>
+                                <DataTable tableStyle={{minWidth: '50rem'}} className="mt-5 ">
+                                    <Column field="Materia" header="Materia"
+                                            headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                                    <Column field="Nombre" header="Nombre"
+                                            headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                                    <Column field="Horas Semanales" header="Horas Semanales"
+                                            headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+
+                                </DataTable>
+                                <div className="m-5">
+                                    <div className="field">
+                                        <Button type="submit" label="AGREGAR"/>
+                                    </div>
+                                </div>
+
+
                             </div>
                         </div>
 
-                    </div>
-                    <br/>
-                    <div className='div-button-horario'>
-                        <Button type="button" label="GUARDAR ➠"className='button-horario' style={{ background: 'black' }} />
-                    </div>
-                    <div>
-                    </div>
 
-                </div>
-            </div>
+                        <div>
+                        </div>
+                    </Card>
+                </Card>
+            </Fieldset>
         );
     }
 }

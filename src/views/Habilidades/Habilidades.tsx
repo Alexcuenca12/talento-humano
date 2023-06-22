@@ -6,23 +6,23 @@ import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import cardHeader from "../../shared/CardHeader";
 import {InputTextarea} from "primereact/inputtextarea";
+import React from "react";
+import {Divider} from "primereact/divider";
 
 const Habilidades = () => {
 
-    const legendTemplate = (
-        <div className="flex align-items-center gap-2">
-            <Badge value="7" severity="warning"></Badge>
-            <span className="font-bold">Habilidades</span>
-        </div>
-    )
 
     return (
-        <>
-            <Fieldset className="m-5" legend={legendTemplate}>
+            <Fieldset className="m-5" >
                 <Card
                     header={cardHeader}
-                    className="border-solid border-blue-800 border-y-1">
-                    <Card title="Habilidades">
+                    className="border-solid border-blue-800 border-3">
+                    <Card className="text-center">
+                        <div className="h1-rem">
+                            <Divider align="center">
+                                <h1 className="text-7xl font-smibold lg:md-2">Habilidades</h1>
+                            </Divider>
+                        </div>
                         <div className="formgrid grid">
                             <div className="field col-12">
                                 <InputTextarea autoResize rows={5} cols={30}
@@ -30,13 +30,15 @@ const Habilidades = () => {
                                 className="w-full"/>
                             </div>
                             <div className="col-12 flex align-items-center justify-content-evenly">
-                                <Button label="Agregar" severity="warning" rounded/>
-                                <Button label="Cancelar" severity="secondary" rounded/>
+                                <Button label="Agregar"  rounded/>
+                                <Button label="Cancelar"  rounded/>
                             </div>
                         </div>
-                        <DataTable className="mt-5">
-                            <Column header="Descripciones Agregadas"></Column>
-                            <Column header="Acciones"></Column>
+                        <DataTable className="mt-5" >
+                            <Column header="Descripciones Agregadas"
+                                    headerStyle={{backgroundColor: '#0C3255', color:'white'}}></Column>
+                            <Column header="Acciones"
+                                    headerStyle={{backgroundColor: '#0C3255', color:'white'}}></Column>
                         </DataTable>
                     </Card>
                     <div className="flex justify-content-end pt-5 align-items-center">
@@ -49,7 +51,6 @@ const Habilidades = () => {
 
                 </Card>
             </Fieldset>
-        </>
     )
 }
 
