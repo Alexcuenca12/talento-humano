@@ -7,10 +7,10 @@ import { NavBarUserDisabled } from "../../common/NavBarUserDisabled";
 import { NavBar } from "../../common/NavBar";
 import PersonaContext from "../Persona/PersonaContext";
 import ContratoContext from "../Contrato/ContratoContext";
-import ContratoFinal from "../Contrato/ContratoFinal";
+import ContratoFinal from "../Contrato/ContratoContext";
 import Instrucc_FormalContext from "../Instruc_Formal/Instrucc_FormalContext";
 import HorarioContext from "../Horario/HorarioContext";
-import HorarioFinal from "../Horario/HorarioFinal";
+import HorarioFinal from "../Horario/HorarioContext";
 import CapacitacionesContext from "../Capacitaciones/CapacitacionesContext";
 import Eva_DocenteContext from "../Eva_Docente/Eva_DocenteContext";
 import CargaFamiliarContext from "../CargaFamiliar/CargaFamiliarContext";
@@ -112,7 +112,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <Instrucc_FormalContext />
+                    <Instrucc_FormalContext/>
                   </>
                 ) : rol === 2 ? (
                   <>
