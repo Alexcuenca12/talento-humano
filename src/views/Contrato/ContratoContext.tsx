@@ -4,6 +4,10 @@ import { FileUpload } from 'primereact/fileupload';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import '../../styles/Contrato.css';
+import {Fieldset} from "primereact/fieldset";
+import {Card} from "primereact/card";
+import cardHeader from "../../shared/CardHeader";
+import {Divider} from "primereact/divider";
 
 
 class ContratoCont extends React.Component {
@@ -29,26 +33,23 @@ class ContratoCont extends React.Component {
 
     render() {
         return (
-            <div className='div-page-contrato'>
-                <div className='div-contenedor-contrato div-general-contrato'>
-                    <div className="title-container-contrato">
-                        <div className="title-line-contrato"></div>
-                        <h1 className="page-title-contrato">CONTRATO</h1>
-                        <div className="title-line-contrato"></div>
+            <Fieldset className="fgrid col-fixed ">
+                <Card
+                    header={cardHeader}
+                    className="border-solid border-blue-800 border-3">
+                    <div className="h1-rem">
+                        <Divider align='center'  >
+                            <h1 className="text-7xl font-smibold lg:md-2">Contrato</h1>
+                        </Divider>
                     </div>
-                    <div className='divisor-contrato'>
-                        <div className='div-ingreso-contrato'>
+                    <div className="flex">
+                        <div className="flex-1 align-items-center justify-content-around">
+                            <form onSubmit={this.handleSubmit} className="formgroup-inline ">
 
-                            <form onSubmit={this.handleSubmit}>
-                                <div className="form-rows-contrato">
-
-                                </div>
-
-                                <div className="input-container-contrato">
-
+                                <div className="field col md:col-4 align-items-start">
                                     <label htmlFor="inicio">Fecha Inicio:</label>
                                     <Calendar
-                                        className="small-input-contrato"
+                                        className=""
                                         id="inicio"
                                         name="inicio"
                                         required
@@ -57,11 +58,11 @@ class ContratoCont extends React.Component {
                                         onChange={this.handleChange}
                                     />
                                 </div>
-                                <div className="input-container-contrato">
 
+                                <div className="field col md:col-4 align-items-start">
                                     <label htmlFor="fin">Fecha Fin:</label>
                                     <Calendar
-                                        className="small-input-contrato"
+                                        className=""
                                         id="fin"
                                         name="fin"
                                         required
@@ -70,45 +71,55 @@ class ContratoCont extends React.Component {
                                         onChange={this.handleChange}
                                     />
                                 </div>
-                                <div className="input-container-contrato">
-                                    <label htmlFor="anios">Años de duracion:</label>
-                                    <InputText className="anios-contrato" id="anios" required name="anios" onChange={this.handleChange} />
 
+                                <div className="field col md:col-4 align-items-start">
+                                    <label htmlFor="anios">Años de duracion:</label>
+                                    <InputText className="" id="anios" required name="anios" onChange={this.handleChange} />
                                 </div>
-                                <div className="input-container-contrato">
+                                <div className="field col md:col-4 align-items-start">
                                     <label htmlFor="horas">Horas:</label>
-                                    <InputText className="small-input-contrato" id="horas" name="horas" onChange={this.handleChange} />
+                                    <InputText className="" id="horas" name="horas" onChange={this.handleChange} />
                                 </div>
-                                <div className="input-container-contrato">
+                                <div className="field col md:col-4 align-items-start">
                                     <label htmlFor="cargo">Cargo:</label>
-                                    <InputText className="small-input-contrato" id="cargo" name="cargo" onChange={this.handleChange} />
+                                    <InputText className="" id="cargo" name="cargo" onChange={this.handleChange} />
                                 </div>
-                                <div className="input-container-contrato">
+                                <div className="field col md:col-4 align-items-start">
                                     <label htmlFor="salario">Salario:</label>
-                                    <InputText className="small-input-contrato" id="salario" name="salario" onChange={this.handleChange} />
+                                    <InputText className="" id="salario" name="salario" onChange={this.handleChange} />
                                 </div>
                             </form>
-                        </div>
-                        <div className='div-pdf-contrato'>
-                            <div className="input-containerinput-container-contrato">
-                                <p>
-                                    SUBIR PDF:
-                                    <br />
-                                    <input type="file" name="evidencia" accept="pdf"
-                                        required />
 
-                                </p>
+                            <div className="flex justify-content-center align-items-center">
+                                <div className="field col-2">
+                                    <Button label="Agregar" rounded/>
+                                </div>
+                                <div className="field col-2">
+                                    <Button label="Cancelar" rounded/>
+                                </div>
                             </div>
                         </div>
 
+
+                        <div className='flex-none'>
+                            <div className="fied md:col-8">
+                                <label>Subir PDF:</label>
+                                <FileUpload name="pdf"
+                                            chooseLabel="Escoger"
+                                            uploadLabel="Cargar"
+                                            cancelLabel="Cancelar"
+                                            emptyTemplate={<p className="m-0">Arrastre y suelte los archivos aquí para
+                                                cargarlos.</p>}/>
+
+                            </div>
+                        </div>
                     </div>
-                    <div className="div-button-contrato">
-                        <Button type="button" className='button-contrato' label="CONTINUAR ➠" style={{ background: 'black' }} />
-                    </div>
-                </div>
 
 
-            </div >
+                </Card>
+
+
+            </Fieldset >
         );
     }
 }

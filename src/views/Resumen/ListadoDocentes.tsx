@@ -4,12 +4,22 @@ import { InputText } from 'primereact/inputtext';
 import { Button } from 'primereact/button';
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
+import {Fieldset} from "primereact/fieldset";
+import {Card} from "primereact/card";
+import cardHeader from "../../shared/CardHeader";
+import {Divider} from "primereact/divider";
 
 export  function ListadoDocentes({} ) {
 
     return (
-        <div className="fgrid col-fixed p-8 ">
-            <h1 className="text-center ">Listado Docente</h1>
+        <Fieldset className="fgrid col-fixed ">
+        <Card  header={cardHeader}
+               className="border-solid border-blue-800 border-3">
+            <div className="h1-rem">
+                <Divider align='center'  >
+                    <h1 className="text-7xl font-smibold lg:md-2">Listado Docente</h1>
+                </Divider>
+            </div>
 
             <div className="center-table ">
                 <div className="field p-col-10 md:col-auto inline-flex ">
@@ -21,20 +31,25 @@ export  function ListadoDocentes({} ) {
             </div>
 
 
-            <div className=" center-table">
-                <div className="card p-col-12">
-                    <DataTable  tableStyle={{ minWidth: '50rem' }}>
-                        <Column field="Id Perfil" header="Id Perfil"></Column>
-                        <Column field="Cedula" header="Cedula"></Column>
-                        <Column field="Nombres" header="Nombres"></Column>
-                        <Column field="Apellidos" header="Apellidos"></Column>
-                        <Column field="Id Contacto" header="Id Contacto"></Column>
-                        <Column field="Acciones" header="Acciones"></Column>
+
+                    <DataTable  tableStyle={{ minWidth: '50rem' }} className="mt-5">
+                        <Column field="Id Perfil" header="Id Perfil"
+                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                        <Column field="Cedula" header="Cedula"
+                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                        <Column field="Nombres" header="Nombres"
+                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                        <Column field="Apellidos" header="Apellidos"
+                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                        <Column field="Id Contacto" header="Id Contacto"
+                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                        <Column field="Acciones" header="Acciones"
+                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
 
                     </DataTable>
-                </div>
-            </div>
-        </div>
+
+        </Card>
+        </Fieldset>
     )
 }
 
