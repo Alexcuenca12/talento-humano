@@ -1,3 +1,15 @@
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 footer {
   color: #0c3255;
   text-align: center;
@@ -5,7 +17,9 @@ footer {
   align-items: center;
   justify-content: center;
   width: 100%;
-  height: 100%;
+  height: auto;
   background: #fbc02d;
   font-size: 13px;
+  position: fixed;
+  bottom: 0;
 }
