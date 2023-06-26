@@ -26,7 +26,7 @@ export  function ListadoDocentes({} ) {
                     <InputText  placeholder="Buscar"/>
                 </div>
                 <div className="field p-col-2 inline-flex ">
-                    <Button label="Search" icon="pi pi-search"  />
+                    <Button label="Search" icon="pi pi-search" rounded />
                 </div>
             </div>
 

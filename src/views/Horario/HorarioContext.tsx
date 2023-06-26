@@ -75,8 +75,8 @@ class HorarioCont extends React.Component {
 
                                 </form>
                             </div>
-                            <div className='flex-none'>
-                                <DataTable tableStyle={{minWidth: '50rem'}} className="mt-5 ">
+                            <div className='flex-none '>
+                                <DataTable tableStyle={{minWidth: '50rem'}} className="mt-5 mb-4">
                                     <Column field="Materia" header="Materia"
                                             headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                     <Column field="Nombre" header="Nombre"
@@ -85,9 +85,12 @@ class HorarioCont extends React.Component {
                                             headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
 
                                 </DataTable>
-                                <div className="m-5">
+                                <div className="formgroup-inline center-table ">
                                     <div className="field">
-                                        <Button type="submit" label="AGREGAR"/>
+                                        <Button label="Agregar" rounded/>
+                                    </div>
+                                    <div className="field">
+                                        <Button label="Cancelar" rounded/>
                                     </div>
                                 </div>
 

@@ -74,10 +74,10 @@ class PrimeReactForm extends React.Component {
                     </div>
                     <div className="formgroup-inline center-table">
                         <div className="field">
-                            <Button type="submit" label="Agregar"/>
+                            <Button type="submit" label="Agregar" rounded/>
                         </div>
                         <div className="field">
-                            <Button type="button" label="Cancel"/>
+                            <Button type="button" label="Cancel" rounded/>
                         </div>
                     </div>
                         <DataTable tableStyle={{minWidth: '50rem'}} className="mt-5 ">

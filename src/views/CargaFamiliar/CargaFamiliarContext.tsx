@@ -32,7 +32,7 @@ const Persona = () => {
     ];
 
     return (
-        <Fieldset className="fgrid col-fixed  ">
+        <Fieldset className="fgrid col-fixed">
 
             <Card
                 header={cardHeader}

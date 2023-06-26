@@ -82,7 +82,7 @@ const Experiencia = () => {
                                 headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                     </DataTable>
                 </Card>
-                
+
 
 
             </Card>
