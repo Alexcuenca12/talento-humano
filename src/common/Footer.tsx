@@ -1,54 +1,19 @@
-import "../styles/Footer.css";
-import {
-  FaFacebookF,
-  FaTwitter,
-  FaInstagram,
-  FaPinterest,
-  FaBehance,
-} from "react-icons/fa";
+import React from 'react';
+import '../styles/Footer.css';
+const Footer = () => {
+  const logo = 'assets/images/LogoCiculo.png';
 
-export const Footer = () => {
   return (
-    <div className="footer bg-dark section-p" id="footer">
-      <div className="container">
-        <div className="section-title">
-          <h3 className="text-brown">
-            Web <span className="text-white">Shop</span>
-          </h3>
-        </div>
-        <div className="footer-content">
-          <ul className="footer-social-links flex flex-c">
-            <li>
-              <a href="/" className="text-white">
-                <FaFacebookF />
-              </a>
-            </li>
-            <li>
-              <a href="/" className="text-white">
-                <FaTwitter />
-              </a>
-            </li>
-            <li>
-              <a href="/" className="text-white">
-                <FaInstagram />
-              </a>
-            </li>
-            <li>
-              <a href="/" className="text-white">
-                <FaPinterest />
-              </a>
-            </li>
-            <li>
-              <a href="/" className="text-white">
-                <FaBehance />
-              </a>
-            </li>
-          </ul>
-          <p className="text-center fs-14 text-white op-07 fw-3 ls-1 reserved-text">
-            All Rights Reserved &copy; 2022
-          </p>
-        </div>
-      </div>
-    </div>
+    <footer>
+      Instituto Superior Tecnológico Del Azuay
+      ||
+      <strong>
+        Contáctanos: Dirección: Octavio Chacón Moscoso 1-98 y Primera Transversal (Parque industrial) |
+        Teléfono: 07 2809 551 - 0995363076 |
+        Correo Electrónico: info@tecazuay.edu.ec
+      </strong>
+    </footer>
   );
 };
+
+export default Footer;

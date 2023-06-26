@@ -5,6 +5,7 @@ import React, { useRef } from "react";
 import { NavBarDoc } from "../../common/NavBarDoc";
 import { NavBarUserDisabled } from "../../common/NavBarUserDisabled";
 import { NavBar } from "../../common/NavBar";
+import Footer  from "../../common/Footer";
 import PersonaContext from "../Persona/PersonaContext";
 import ContratoContext from "../Contrato/ContratoContext";
 import ContratoFinal from "../Contrato/ContratoContext";
@@ -55,15 +56,18 @@ export const DashboardRouter = () => {
                   <>
                     <NavBar />
                     <Home />
+                    <Footer />
                   </>
                 ) : rol === 2 ? (
                   <>
                     <NavBarDoc />
                     <Home />
+                    <Footer />
                   </>
                 ) : (
                   <>
                     <NavBar />
+                    <Footer />
                   </>
                 )}
               </Route>
@@ -82,6 +86,7 @@ export const DashboardRouter = () => {
                   <>
                     <NavBarDoc />
                     <PersonaContext />
+                    <Footer />
                   </>
                 ) : rol === 2 ? (
                   <>
@@ -96,12 +101,13 @@ export const DashboardRouter = () => {
                   <>
                     <NavBar />
                     <ContratoContext/>
-
+                    <Footer />
                   </>
                 ) : rol === 2 ? (
                   <>
                     <NavBar />
                     <ContratoContext />
+                    <Footer />
                   </>
                 ) : (
                   <NavBarUserDisabled />
@@ -113,6 +119,7 @@ export const DashboardRouter = () => {
                   <>
                     <NavBarDoc />
                     <Instrucc_FormalContext/>
+                    <Footer />
                   </>
                 ) : rol === 2 ? (
                   <>
@@ -128,7 +135,7 @@ export const DashboardRouter = () => {
                   <>
                     <NavBarDoc />
                       <HorarioFinal/>
-
+                      <Footer />
                   </>
                 ) : rol === 2 ? (
                   <>
@@ -144,10 +151,12 @@ export const DashboardRouter = () => {
                   <>
                     <NavBarDoc />
                     <CargaFamiliarContext />
+                    <Footer />
                   </>
                 ) : rol === 2 ? (
                   <>
                     <NavBar />
+                    <Footer />
                   </>
                 ) : (
                   <NavBarUserDisabled />
@@ -159,10 +168,12 @@ export const DashboardRouter = () => {
                   <>
                     <NavBarDoc />
                     <CapacitacionesContext />
+                    <Footer />
                   </>
                 ) : rol === 2 ? (
                   <>
                     <NavBar />
+                    <Footer />
                   </>
                 ) : (
                   <NavBarUserDisabled />
@@ -173,10 +184,12 @@ export const DashboardRouter = () => {
                   <>
                     <NavBarDoc />
                     <ExperienciaContext />
+                    <Footer />
                   </>
                 ) : rol === 2 ? (
                   <>
                     <NavBar />
+                    <Footer />
                   </>
                 ) : (
                   <NavBarUserDisabled />
@@ -187,10 +200,12 @@ export const DashboardRouter = () => {
                   <>
                     <NavBarDoc />
                     <Eva_DocenteContext />
+                    <Footer />
                   </>
                 ) : rol === 2 ? (
                   <>
                     <NavBar />
+                    <Footer />
                   </>
                 ) : (
                   <NavBarUserDisabled />
@@ -201,10 +216,12 @@ export const DashboardRouter = () => {
                   <>
                     <NavBarDoc />
                     <Habilidades/>
+                    <Footer />
                   </>
                 ) : rol === 2 ? (
                   <>
                     <NavBar />
+                    <Footer />
                   </>
                 ) : (
                   <NavBarUserDisabled />
@@ -215,10 +232,12 @@ export const DashboardRouter = () => {
                   <>
                     <NavBarDoc />
                     <ListadoDocentes/>
+                    <Footer />
                   </>
                 ) : rol === 2 ? (
                   <>
                     <NavBar />
+                    <Footer />
                   </>
                 ) : (
                   <NavBarUserDisabled />
