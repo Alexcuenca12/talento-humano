@@ -41,3 +41,4 @@ yarn-error.log*
 # modules.xml
 # .idea/misc.xml
 # *.ipr
+.idea/workspace.xml
