@@ -9,6 +9,8 @@ import {Divider} from "primereact/divider";
 import {Column} from "primereact/column";
 import {DataTable} from "primereact/datatable";
 import {Calendar} from "primereact/calendar";
+import {FileUpload} from "primereact/fileupload";
+import {InputTextarea} from "primereact/inputtextarea";
 
 
 class HorarioCont extends React.Component {
@@ -48,40 +50,88 @@ class HorarioCont extends React.Component {
                             <form onSubmit={this.handleSubmit}>
                                 <div className="flex flex-wrap flex-row align-content-center">
                                     <div className="flex align-content-center">
-                                        <div className="flex flex-column flex-wrap gap-4 align-items-center justify-content-center">
+                                        <div
+                                            className="flex flex-column flex-wrap gap-4 align-items-center justify-content-center">
                                             <div
-                                                className="flex flex-wrap w-full h-full align-items-center ">
-                                                <label htmlFor="materia" className="text-3xl font-medium w-auto min-w-min">Materia:</label>
+                                                className="flex flex-wrap w-full h-full align-items-center justify-content-center ">
+                                                <label htmlFor="materia"
+                                                       className="text-3xl font-medium w-auto min-w-min pr-2">Materia:</label>
                                                 <InputText className="text-2xl" id="materia" name="materia"
                                                            onChange={this.handleChange}/>
 
                                             </div>
                                             <div
                                                 className="flex flex-wrap w-full h-full align-items-center justify-content-center">
-                                                <label htmlFor="horas" className="text-3xl font-medium w-auto min-w-min">Horas Semanales:</label>
-                                                <InputText  id="horas" name="horas" className="text-2xl"
+                                                <label htmlFor="horas"
+                                                       className="text-3xl font-medium w-auto min-w-min pr-2">Horas
+                                                    Semanales:</label>
+                                                <InputText id="horas" name="horas" className="text-2xl"
                                                            onChange={this.handleChange}/>
 
                                             </div>
                                             <div
                                                 className="flex flex-wrap w-full h-full align-items-center justify-content-center">
-                                                <label htmlFor="ciclo" className="text-3xl font-medium w-auto min-w-min">Ciclo:</label>
+                                                <label htmlFor="ciclo"
+                                                       className="text-3xl font-medium w-auto min-w-min">Ciclo:</label>
                                                 <InputText className="text-2xl" id="ciclo" name="ciclo"
                                                            onChange={this.handleChange}/>
 
                                             </div>
                                             <div
                                                 className="flex flex-wrap w-full h-full align-items-center justify-content-center">
-                                                <label htmlFor="curso" className="text-3xl font-medium w-auto min-w-min">Curso:</label>
+                                                <label htmlFor="curso"
+                                                       className="text-3xl font-medium w-auto min-w-min pr-2">Curso:</label>
                                                 <InputText className="text-2xl" id="curso" name="curso"
                                                            onChange={this.handleChange}/>
                                             </div>
                                             <div
                                                 className="flex flex-wrap w-full h-full align-items-center justify-content-center">
-                                                <label htmlFor="carrera" className="text-3xl font-medium w-auto min-w-min">Carrera:</label>
+                                                <label htmlFor="carrera"
+                                                       className="text-3xl font-medium w-auto min-w-min pr-2">Carrera:</label>
                                                 <InputText className="text-2xl" id="carrera" name="carrera"
                                                            onChange={this.handleChange}/>
                                             </div>
+                                            <div className="">
+                                                <Divider align='center'>
+                                                    <h4 className="text-7xl font-smibold lg:md-2">Periodo</h4>
+                                                </Divider>
+                                            </div>
+                                            <div className="flex align-content-center">
+                                                <div
+                                                    className="flex flex-column flex-wrap gap-4 align-items-center justify-content-center">
+
+                                                    <div
+                                                        className="flex flex-column flex-wrap gap-4 align-items-center justify-content-center">
+                                                        <div
+                                                            className="flex flex-wrap w-full h-full align-items-center ">
+                                                            <label htmlFor="horario"
+                                                                   className="text-3xl font-medium w-auto min-w-min pr-2">Horario Diario:</label>
+                                                            <InputText className="text-2xl" id="horario" name="horario"
+                                                                       onChange={this.handleChange}/>
+
+                                                        </div>
+                                                        <div
+                                                            className="flex flex-wrap w-full h-full align-items-center ">
+                                                            <label htmlFor="descripcion"
+                                                                   className="text-3xl font-medium w-auto min-w-min pr-2">Descripcion:</label>
+                                                            <InputTextarea autoResize rows={5} cols={30} className="text-2xl" id="descripcion" name="descripcion"
+                                                                       onChange={this.handleChange}/>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-column align-items-center justify-content-center ml-4">
+                                                    <label className="flex text-3xl font-medium">Subir PDF:</label>
+                                                    <FileUpload name="pdf"
+                                                                chooseLabel="Escoger"
+                                                                uploadLabel="Cargar"
+                                                                cancelLabel="Cancelar"
+                                                                emptyTemplate={<p className="m-0 p-button-rounded">Arrastre y suelte los
+                                                                    archivos aquí para
+                                                                    cargarlos.</p>}/>
+                                                </div>
+                                            </div>
+
                                         </div>
                                     </div>
                                 </div>
@@ -104,17 +154,19 @@ class HorarioCont extends React.Component {
                         </div>
 
 
-
-                        <DataTable tableStyle={{minWidth: '50rem'}} className="mt-5  w-full h-full text-3xl font-medium">
+                        <DataTable tableStyle={{minWidth: '50rem'}}
+                                   className="mt-5  w-full h-full text-3xl font-medium">
                             <Column field="Materia" header="Materia"
                                     headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                             <Column field="Nombre" header="Nombre"
                                     headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                             <Column field="Horas Semanales" header="Horas Semanales"
                                     headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                            <Column field="Acciones" header="Acciones"
+                                    headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+
 
                         </DataTable>
-
 
 
                     </Card>
