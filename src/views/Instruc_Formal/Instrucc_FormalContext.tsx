@@ -8,6 +8,7 @@ import {Card} from "primereact/card";
 import {Divider} from "primereact/divider";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
+import {Calendar} from "primereact/calendar";
 
 
 class PrimeReactForm extends React.Component {
@@ -34,7 +35,6 @@ class PrimeReactForm extends React.Component {
     render() {
         return (
             <Fieldset className="fgrid col-fixed">
-
                 <Card
                     header={cardHeader}
                     className="border-solid border-blue-800 border-3">
@@ -44,55 +44,89 @@ class PrimeReactForm extends React.Component {
                         </Divider>
                     </div>
 
-                    <div className="formgroup-inline center-table ">
+                    <div className="flex justify-content-center flex-wrap">
+                        <form onSubmit={this.handleSubmit}>
+                            <div className="flex flex-wrap flex-row align-content-center">
+                                <div className="flex align-items-center justify-content-center">
+                                    <div className="flex flex-column">
+                                        <div
+                                            className="flex flex-row flex-wrap w-full h-full  justify-content-between  flex-grow-1 ">
+                                            <div
+                                                className="flex align-items-center justify-content-center w-auto pr-2">
+                                                <label htmlFor="firstName"
+                                                       className="text-3xl font-medium w-full min-w-min">Nivel
+                                                    de Instruccion:</label>
+                                                <InputText className="w-full min-w-min text-2xl" id="firstName"
+                                                           name="firstName"
+                                                           onChange={this.handleChange}/>
+                                            </div>
+                                            <div
+                                                className="flex align-items-center justify-content-center w-auto pr-2">
+                                                <label htmlFor="lastName"
+                                                       className="text-3xl font-medium w-full min-w-min">Titulo
+                                                    Obtenido:</label>
+                                                <InputText className="w-auto min-w-min text-2xl" id="lastName"
+                                                           name="lastName"
+                                                           onChange={this.handleChange}/>
+                                            </div>
 
-                        <form onSubmit={this.handleSubmit} className="formgroup-inline text-center">
-                            <div className="field col md:col-4">
-                                <label htmlFor="firstName">Nivel de Institución:</label>
-                                <InputText className="" id="firstName" name="firstName"
-                                           onChange={this.handleChange}/>
-                            </div>
-                            <div className="field col md:col-4">
-                                <label htmlFor="lastName">Titulo Obtenido:</label>
-                                <InputText className="" id="lastName" name="lastName"
-                                           onChange={this.handleChange}/>
-                            </div>
 
-                            <div className="field col md:col-4">
-                                <label htmlFor="email">Institucion Educativa:</label>
-                                <InputText className="" id="email" name="email"
-                                           onChange={this.handleChange}/>
-                            </div>
-                            <div className="field col md:col-4">
-                                <label htmlFor="phone">Tiempo de Estudio:</label>
-                                <InputText className="" id="phone" name="phone"
-                                           onChange={this.handleChange}/>
-                            </div>
+                                        </div>
+                                        <div
+                                            className="flex flex-row flex-wrap w-full h-full  justify-content-between pt-5">
+                                            <div
+                                                className="flex align-items-center justify-content-center w-auto pr-2">
+                                                <label htmlFor="firstName"
+                                                       className="text-3xl font-medium w-full min-w-min">Institucion Educativa:</label>
+                                                <InputText className="w-full min-w-min text-2xl" id="firstName"
+                                                           name="firstName"
+                                                           onChange={this.handleChange}/>
+                                            </div>
+                                            <div
+                                                className="flex align-items-center justify-content-center w-auto pr-2">
+                                                <label htmlFor="lastName"
+                                                       className="text-3xl font-medium w-full min-w-min">Tiempo de estudio:</label>
+                                                <InputText className="w-auto min-w-min text-2xl" id="lastName"
+                                                           name="lastName"
+                                                           onChange={this.handleChange}/>
+                                            </div>
 
+                                        </div>
+                                        <div
+                                            className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
+                                            <div
+                                                className="flex align-items-center justify-content-center w-auto min-w-min">
+                                                <Button type="submit" label="Agregar"
+                                                        className="w-full text-3xl min-w-min "
+                                                        rounded/>
+                                            </div>
+                                            <div
+                                                className="flex align-items-center justify-content-center w-auto min-w-min">
+                                                <Button type="button" label="Cancel"
+                                                        className="w-full text-3xl min-w-min"
+                                                        rounded/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </form>
-
                     </div>
-                    <div className="formgroup-inline center-table">
-                        <div className="field">
-                            <Button type="submit" label="Agregar"/>
-                        </div>
-                        <div className="field">
-                            <Button type="button" label="Cancel"/>
-                        </div>
-                    </div>
-                        <DataTable tableStyle={{minWidth: '50rem'}} className="mt-5 ">
-                            <Column field="Nivel de Institución" header="Nivel de Institución"
-                                    headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
-                            <Column field="Institución Educativa" header="Institución Educativa"
-                                    headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
-                            <Column field="Título Obtenido" header="Título Obtenido"
-                                    headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
-                            <Column field="Tiempo de Estudio" header="Tiempo de Estudio"
-                                    headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
-                            <Column field="Valores" header="Valores"
-                                    headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
 
-                        </DataTable>
+
+                    <DataTable tableStyle={{minWidth: '50rem'}} className="mt-5 w-full h-full text-3xl font-medium">
+                        <Column field="Nivel de Institución" header="Nivel de Institución"
+                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                        <Column field="Institución Educativa" header="Institución Educativa"
+                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                        <Column field="Título Obtenido" header="Título Obtenido"
+                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                        <Column field="Tiempo de Estudio" header="Tiempo de Estudio"
+                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                        <Column field="Valores" header="Valores"
+                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+
+                    </DataTable>
                 </Card>
             </Fieldset>
         );

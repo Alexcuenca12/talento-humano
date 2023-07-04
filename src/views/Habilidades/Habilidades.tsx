@@ -13,41 +13,52 @@ const Habilidades = () => {
 
 
     return (
-            <Fieldset className="m-5" >
+            <Fieldset className="fgrid col-fixed" >
                 <Card
                     header={cardHeader}
                     className="border-solid border-blue-800 border-3">
-                    <Card className="text-center">
+
                         <div className="h1-rem">
                             <Divider align="center">
                                 <h1 className="text-7xl font-smibold lg:md-2">Habilidades</h1>
                             </Divider>
                         </div>
-                        <div className="formgrid grid">
-                            <div className="field col-12">
+                    <div className="flex justify-content-center ">
+                        <form >
+                            <div className="flex align-content-center w-auto max-w-full">
                                 <InputTextarea autoResize rows={5} cols={30}
                                                placeholder="Describa su habilidad"
-                                className="w-full"/>
+                                               className="w-max text-2xl "/>
+
                             </div>
-                            <div className="col-12 flex align-items-center justify-content-evenly">
-                                <Button label="Agregar"  rounded/>
-                                <Button label="Cancelar"  rounded/>
+
+                            <div
+                                className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
+                                <div
+                                    className="flex align-items-center justify-content-center w-auto min-w-min">
+                                    <Button type="submit" label="Agregar"
+                                            className="w-full text-3xl min-w-min "
+                                            rounded/>
+                                </div>
+                                <div
+                                    className="flex align-items-center justify-content-center w-auto min-w-min">
+                                    <Button type="button" label="Cancel"
+                                            className="w-full text-3xl min-w-min"
+                                            rounded/>
+                                </div>
                             </div>
-                        </div>
-                        <DataTable className="mt-5" >
-                            <Column header="Descripciones Agregadas"
-                                    headerStyle={{backgroundColor: '#0C3255', color:'white'}}></Column>
-                            <Column header="Acciones"
-                                    headerStyle={{backgroundColor: '#0C3255', color:'white'}}></Column>
-                        </DataTable>
-                    </Card>
-                    <div className="flex justify-content-end pt-5 align-items-center">
-                        <Button icon="pi pi-arrow-right"
-                                rounded severity="warning"
-                                aria-label="Next"
-                                className="z-0 shadow-2"
-                        />
+
+                        </form>
                     </div>
+
+                    <DataTable tableStyle={{minWidth: '50rem'}} className="mt-5  w-full h-full text-3xl font-medium">
+                        <Column field="Descripciones Agregadas" header="Descripciones Agregadas"
+                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+
+                        <Column field="Horas Semanales" header="Acciones"
+                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+
+                    </DataTable>
 
                 </Card>
             </Fieldset>
