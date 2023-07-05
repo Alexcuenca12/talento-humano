@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect,useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { FileUpload } from 'primereact/fileupload';
 import { Button } from 'primereact/button';
@@ -26,8 +26,10 @@ class ContratoCont extends React.Component {
         event.preventDefault();
         // Aquí puedes agregar la lógica para enviar los datos del formulario
     }
+    
 
     render() {
+        
         return (
             <div className='div-page-contrato'>
                 <div className='div-contenedor-contrato div-general-contrato'>

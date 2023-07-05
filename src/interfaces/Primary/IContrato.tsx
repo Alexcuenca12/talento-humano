@@ -7,5 +7,5 @@ export interface IContrato {
   cargo: string;
   salario: string;
   evidencia: string;
-  persona: Object;
+  persona: string;
 }

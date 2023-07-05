@@ -1,87 +1,111 @@
-import React from 'react';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-import '../../styles/Habilidades.css';
 
-class HabilidadesContext extends React.Component {
-  constructor(props: {} | Readonly<{}>) {
-    super(props);
-    this.state = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: ''
-    };
-  }
+// http://localhost:8080/api/habilidades/read');
+//http://localhost:8080/api/habilidades/create
+import React, { useState, useEffect, ChangeEvent } from 'react';
 
-  handleChange = (event: { target: { name: any; value: any; }; }) => {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
-  }
-
-  handleSubmit = (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
-    // Aquí puedes agregar la lógica para enviar los datos del formulario
-  }
-
-  render() {
-    return (
-      <div className='div-page-habilidad'>
-        <div className='div-contenedor-habilidad div-general-habilidad'>
-          <div className="title-container-habilidad">
-            <div className="title-line-habilidad"></div>
-            <h1 className="page-title-habilidad">HABILIDADES</h1>
-            <div className="title-line-habilidad"></div>
-          </div>
-          <div className='contenedor-habilidad'>
-            <form onSubmit={this.handleSubmit}>
-              <div className="div-ingreso-habilidad">
-                <label htmlFor="descripcion">Descripcion de Habilidad:</label>
-                <InputText className="small-input-habilidad" id="descripcion" placeholder='Ingrese una descripción' name="descripcion" onChange={this.handleChange} />
-              </div>
-              <br />
-              <div className='div-botons-habilidad'>
-                <Button type="button" label="CANCELAR" className="small-button-habilidad  " style={{ background: 'black' }} />
-                <Button type="submit" label="AGREGAR" className="small-button-habilidad " style={{ background: 'black' }} />
-              </div>
-            </form>
-          </div>
-          <div className='div-table-habilidad'>
-            <div className="table-container-habilidad">
-              <table className="data-table-habilidad">
-                <thead>
-                  <tr>
-                    <th>Descripciones Agregadas</th>
-                    <th>Acciones</th>
-
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Descripcion 1</td>
-                    <td>Escuela XYZ</td>
-                  </tr>
-                  <tr>
-                    <td>Secundaria</td>
-                    <td>Colegio ABC</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-
-          <br />
-          <div className="div-button-habilidad">
-            <Button type="button" label="CONTINUAR ➠" className="button-habilidad" style={{ background: 'black' }} />
-          </div>
-
-        </div>
-
-
-      </div>
-    );
-  }
+interface Habilidad {
+  id_habilidad: number;
+  descripcion: string;
+  id_persona: number;
 }
 
-export default HabilidadesContext;
+const VentanaHabilidades = () => {
+  const [descripcion, setDescripcion] = useState('');
+  const [habilidades, setHabilidades] = useState<Habilidad[]>([]);
+  const [idPersona, setIdPersona] = useState<number>(1); // Variable de estado para el id_persona
+
+  const handleDescripcionChange = (event: ChangeEvent<HTMLInputElement>) => {
+    setDescripcion(event.target.value);
+  };
+
+  const handleGuardarClick = async () => {
+    const nuevaHabilidad: Habilidad = {
+      id_habilidad: habilidades.length + 1,
+      descripcion: descripcion,
+      id_persona: idPersona, // Utilizar el valor de idPersona
+    };
+
+    try {
+      const response = await fetch('http://localhost:8080/api/habilidades/create', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(nuevaHabilidad),
+      });
+
+      if (response.ok) {
+        // Actualizar la lista de habilidades después de guardar en la base de datos
+        obtenerHabilidades();
+        setDescripcion('');
+      } else {
+        console.log('Error al guardar la habilidad');
+      }
+    } catch (error) {
+      console.log('Error al realizar la llamada a la API', error);
+    }
+  };
+
+  const obtenerHabilidades = async () => {
+    try {
+      const response = await fetch('http://localhost:8080/api/habilidades/read');
+      if (response.ok) {
+        const data = await response.json();
+        setHabilidades(data);
+      } else {
+        console.log('Error al obtener las habilidades');
+      }
+    } catch (error) {
+      console.log('Error al realizar la llamada a la API', error);
+    }
+  };
+
+  useEffect(() => {
+    obtenerHabilidades();
+  }, []);
+
+  return (
+    <div>
+      <h2>Administración de habilidades</h2>
+
+      <form>
+        <label>
+          Descripción:
+          <input
+            type="text"
+            value={descripcion}
+            onChange={handleDescripcionChange}
+          />
+        </label>
+        <button type="button" onClick={handleGuardarClick}>
+          Guardar
+        </button>
+      </form>
+
+      <h3>Habilidades guardadas:</h3>
+
+      <table>
+        <thead>
+          <tr>
+            <th>ID Habilidad</th>
+            <th>Descripción</th>
+            <th>ID Persona</th>
+          </tr>
+        </thead>
+        <tbody>
+          {habilidades.map((habilidad) => (
+            <tr key={habilidad.id_habilidad}>
+              <td>{habilidad.id_habilidad}</td>
+              <td>{habilidad.descripcion}</td>
+              <td>{habilidad.id_persona}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+export default VentanaHabilidades;
+
+

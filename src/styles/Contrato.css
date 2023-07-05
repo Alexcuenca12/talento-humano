@@ -153,3 +153,8 @@ display: flex;
   color: #ff9800;
 
 }
+
+.field:has(input:required) label:after{
+  content: "  *";
+  color: red;
+} 
