@@ -57,6 +57,7 @@ class ContratoCont extends React.Component {
                                             <Calendar
                                                 id="inicio"
                                                 name="inicio"
+                                        
 
                                             />
                                             <label htmlFor="inicio">Fecha Inicio</label>
@@ -82,6 +83,8 @@ class ContratoCont extends React.Component {
                                             <InputText
                                                 id="anios"
                                                 name="anios"
+                                            
+                                                
                                             />
                                             <label htmlFor="anios">Años de Duracion</label>
                                         </span>

@@ -382,9 +382,6 @@ const ContratoContext = () => {
 
     };
 
-
-
-
     useEffect(() => {
         obtenerContratos();
         obtenerPersonas();
