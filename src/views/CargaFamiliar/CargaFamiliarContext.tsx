@@ -20,7 +20,7 @@ const Persona = () => {
     const [apellido, setApellido] = useState('');
     const [cedula, setCedula] = useState('');
 
-    const [fechaNacimiento, setFechaNacimiento] = useState<string | Date | Date[] | null>(null);
+    const [fechaNacimiento, setFechaNacimiento] = useState<Date | null>(null);
 
     const [cargaFamiliar, setCargaFamiliar] = useState<ICargaFamiliar[]>([]);
 
@@ -97,7 +97,7 @@ const Persona = () => {
         setNombre(rowData.nombre_pariente.toString());
         setApellido(rowData.apellido_pariente.toString());
         setCedula(rowData.cedula.toString());
-        setFechaNacimiento(rowData.fecha_nacimiento ? new Date(rowData.fecha_nacimiento.toString()) : null);
+        setFechaNacimiento(rowData.fecha_nacimiento  ? new Date(rowData.fecha_nacimiento.toString()) : null );
 
         setIsEditMode(true);
         setEditingCargaFamiliar(rowData);
@@ -234,6 +234,8 @@ const Persona = () => {
                                                       name="institution"
                                                       dateFormat="dd/mm/yy"
                                                       value={fechaNacimiento}
+                                                      onChange={(e) => setFechaNacimiento(e.value as Date | null)}
+
                                                       showIcon />
 
                                         </div>
