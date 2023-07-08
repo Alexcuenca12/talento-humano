@@ -1,6 +1,4 @@
 
-// http://localhost:8080/api/habilidades/read');
-//http://localhost:8080/api/habilidades/create
 import React, { useState, useEffect, ChangeEvent } from 'react';
 
 interface Habilidad {
@@ -10,8 +8,11 @@ interface Habilidad {
 }
 
 const VentanaHabilidades = () => {
+
   const [descripcion, setDescripcion] = useState('');
   const [habilidades, setHabilidades] = useState<Habilidad[]>([]);
+
+  
   const [idPersona, setIdPersona] = useState<number>(1); // Variable de estado para el id_persona
 
   const handleDescripcionChange = (event: ChangeEvent<HTMLInputElement>) => {

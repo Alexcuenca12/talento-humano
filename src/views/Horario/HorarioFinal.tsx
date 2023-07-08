@@ -11,12 +11,12 @@ interface Horario {
     horario: string;
     dias: string;
     distributivo: string;
-    id_persona: number;
+    id_persona?: number | null;
     id_periodoacademico: number;
 }
 
 interface IPersona {
-    id_persona: number;
+    id_persona?: number | null;
     ci_pasaporte: string;
     apellidos: string;
     nombres: string;
@@ -62,14 +62,19 @@ const HorarioContext = () => {
     const [horario, sethorario] = useState('');
     const [dias, setdias] = useState('');
     const [distributivo, setdistributivo] = useState('');
-    const [idPersona, setIdPersona] = useState<number>(1);
-    const [idPeriodoAca, setIdPeriodoAca] = useState<number>(1);
+    const [idPersona, setIdPersona] = useState<number | null>(null);
+    const [idPeriodoAca, setIdPeriodoAca] = useState<number | null>(null);
     const [Horarios, setHorarios] = useState<Horario[]>([]);
 
     const [HorarioSeleccionado, setHorarioSeleccionado] = useState<Horario | null>(null);
     const [editMode, setEditMode] = useState(false);
     const [horarioEditar, setHorarioEditar] = useState<Horario | null>(null);
     const [isEditing, setIsEditing] = useState(false);
+    const [selectedOption, setSelectedOption] = useState<IPersona | null>(null);
+
+
+
+
 
 
     const handleperiodoChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -91,6 +96,16 @@ const HorarioContext = () => {
         const inputValue = event.target.value;
         setdistributivo(inputValue);
     };
+
+    const handleSelectChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedId = parseInt(event.target.value);
+        const selectedPersona = personas.find((persona) => persona.id_persona === selectedId);
+        setSelectedOption(selectedPersona || null);
+      };
+      
+
+
+
 
     const [personas, setPersonas] = useState<IPersona[]>([]);
     const [periodosaca, setPeriodoAca] = useState<IPeriodo_Aca[]>([]);
@@ -142,6 +157,14 @@ const HorarioContext = () => {
         setIsEditing(false);
         if (editMode && horarioEditar) {
 
+            if (!selectedOption) {
+                return swal({
+                    title: "Horario",
+                    text: "Debe seleccionar una persona",
+                    icon: "warning"
+                });
+            }
+
             try {
 
                 if (!periodo || !horario || !dias || !distributivo) {
@@ -192,11 +215,15 @@ const HorarioContext = () => {
             }
         } else {
             setIsEditing(false);
-            const persona = personas.find((p) => p.id_persona === idPersona);
-            if (!persona) {
-                console.log('No se encontró la persona con el ID especificado');
-                return;
+            if (!selectedOption) {
+                return swal({
+                    title: "Horario",
+                    text: "Debe seleccionar una persona",
+                    icon: "warning"
+                });
             }
+            
+           
 
             const periodoAca = periodosaca.find((p) => p.id_periodoacademico === idPeriodoAca);
             if (!periodoAca) {
@@ -211,14 +238,14 @@ const HorarioContext = () => {
                 horario: horario,
                 dias: dias,
                 distributivo: distributivo,
-                id_persona: persona.id_persona,
+                id_persona: selectedOption.id_persona !== null ? selectedOption.id_persona : undefined,
                 id_periodoacademico: periodoAca.id_periodoacademico,
 
 
 
             };
 
-            console.log('Persona con ID: ' + persona.id_persona);
+         
 
             if (!periodo || !horario || !dias || !distributivo) {
 
@@ -441,6 +468,24 @@ const HorarioContext = () => {
                                 </span>
                             </div>
                         </div>
+                        <div className="input-container-horario">
+                            <div className="p-inputgroup fieldH">
+                                <span className="p-float-label card flex justify-content-center">
+                                    <select value={selectedOption ? String(selectedOption.id_persona) : ''} onChange={handleSelectChange}>
+                                        <option value="">Seleccionar opción</option>
+                                        {personas.map((persona) => (
+                                            <option key={persona.id_persona} value={String(persona.id_persona)}>
+                                                {persona.apellidos}
+                                            </option>
+                                        ))}
+                                    </select>
+                                    
+                                </span>
+                            </div>
+                        </div>
+
+
+
 
 
                     </div>
