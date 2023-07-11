@@ -1,10 +1,10 @@
 export interface IPersona {
   id_persona?: Number;
-  ci_pasaporte: String;
+  ci_pasaporte: Number;
   apellidos: String;
   nombres: String;
   pais_nacimiento: String;
-  edad: String;
+  edad: Number;
   genero: String;
   sexo: String;
   estado_civil: String;
@@ -17,7 +17,7 @@ export interface IPersona {
   parroquia_recidencial: String;
   calle_principal: String;
   calle_secundaria: String;
-  numero_casa: String;
+  numero_casa: Number;
   sector: String;
   referencia: String;
   telefono: String;

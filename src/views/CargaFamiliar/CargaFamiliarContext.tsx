@@ -1,3 +1,5 @@
+import "../../styles/CargaFamiliar.css";
+import { Panel } from "primereact/panel";
 import React, {useState, useEffect} from 'react';
 import {InputText} from 'primereact/inputtext';
 import {Button} from 'primereact/button';
@@ -10,176 +12,24 @@ import {Card} from "primereact/card";
 import cardHeader from "../../shared/CardHeader";
 import {Fieldset} from "primereact/fieldset";
 import {Divider} from "primereact/divider";
-import {CargaFamiliarService} from "../../services/CargaFamiliarService";
-import {ICargaFamiliar} from "../../interfaces/Primary/ICargaFamiliar";
-import {IPersona} from "../../interfaces/Primary/IPersona";
-
 
 const Persona = () => {
     const [nombre, setNombre] = useState('');
-    const [apellido, setApellido] = useState('');
-    const [cedula, setCedula] = useState('');
+    const [email, setEmail] = useState('');
 
-    const [fechaNacimiento, setFechaNacimiento] = useState<Date | null>(null);
-
-    const [cargaFamiliar, setCargaFamiliar] = useState<ICargaFamiliar[]>([]);
-
-    const [selectedCargaFamiliar, setSelectedCargaFamiliar] = useState<ICargaFamiliar | null>(null);
-    const [isEditMode, setIsEditMode] = useState(false);
-
-    const [editingCargaFamiliar, setEditingCargaFamiliar] = useState<ICargaFamiliar | null>(null);
-    useEffect(() => {
-        fetchCargaFamiliar();
-    }, []);
-
-    const fetchCargaFamiliar = () => {
-        new CargaFamiliarService().getAll().then((data) => {
-            setCargaFamiliar(data);
-        });
-    };
-
-
-    const cargaBodyTemplate = (cargaFamiliarObj: ICargaFamiliar) => {
-        return <div className="flex">
-            <div className="mr-4">
-                <h2 className="text-3xl">Cedula: </h2>
-                <p className="text-2xl">{cargaFamiliarObj.cedula}</p>
-            </div>
-            <div className="mr-4">
-                <h2 className="text-3xl">Nombre: </h2>
-                <p className="text-2xl">{cargaFamiliarObj.nombre_pariente}</p>
-            </div>
-            <div className="mr-4 ">
-                <h2 className="text-3xl">Apellido: </h2>
-                <p className="text-2xl">{cargaFamiliarObj.apellido_pariente}</p>
-            </div>
-            <div className=" ">
-                <h2 className="text-3xl">Fecha de Nacimiento: </h2>
-                <p className="text-2xl">{String (cargaFamiliarObj.fecha_nacimiento) }</p>
-            </div>
-        </div>;
-    };
-
-    const persona: IPersona = {
-        apellidos: "",
-        calle_principal: "",
-        calle_secundaria: "",
-        carnet_conadis: "",
-        celular: "",
-        ci_pasaporte: "",
-        correo: "",
-        correo_institucional: "",
-        discapacidad: false,
-        edad: "",
-        estado_civil: "",
-        etnia: "",
-        foto: "",
-        foto_carnet: "",
-        genero: "",
-        idioma_raiz: "",
-        idioma_secundario: "",
-        nombres: "",
-        numero_casa: "",
-        pais_nacimiento: "",
-        pais_residencia: "",
-        parroquia_recidencial: "",
-        porcentaje_discapacidad: "",
-        referencia: "",
-        sector: "",
-        sexo: "",
-        telefono: "",
-        tipo_discapacidad: "",
-        tipo_sangre: ""
-        // Propiedades de la persona
-    };
-
-    const editCargaFamiliar = (rowData: ICargaFamiliar) => {
-        setNombre(rowData.nombre_pariente.toString());
-        setApellido(rowData.apellido_pariente.toString());
-        setCedula(rowData.cedula.toString());
-        setFechaNacimiento(rowData.fecha_nacimiento  ? new Date(rowData.fecha_nacimiento.toString()) : null );
-
-        setIsEditMode(true);
-        setEditingCargaFamiliar(rowData);
-    };
-
-
-    const handleSubmit = (e: React.SyntheticEvent) => {
+    const handleSubmit = (e: { preventDefault: () => void; }) => {
         e.preventDefault();
+        // Aquí puedes realizar las acciones necesarias con los datos del formulario, como enviarlos a un servidor
 
-        if (selectedCargaFamiliar) {
-            const updatedCargaFamiliar: ICargaFamiliar = {
-                ...selectedCargaFamiliar,
-                nombre_pariente: nombre,
-                apellido_pariente: apellido,
-                cedula: cedula,
-                fecha_nacimiento: Array.isArray(fechaNacimiento) && fechaNacimiento.length > 0 ? new Date(fechaNacimiento[0]) : null
-            };
-            const id: number = selectedCargaFamiliar.id_cargaFamiliar || 0;
-
-            new CargaFamiliarService()
-                .updateCarga(id, updatedCargaFamiliar)
-                .then((response) => {
-                    console.log(response);
-                    fetchCargaFamiliar();
-                    resetForm();
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        } else {
-            const newCargaFamiliar: ICargaFamiliar = {
-                nombre_pariente: nombre,
-                apellido_pariente: apellido,
-                cedula: cedula,
-                fecha_nacimiento: Array.isArray(fechaNacimiento) && fechaNacimiento.length > 0 ? new Date(fechaNacimiento[0]) : null,
-                persona: persona
-            };
-
-            new CargaFamiliarService()
-                .saveCarga(newCargaFamiliar)
-                .then((response) => {
-                    console.log(response);
-                    fetchCargaFamiliar();
-                    resetForm();
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        }
-    };
-
-
-    const resetForm = () => {
-        setSelectedCargaFamiliar(null);
+        // Limpia los campos después de enviar el formulario
         setNombre('');
-        setApellido('');
-        setCedula('');
-        setFechaNacimiento(null);
+        setEmail('');
     };
-
-    const cancelarEdicion = () => {
-        resetForm();
-        setIsEditMode(false);
-    };
-
-
-
-    const eliminarCargaFamiliar = (id: number | undefined) => {
-        if (id !== undefined) {
-            new CargaFamiliarService()
-                .deleteCarga(Number(id))
-                .then(() => {
-                    fetchCargaFamiliar();
-                    window.alert('Carga familiar eliminada correctamente.');
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        }
-    };
-
-
+    const comboOptions = [
+        {label: 'Opción 1', value: 'opcion1'},
+        {label: 'Opción 2', value: 'opcion2'},
+        {label: 'Opción 3', value: 'opcion3'}
+    ];
 
     return (
         <Fieldset className="fgrid col-fixed">
@@ -188,12 +38,12 @@ const Persona = () => {
                 header={cardHeader}
                 className="border-solid border-blue-800 border-3">
                 <div className="h1-rem">
-                    <Divider align='center'>
+                    <Divider align='center' >
                         <h1 className="text-7xl font-smibold lg:md-2">Carga Familiar</h1>
                     </Divider>
                 </div>
                 <div className="flex justify-content-between flex-wrap">
-                    <form onSubmit={handleSubmit}>
+                    <form >
                         <div className="flex flex-wrap flex-row ">
                             <div className="flex align-items-center justify-content-center">
                                 <div className="flex flex-column">
@@ -201,42 +51,33 @@ const Persona = () => {
                                         className="flex flex-row flex-wrap w-full h-full  justify-content-between  flex-grow-1 ">
                                         <div
                                             className="flex align-items-center justify-content-center w-auto pr-2">
-                                            <label className="text-3xl font-medium w-full min-w-min">Cedula: </label>
-                                            <InputText type="number" placeholder="Ingrese su Cedula" value={cedula}
-                                                       className="w-auto min-w-min text-2xl" onChange={({target})=> setCedula(target.value)} />
+                                            <label  className="text-3xl font-medium w-full min-w-min">Cedula: </label>
+                                            <InputText type="number" placeholder="Ingrese su Cedula" className="w-auto min-w-min text-2xl"/>
                                         </div>
                                         <div
                                             className="flex align-items-center justify-content-center w-auto pr-2">
                                             <label className="text-3xl font-medium w-full min-w-min">Nombres:</label>
-                                            <InputText type="text" placeholder="Ingrese sus Nombres" value={nombre}
-                                                       className="w-auto min-w-min text-2xl" onChange={({target})=> setNombre(target.value)}/>
+                                            <InputText type="text" placeholder="Ingrese sus Nombres" className="w-auto min-w-min text-2xl"/>
                                         </div>
 
                                         <div
                                             className="flex align-items-center justify-content-center w-auto pr-2 ">
                                             <label className="text-3xl font-medium w-full min-w-min">Apellidos:</label>
-                                            <InputText type="text" placeholder="Ingrese sus Apellidos" value={apellido}
-                                                       className="w-auto min-w-min text-2xl" onChange={({target})=> setApellido(target.value)}/>
+                                            <InputText type="text" placeholder="Ingrese sus Apellidos" className="w-auto min-w-min text-2xl"/>
 
                                         </div>
 
                                     </div>
                                     <div
                                         className="flex flex-row  w-full h-full  justify-content-around  flex-grow-1 ">
-
                                         <div
                                             className="flex align-items-center justify-content-center w-auto h-6rem">
-                                            <label className="text-3xl font-medium w-auto min-w-min">Fecha de
-                                                nacimiento:</label>
-                                            <Calendar placeholder="Ingrese su Fecha de Nacimiento"
-                                                      className="w-full min-w-min text-4xl"
+                                            <label  className="text-3xl font-medium w-auto min-w-min">Fecha de nacimiento:</label>
+                                            <Calendar placeholder="Ingrese su Fecha de Nacimiento"  className="w-full min-w-min text-4xl"
                                                       id="institution"
                                                       name="institution"
                                                       dateFormat="dd/mm/yy"
-                                                      value={fechaNacimiento}
-                                                      onChange={(e) => setFechaNacimiento(e.value as Date | null)}
-
-                                                      showIcon />
+                                                      showIcon/>
 
                                         </div>
                                     </div>
@@ -244,15 +85,15 @@ const Persona = () => {
                                         className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
                                         <div
                                             className="flex align-items-center justify-content-center w-auto min-w-min">
-                                            <Button type="submit"
-                                                    className="w-full text-3xl min-w-min " label={isEditMode ? 'Actualizar' : 'Agregar'}
+                                            <Button type="submit" label="Agregar"
+                                                    className="w-full text-3xl min-w-min "
                                                     rounded/>
                                         </div>
                                         <div
                                             className="flex align-items-center justify-content-center w-auto min-w-min">
                                             <Button type="button" label="Cancel"
                                                     className="w-full text-3xl min-w-min"
-                                                    rounded onClick={cancelarEdicion}/>
+                                                    rounded/>
                                         </div>
                                     </div>
                                 </div>
@@ -275,24 +116,13 @@ const Persona = () => {
                 </div>
 
 
-                <DataTable tableStyle={{minWidth: '50rem'}} className="mt-5  w-full h-full text-3xl font-medium "
-                           value={cargaFamiliar}>
-                    <Column header="Carga Familiar"
-                            headerStyle={{backgroundColor: '#0C3255', color: 'white'}}
-                            body={cargaBodyTemplate}></Column>
+                <DataTable tableStyle={{minWidth: '50rem'}} className="mt-5  w-full h-full text-3xl font-medium ">
+                    <Column field="Carga Familiar" header="Carga Familiar"
+                            headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                     <Column field="PDF" header="PDF"
                             headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
-                    <Column
-                        field="Acciones"
-                        header="Acciones"
-                        headerStyle={{ backgroundColor: '#0C3255', color: 'white' }}
-                        body={(rowData: ICargaFamiliar) => (
-                            <>
-                                <Button icon="pi pi-pencil" className="p-button-rounded p-button-text mr-4" onClick={() => editCargaFamiliar(rowData)} />
-                                <Button icon="pi pi-trash" className="p-button-rounded p-button-danger" onClick={() => eliminarCargaFamiliar(rowData.id_cargaFamiliar)} />
-                            </>
-                        )}
-                    />
+                    <Column field="Acciones" header="Acciones"
+                            headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
 
                 </DataTable>
             </Card>
