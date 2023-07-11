@@ -1,4 +1,4 @@
-export interface IHorario{
+export interface IHorarioData{
     id_horario?: Number;
     periodo: string;
     horario: string;

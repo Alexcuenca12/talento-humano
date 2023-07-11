@@ -1,220 +1,440 @@
-import React, { useEffect,useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { FileUpload } from 'primereact/fileupload';
 import { Button } from 'primereact/button';
-import { Calendar } from 'primereact/calendar';
+import { Calendar, CalendarChangeEvent } from 'primereact/calendar';
 import '../../styles/Contrato.css';
+import { IContratoData } from '../../interfaces/Primary/IContrato';
+import { ContratoService } from '../../services/ContratoService'
+import swal from 'sweetalert';
 
 
-class ContratoCont extends React.Component {
-    constructor(props: {} | Readonly<{}>) {
-        super(props);
-        this.state = {
-            firstName: '',
-            lastName: '',
-            email: '',
-            phone: ''
-        };
-    }
 
-    handleChange = (event: { target: { name: any; value: any; }; }) => {
-        const { name, value } = event.target;
-        this.setState({ [name]: value });
-    }
+function ContratoContext() {
+    const [contra1, setcontra1] = useState<IContratoData[]>([]);
+    const [formData, setFormData] = useState<IContratoData>({
+        id_contrato: 0,
+        fecha_inicio: "",
+        fecha_fin: "",
+        anio_duracion: "",
+        horas_diarias: "",
+        cargo: "",
+        salario: "",
+        evidencia: "",
 
-    handleSubmit = (event: { preventDefault: () => void; }) => {
-        event.preventDefault();
-        // Aquí puedes agregar la lógica para enviar los datos del formulario
-    }
-    
+    });
 
-    render() {
-        
-        return (
-            <div className='div-page-contrato'>
-                <div className='div-contenedor-contrato div-general-contrato'>
-                    <div>
-                        <h1 className="page-title-contrato">INSTITULO SUPERIOR TECNOLOGICO DEL AZUAY</h1>
+    const [editMode, setEditMode] = useState(false);
+    const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
+    const contratService = new ContratoService();
 
-                    </div>
-                    <div className="title-container-contrato">
-
-                        <br />
-                        <div className="title-line-contrato"></div>
-                        <br />
-                        <h1 className="page-title-contrato">CONTRATO</h1>
-                        <div className="title-line-contrato"></div>
-                    </div>
-
-                    <div className='divisor-contrato  '>
+    useEffect(() => {
+        contratService.getAll()
+            .then((data) => {
+                setcontra1(data);
+            })
+            .catch((error) => {
+                console.error("Error al obtener los datos:", error);
+            });
+    }, []);
 
 
-                        <form onSubmit={this.handleSubmit}>
-                            <div className="form-rows-contrato">
-                                <div className="input-container-contrato">
-                                    <div className="p-inputgroup">
-                                        <span className="p-float-label card flex justify-content-center">
-                                            <Calendar
-                                                id="inicio"
-                                                name="inicio"
-                                        
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
 
+        if (!formData.fecha_inicio || !formData.anio_duracion || !formData.fecha_fin || !formData.cargo || !formData.horas_diarias || !formData.salario) {
+            swal('Advertencia', 'Por favor, complete todos los campos', 'warning');
+            return;
+        }
+
+        // Validar solo números en anio_duracion
+        const anioDuracionRegex = /^\d+$/;
+        if (!anioDuracionRegex.test(formData.anio_duracion)) {
+            swal('Advertencia', 'Por favor, ingrese solo números en el campo Años de Duracion', 'warning');
+            return;
+        }
+
+        const salarioRegex = /^\d+$/;
+        if (!salarioRegex.test(formData.salario)) {
+            swal('Advertencia', 'Por favor, ingrese solo números en el campo Salario', 'warning');
+            return;
+        }
+
+        const horasRegex = /^\d+$/;
+        if (!horasRegex.test(formData.horas_diarias)) {
+            swal('Advertencia', 'Por favor, ingrese solo números en el campo Horas Diarias', 'warning');
+            return;
+        }
+
+        const fechaInicio = new Date(formData.fecha_inicio);
+        const fechaFin = new Date(formData.fecha_fin);
+
+        // Validar fecha de inicio y fecha de fin
+        if (fechaInicio > fechaFin) {
+            swal('Advertencia', 'La fecha de inicio debe ser menor que la fecha de fin', 'warning');
+            return;
+        }
+
+
+        contratService
+            .save(formData)
+            .then((response) => {
+                resetForm();
+                swal('Contrato', 'Datos Guardados Correctamente', 'success');
+                contratService.getAll()
+                    .then((data) => {
+                        setcontra1(data);
+                    })
+                    .catch((error) => {
+                        console.error("Error al obtener los datos:", error);
+                    });
+            })
+            .catch((error) => {
+                console.error('Error al enviar el formulario:', error);
+            });
+    };
+
+    const handleDelete = (id: number | undefined) => {
+        if (id !== undefined) {
+            swal({
+                title: 'Confirmar Eliminación',
+                text: '¿Estás seguro de eliminar este registro?',
+                icon: 'warning',
+                buttons: {
+                    cancel: {
+                        text: 'Cancelar',
+                        visible: true,
+                        className: 'cancel-button',
+                    },
+                    confirm: {
+                        text: 'Sí, eliminar',
+                        className: 'confirm-button',
+                    },
+                },
+            }).then((confirmed) => {
+                if (confirmed) {
+                    contratService
+                        .delete(id)
+                        .then(() => {
+                            setcontra1(contra1.filter((contra) => contra.id_contrato !== id));
+                            swal('Eliminado', 'El registro ha sido eliminado correctamente', 'success');
+                        })
+                        .catch((error) => {
+                            console.error('Error al eliminar el registro:', error);
+                            swal('Error', 'Ha ocurrido un error al eliminar el registro', 'error');
+                        });
+                }
+            });
+        }
+    };
+
+    const handleEdit = (id: number | undefined) => {
+        if (id !== undefined) {
+            const editItem = contra1.find(contra => contra.id_contrato === id);
+            if (editItem) {
+                setFormData(editItem);
+                setEditMode(true);
+                setEditItemId(id);
+            }
+        }
+    };
+
+    const handleUpdate = (e: React.FormEvent) => {
+        e.preventDefault();
+        if (editItemId !== undefined) {
+            contratService.update(Number(editItemId), formData as IContratoData)
+                .then((response) => {
+                    swal({
+                        title: "Contrato",
+                        text: "Datos actualizados correctamente",
+                        icon: "success"
+                    });
+                    setFormData({
+                        fecha_inicio: "",
+                        fecha_fin: "",
+                        anio_duracion: "",
+                        horas_diarias: "",
+                        salario: "",
+                        cargo: "",
+                        evidencia: "",
+
+                    });
+                    setcontra1(contra1.map((contra) => contra.id_contrato === editItemId ? response : contra));
+                    setEditMode(false);
+                    setEditItemId(undefined);
+                })
+                .catch((error) => {
+                    console.error("Error al actualizar el formulario:", error);
+                });
+        }
+    };
+
+    const resetForm = () => {
+        setFormData({
+            fecha_inicio: "",
+            fecha_fin: "",
+            anio_duracion: "",
+            horas_diarias: "",
+            salario: "",
+            cargo: "",
+            evidencia: "",
+
+        });
+        setEditMode(false);
+        setEditItemId(undefined);
+    };
+
+
+
+    return (
+        <div className='div-page-contrato'>
+            <div className='div-contenedor-contrato div-general-contrato'>
+                <div>
+                    <h1 className="page-title-contrato">INSTITULO SUPERIOR TECNOLOGICO DEL AZUAY</h1>
+
+                </div>
+                <div className="title-container-contrato">
+
+                    <br />
+                    <div className="title-line-contrato"></div>
+                    <br />
+                    <h1 className="page-title-contrato">CONTRATO</h1>
+                    <div className="title-line-contrato"></div>
+                </div>
+                <form onSubmit={editMode ? handleUpdate : handleSubmit}>
+
+                    <div className=' '>
+
+
+
+                        <div className="form-rows-contrato">
+                            <div className="input-container-contrato">
+                                <div className="p-inputgroup field">
+                                    <span className="p-float-label card flex justify-content-center">
+                                        <Calendar
+                                            onChange={(e) => setFormData({ ...formData, fecha_inicio: e.value instanceof Date ? e.value.toISOString() : '' })}
+                                            value={typeof formData.fecha_inicio === 'string' ? new Date(formData.fecha_inicio) : null}
+
+                                            required
+                                        />
+                                        <label htmlFor="inicio">Fecha Inicio </label>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="input-container-contrato">
+                                <div className="p-inputgroup field">
+                                    <span className="p-float-label card flex justify-content-center">
+                                        <Calendar
+                                            onChange={(e) => setFormData({ ...formData, fecha_fin: e.value instanceof Date ? e.value.toISOString() : '' })}
+                                            value={typeof formData.fecha_fin === 'string' ? new Date(formData.fecha_fin) : null}
+                                            required
+                                        />
+                                        <label htmlFor="fin">Fecha Fin </label>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="input-container-contrato">
+                                <div className="p-inputgroup field">
+                                    <span className="p-float-label card flex justify-content-center">
+                                        <InputText
+                                            id="anios"
+                                            name="anios"
+                                            value={formData.anio_duracion}
+                                            onChange={(e) => setFormData({ ...formData, anio_duracion: e.target.value })}
+                                            required
+                                        />
+                                        <label htmlFor="anios">Años de Duracion</label>
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="input-container-contrato">
+                                <div className="p-inputgroup field">
+                                    <span className="p-float-label card flex justify-content-center">
+                                        <InputText
+                                            id="hora"
+                                            name="hora"
+                                            value={formData.horas_diarias}
+                                            onChange={(e) => setFormData({ ...formData, horas_diarias: e.target.value })}
+                                            required
+                                        />
+                                        <label htmlFor="hora">Horas</label>
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="input-container-contrato">
+                                <div className="p-inputgroup field">
+                                    <span className="p-float-label card flex justify-content-center">
+                                        <InputText
+                                            id="cargo"
+                                            name="cargo"
+                                            value={formData.cargo}
+                                            onChange={(e) => setFormData({ ...formData, cargo: e.target.value })}
+                                            required
+                                        />
+                                        <label htmlFor="cargo">Cargo</label>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="input-container-contrato">
+                                <div className="p-inputgroup field">
+                                    <span className="p-float-label card flex justify-content-center">
+                                        <InputText
+                                            id="salario"
+                                            name="salario"
+                                            pattern='[0-9,]*'
+                                            value={formData.salario}
+                                            onChange={(e) => setFormData({ ...formData, salario: e.target.value })}
+                                            required
+                                        />
+                                        <label htmlFor="salario">Salario</label>
+                                    </span>
+                                </div>
+                            </div>
+
+                            <div className="input-container-contrato">
+                                <div className="p-inputgroup field">
+                                    <span className="p-float-label card flex justify-content-center">
+                                        <p>
+                                            SUBIR PDF:
+                                            <br />
+                                            <input type="file" accept="application/pdf"
+
+                                                onChange={(e) => setFormData({ ...formData, evidencia: e.target.value })}
+                                                required
                                             />
-                                            <label htmlFor="inicio">Fecha Inicio</label>
-                                        </span>
-                                    </div>
+                                        </p>
+                                    </span>
                                 </div>
+                            </div>
 
-                                <div className="input-container-contrato">
-                                    <div className="p-inputgroup">
-                                        <span className="p-float-label card flex justify-content-center">
-                                            <Calendar
-                                                id="fin"
-                                                name="fin"
-                                            />
-                                            <label htmlFor="fin">Fecha Fin</label>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div className="input-container-contrato">
-                                    <div className="p-inputgroup">
-                                        <span className="p-float-label card flex justify-content-center">
-                                            <InputText
-                                                id="anios"
-                                                name="anios"
-                                            
-                                                
-                                            />
-                                            <label htmlFor="anios">Años de Duracion</label>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="input-container-contrato">
-                                    <div className="p-inputgroup">
-                                        <span className="p-float-label card flex justify-content-center">
-                                            <InputText
-                                                id="hora"
-                                                name="hora"
-                                            />
-                                            <label htmlFor="hora">Horas</label>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="input-container-contrato">
-                                    <div className="p-inputgroup">
-                                        <span className="p-float-label card flex justify-content-center">
-                                            <InputText
-                                                id="cargo"
-                                                name="cargo"
-                                            />
-                                            <label htmlFor="cargo">Cargo</label>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div className="input-container-contrato">
-                                    <div className="p-inputgroup">
-                                        <span className="p-float-label card flex justify-content-center">
-                                            <InputText
-                                                id="salario"
-                                                name="salario"
-                                            />
-                                            <label htmlFor="salario">Salario</label>
-                                        </span>
-                                    </div>
-                                </div>
-
-                                <div className="input-container-contrato">
-                                    <div className="p-inputgroup">
-                                        <span className="p-float-label card flex justify-content-center">
-                                            <p>
-                                                SUBIR PDF:
-                                                <br />
-                                                <input type="file" name="evidencia" accept="pdf"
-                                                    required />
-                                            </p>
-                                        </span>
-                                    </div>
-                                </div>
-                                <div className="">
-                                    <Button type="button" className='button-contrato' label="GUARDAR" style={{
+                            <div className="">
+                                <Button type="button"
+                                    label={editMode ? 'Actualizar' : 'Guardar'} className='button-contrato' style={{
                                         background: '#ff9800',
                                         borderRadius: '10%',
-                                        fontSize:'10px',
-                                        justifyContent:'center'
+                                        fontSize: '10px',
+                                        justifyContent: 'center'
+                                    }}
+                                    onClick={editMode ? handleUpdate : handleSubmit}
+                                />
+
+                            </div>
+                        </div>
+
+                        <div className=''>
+                            <div className="table-container-contrato">
+                                <table className="data-table-contrato">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha Inicio</th>
+                                            <th>Fecha Fin </th>
+                                            <th>Años de Duración</th>
+                                            <th>Horas</th>
+                                            <th>Cargo</th>
+                                            <th>Salario</th>
+                                            <th>Operaciones</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {contra1.map((contrato) => (
+                                            <tr key={contrato.id_contrato?.toString()}>
+                                                <td>{contrato.fecha_inicio ? new Date(contrato.fecha_inicio).toLocaleDateString('es-ES', {
+                                                    year: 'numeric',
+                                                    month: '2-digit',
+                                                    day: '2-digit'
+                                                }) : ''}</td>
+                                                <td>{contrato.fecha_fin ? new Date(contrato.fecha_fin).toLocaleDateString('es-ES', {
+                                                    year: 'numeric',
+                                                    month: '2-digit',
+                                                    day: '2-digit'
+                                                }) : ''}</td>
+                                                <td>{contrato.anio_duracion}</td>
+                                                <td>{contrato.horas_diarias}</td>
+                                                <td>{contrato.cargo}</td>
+                                                <td>{contrato.salario}</td>
+                                                <td>
+                                                    <Button
+                                                        type="button"
+                                                        className="button-contrato"
+                                                        label="✎"
+
+                                                        style={{
+                                                            background: '#ff9800',
+                                                            borderRadius: '10%',
+                                                            fontSize: '30px',
+                                                            color: "black",
+                                                            justifyContent: 'center',
+                                                            marginRight: '5px' // Espacio entre los botones
+                                                        }}
+                                                        onClick={() => handleEdit(contrato.id_contrato?.valueOf())}
+                                                    // Agrega el evento onClick para la operación de editar
+
+                                                    />
+                                                    <Button
+                                                        type="button"
+                                                        className="button-contrato"
+                                                        label="✘"
+                                                        style={{
+                                                            background: '#ff0000',
+                                                            borderRadius: '10%',
+                                                            fontSize: '30px',
+                                                            color: "black",
+                                                            justifyContent: 'center'
+                                                        }}
+                                                        onClick={() => handleDelete(contrato.id_contrato?.valueOf())}
+                                                    // Agrega el evento onClick para la operación de eliminar
+
+                                                    />
+                                                </td>
+
+
+
+                                            </tr>
+                                        ))}
+
+                                    </tbody>
+                                </table>
+                            </div>
+                            <br />
+                            <div className='dividir-botons-final-contrato'>
+                                <div className="">
+                                    <Button className='button-circular-contrato' label="AGREGAR" style={{
+                                        background: '#ff9800',
+                                        borderRadius: '10%',
+                                        fontSize: '10px',
+                                        justifyContent: 'center'
+                                    }} />
+                                </div>
+                                <br />
+                                <div className="">
+                                    <Button className='button-circular-contrato' label="GUARDAR" style={{
+                                        background: '#ff9800',
+                                        borderRadius: '10%',
+                                        fontSize: '10px',
+                                        justifyContent: 'center'
                                     }} />
                                 </div>
                             </div>
 
-                            <div className=''>
-                                <div className="table-container-contrato">
-                                    <table className="data-table-contrato">
-                                        <thead>
-                                            <tr>
-                                                <th>Fecha Inicio</th>
-                                                <th>Fecha Fin </th>
-                                                <th>Años de Duración</th>
-                                                <th>Horas</th>
-                                                <th>Cargo</th>
-                                                <th>Salario</th>
+                        </div>
 
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>06/09/2023</td>
-                                                <td>06/10/2023</td>
-                                                <td>3 Años</td>
-                                                <td>805 horas</td>
-                                                <td>Ninguno</td>
-                                                <td>900</td>
-
-
-                                            </tr>
-                                            <tr>
-                                                <td>18/02/2023</td>
-                                                <td>26/05/2024</td>
-                                                <td>8 Años</td>
-                                                <td>2305 horas</td>
-                                                <td>Ninguno</td>
-                                                <td>990</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <br />
-                                <div className='dividir-botons-final-contrato'>
-                                    <div className="">
-                                        <Button className='button-circular-contrato' label="AGREGAR" style={{
-                                            background: '#ff9800',
-                                            borderRadius: '10%',
-                                            fontSize:'10px',
-                                            justifyContent:'center'
-                                        }} />
-                                    </div>
-                                    <br />
-                                    <div className="">
-                                        <Button className='button-circular-contrato' label="GUARDAR" style={{
-                                            background: '#ff9800',
-                                            borderRadius: '10%',
-                                            fontSize:'10px',
-                                            justifyContent:'center'
-                                        }} />
-                                    </div>
-                                </div>
-
-                            </div>
-                        </form>
 
                     </div>
+                </form>
 
-                </div>
 
 
-            </div >
-        );
-    }
+            </div>
+
+
+        </div >
+
+    );
+
 }
 
-export default ContratoCont;
+export default ContratoContext;

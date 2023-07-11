@@ -63,7 +63,7 @@ const HorarioContext = () => {
     const [dias, setdias] = useState('');
     const [distributivo, setdistributivo] = useState('');
     const [idPersona, setIdPersona] = useState<number | null>(null);
-    const [idPeriodoAca, setIdPeriodoAca] = useState<number | null>(null);
+    const [idPeriodoAca, setIdPeriodoAca] = useState<number>(0);
     const [Horarios, setHorarios] = useState<Horario[]>([]);
 
     const [HorarioSeleccionado, setHorarioSeleccionado] = useState<Horario | null>(null);
@@ -223,7 +223,11 @@ const HorarioContext = () => {
                 });
             }
             
-           
+            const persona = personas.find((p) => p.id_persona === idPersona);
+            if (!persona) {
+                console.log('No se encontró la persona con el ID especificado');
+                return;
+            }
 
             const periodoAca = periodosaca.find((p) => p.id_periodoacademico === idPeriodoAca);
             if (!periodoAca) {
@@ -245,7 +249,7 @@ const HorarioContext = () => {
 
             };
 
-         
+            console.log('Persona con ID: ' + persona.id_persona);
 
             if (!periodo || !horario || !dias || !distributivo) {
 
@@ -342,11 +346,6 @@ const HorarioContext = () => {
 
 
     }, []);
-
-
-
-
-
 
 
     return (

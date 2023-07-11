@@ -7,10 +7,8 @@ import { NavBarUserDisabled } from "../../common/NavBarUserDisabled";
 import { NavBar } from "../../common/NavBar";
 import PersonaContext from "../Persona/PersonaContext";
 import ContratoContext from "../Contrato/ContratoContext";
-import ContratoFinal from "../Contrato/ContratoContext";
 import Instrucc_FormalContext from "../Instruc_Formal/Instrucc_FormalContext";
 import HorarioContext from "../Horario/HorarioContext";
-import HorarioFinal from "../Horario/HorarioContext";
 import CapacitacionesContext from "../Capacitaciones/CapacitacionesContext";
 import Eva_DocenteContext from "../Eva_Docente/Eva_DocenteContext";
 import CargaFamiliarContext from "../CargaFamiliar/CargaFamiliarContext";
@@ -94,14 +92,42 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBar />
-                    <ContratoContext>
-                    <ContratoFinal/>
-                    </ContratoContext>
+                    <ContratoContext/>
                   </>
                 ) : rol === 2 ? (
                   <>
                     <NavBar />
                     <ContratoContext />
+                  </>
+                ) : (
+                  <NavBarUserDisabled />
+                )}
+              </Route>
+              <Route path="/horario">
+                {rol === 1 ? (
+                  <>
+                    <NavBar />
+                    <HorarioContext/>
+                  </>
+                ) : rol === 2 ? (
+                  <>
+                    <NavBar />
+                    <HorarioContext/>
+                  </>
+                ) : (
+                  <NavBarUserDisabled />
+                )}
+              </Route>
+              <Route path="/habilidad">
+                {rol === 1 ? (
+                  <>
+                    <NavBar />
+                    <HabilidadesContext/>
+                  </>
+                ) : rol === 2 ? (
+                  <>
+                    <NavBar />
+                    <HabilidadesContext/>
                   </>
                 ) : (
                   <NavBarUserDisabled />
@@ -123,21 +149,7 @@ export const DashboardRouter = () => {
                 )}
               </Route>
 
-              <Route path="/horario">
-                {rol === 1 ? (
-                  <>
-                    <NavBarDoc />
-                      <HorarioFinal/>
-
-                  </>
-                ) : rol === 2 ? (
-                  <>
-                    <NavBar />
-                  </>
-                ) : (
-                  <NavBarUserDisabled />
-                )}
-              </Route>
+              
 
               <Route path="/carga">
                 {rol === 1 ? (

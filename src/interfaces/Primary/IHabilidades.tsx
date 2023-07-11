@@ -1,6 +1,6 @@
-export interface IHabilidades{
+export interface IHabilidadesData{
     id_habilidades?: Number;
-    descripcion: String;
-    persona: Object;
+    descripcion: string;
+    //persona: Object;
   }
   

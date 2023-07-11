@@ -1,112 +1,262 @@
+import React, { useEffect, useState } from 'react';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
+import '../../styles/Habilidades.css';
+import { IHabilidadesData } from '../../interfaces/Primary/IHabilidades';
+import { HabilidadesService } from '../../services/HabilidadesService'
+import swal from 'sweetalert';
 
-import React, { useState, useEffect, ChangeEvent } from 'react';
+function HabilidadesContext() {
+  const [habi1, sethabi1] = useState<IHabilidadesData[]>([]);
+  const [formData, setFormData] = useState<IHabilidadesData>({
+    id_habilidades: 0,
+    descripcion: "",
+  });
 
-interface Habilidad {
-  id_habilidad: number;
-  descripcion: string;
-  id_persona: number;
-}
-
-const VentanaHabilidades = () => {
-
-  const [descripcion, setDescripcion] = useState('');
-  const [habilidades, setHabilidades] = useState<Habilidad[]>([]);
-
-  
-  const [idPersona, setIdPersona] = useState<number>(1); // Variable de estado para el id_persona
-
-  const handleDescripcionChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setDescripcion(event.target.value);
-  };
-
-  const handleGuardarClick = async () => {
-    const nuevaHabilidad: Habilidad = {
-      id_habilidad: habilidades.length + 1,
-      descripcion: descripcion,
-      id_persona: idPersona, // Utilizar el valor de idPersona
-    };
-
-    try {
-      const response = await fetch('http://localhost:8080/api/habilidades/create', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(nuevaHabilidad),
-      });
-
-      if (response.ok) {
-        // Actualizar la lista de habilidades después de guardar en la base de datos
-        obtenerHabilidades();
-        setDescripcion('');
-      } else {
-        console.log('Error al guardar la habilidad');
-      }
-    } catch (error) {
-      console.log('Error al realizar la llamada a la API', error);
-    }
-  };
-
-  const obtenerHabilidades = async () => {
-    try {
-      const response = await fetch('http://localhost:8080/api/habilidades/read');
-      if (response.ok) {
-        const data = await response.json();
-        setHabilidades(data);
-      } else {
-        console.log('Error al obtener las habilidades');
-      }
-    } catch (error) {
-      console.log('Error al realizar la llamada a la API', error);
-    }
-  };
+  const [editMode, setEditMode] = useState(false);
+  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
+  const habilidadService = new HabilidadesService();
 
   useEffect(() => {
-    obtenerHabilidades();
+    habilidadService.getAll()
+      .then((data) => {
+        sethabi1(data);
+      })
+      .catch((error) => {
+        console.error("Error al obtener los datos:", error);
+      });
   }, []);
 
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (!formData.descripcion) {
+      swal('Advertencia', 'Por favor, complete todos los campos', 'warning');
+      return;
+    }
+
+
+    habilidadService
+      .save(formData)
+      .then((response) => {
+        resetForm();
+        swal('Habilidad', 'Datos Guardados Correctamente', 'success');
+        habilidadService.getAll()
+          .then((data) => {
+            sethabi1(data);
+          })
+          .catch((error) => {
+            console.error("Error al obtener los datos:", error);
+          });
+      })
+      .catch((error) => {
+        console.error('Error al enviar el formulario:', error);
+      });
+  };
+
+  const handleDelete = (id: number | undefined) => {
+    if (id !== undefined) {
+      swal({
+        title: 'Confirmar Eliminación',
+        text: '¿Estás seguro de eliminar este registro?',
+        icon: 'warning',
+        buttons: {
+          cancel: {
+            text: 'Cancelar',
+            visible: true,
+            className: 'cancel-button',
+          },
+          confirm: {
+            text: 'Sí, eliminar',
+            className: 'confirm-button',
+          },
+        },
+      }).then((confirmed) => {
+        if (confirmed) {
+          habilidadService
+            .delete(id)
+            .then(() => {
+              sethabi1(habi1.filter((habi) => habi.id_habilidades !== id));
+              swal('Eliminado', 'El registro ha sido eliminado correctamente', 'success');
+            })
+            .catch((error) => {
+              console.error('Error al eliminar el registro:', error);
+              swal('Error', 'Ha ocurrido un error al eliminar el registro', 'error');
+            });
+        }
+      });
+    }
+  };
+
+  const handleEdit = (id: number | undefined) => {
+    if (id !== undefined) {
+      const editItem = habi1.find(habi => habi.id_habilidades === id);
+      if (editItem) {
+        setFormData(editItem);
+        setEditMode(true);
+        setEditItemId(id);
+      }
+    }
+  };
+
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editItemId !== undefined) {
+      habilidadService.update(Number(editItemId), formData as IHabilidadesData)
+        .then((response) => {
+          swal({
+            title: "Habilidad",
+            text: "Datos actualizados correctamente",
+            icon: "success"
+          });
+          setFormData({
+
+            descripcion: "",
+
+          });
+          sethabi1(habi1.map((habi) => habi.id_habilidades === editItemId ? response : habi));
+          setEditMode(false);
+          setEditItemId(undefined);
+        })
+        .catch((error) => {
+          console.error("Error al actualizar el formulario:", error);
+        });
+    }
+  };
+
+  const resetForm = () => {
+    setFormData({
+      descripcion: "",
+
+    });
+    setEditMode(false);
+    setEditItemId(undefined);
+  };
+
   return (
-    <div>
-      <h2>Administración de habilidades</h2>
+    <div className='div-page-habilidad'>
+      <div className='div-contenedor-habilidad div-general-habilidad'>
+        <div className="title-container-habilidad">
+          <div className="title-line-habilidad"></div>
+          <h1 className="page-title-habilidad">HABILIDADES</h1>
+          <div className="title-line-habilidad"></div>
+        </div>
+        <form onSubmit={editMode ? handleUpdate : handleSubmit}>
+          <div className='contenedor-habilidad'>
 
-      <form>
-        <label>
-          Descripción:
-          <input
-            type="text"
-            value={descripcion}
-            onChange={handleDescripcionChange}
-          />
-        </label>
-        <button type="button" onClick={handleGuardarClick}>
-          Guardar
-        </button>
-      </form>
+            <div className="">
+              <label htmlFor="descripcion">Descripcion de Habilidad:</label>
+              <InputText className="" id="descripcion" name="descripcion"
+                value={formData.descripcion}
+                onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
+                style={{
+                  width: '400px',
+                  height: 'auto',
+                  resize: 'vertical',
+                  overflow: 'hidden',
+                  wordWrap: 'break-word',
+                  fontSize: '16px'
 
-      <h3>Habilidades guardadas:</h3>
+                }}
+              />
+            </div>
+            <br />
+            <div className='div-botons-habilidad'>
+              <Button type="button" label="CANCELAR" className="small-button-habilidad  " style={{ background: 'black' }} onClick={resetForm} />
 
-      <table>
-        <thead>
-          <tr>
-            <th>ID Habilidad</th>
-            <th>Descripción</th>
-            <th>ID Persona</th>
-          </tr>
-        </thead>
-        <tbody>
-          {habilidades.map((habilidad) => (
-            <tr key={habilidad.id_habilidad}>
-              <td>{habilidad.id_habilidad}</td>
-              <td>{habilidad.descripcion}</td>
-              <td>{habilidad.id_persona}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+              <Button type="button" label={editMode ? 'Actualizar' : 'Guardar'} className='small-button-habilidad'  style={{
+                background: '#ff9800',
+                borderRadius: '10%',
+                fontSize: '10px',
+                justifyContent: 'center'
+              }}
+                onClick={editMode ? handleUpdate : handleSubmit}
+              />
+            </div>
+
+          </div>
+          <div className=''>
+            <div className="table-container-habilidad">
+              <table className="data-table-habilidad">
+                <thead>
+                  <tr>
+                    <th>Descripciones Agregadas</th>
+                    <th>Acciones</th>
+                    <th>Operaciones</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {habi1.map((habilidad) => (
+                    <tr key={habilidad.id_habilidades?.toString()}>
+
+                      <td>{habilidad.descripcion}</td>
+                      <td></td>
+                      <td>
+                        <Button
+                          type="button"
+                          className="button-habilidad"
+                          label="✎"
+
+                          style={{
+                            background: '#ff9800',
+                            borderRadius: '10%',
+                            fontSize: '30px',
+                            width: '70px',
+                            height: '50px',
+                            color: "black",
+                            justifyContent: 'center',
+                            marginRight: '5px' // Espacio entre los botones
+                          }}
+                          onClick={() => handleEdit(habilidad.id_habilidades?.valueOf())}
+                        // Agrega el evento onClick para la operación de editar
+
+                        />
+                        <Button
+                          type="button"
+                          className="button-habilidad"
+                          label="✘"
+                          style={{
+                            background: '#ff0000',
+                            borderRadius: '10%',
+                            fontSize: '30px',
+                            width: '70px',
+                            height: '50px',
+                            color: "black",
+                            justifyContent: 'center'
+                          }}
+                          onClick={() => handleDelete(habilidad.id_habilidades?.valueOf())}
+                        // Agrega el evento onClick para la operación de eliminar
+
+                        />
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
+          <br />
+          <div className="div-button-habilidad">
+            <Button type="button" label="CONTINUAR ➠" className="button-habilidad" style={{ background: 'black' }} />
+          </div>
+        </form>
+
+
+
+
+      </div>
+
+
     </div>
   );
-};
-
-export default VentanaHabilidades;
 
 
+
+
+
+}
+
+export default HabilidadesContext;
