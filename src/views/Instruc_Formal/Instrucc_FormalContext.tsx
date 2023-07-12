@@ -54,16 +54,16 @@ class PrimeReactForm extends React.Component {
                                             <div
                                                 className="flex align-items-center justify-content-center w-auto pr-2">
                                                 <label htmlFor="firstName"
-                                                       className="text-3xl font-medium w-full min-w-min">Nivel
+                                                       className="text-3xl font-medium w-full min-w-min" style={{marginRight:"5px"}}>Nivel
                                                     de Instruccion:</label>
                                                 <InputText className="w-full min-w-min text-2xl" id="firstName"
                                                            name="firstName"
                                                            onChange={this.handleChange}/>
                                             </div>
                                             <div
-                                                className="flex align-items-center justify-content-center w-auto pr-2">
+                                                className="flex align-items-left justify-content-left w-auto pr-2">
                                                 <label htmlFor="lastName"
-                                                       className="text-3xl font-medium w-full min-w-min">Titulo
+                                                       className="text-3xl font-medium w-full min-w-min" style={{marginRight:"15px", marginLeft:"20px"}}>Titulo
                                                     Obtenido:</label>
                                                 <InputText className="w-auto min-w-min text-2xl" id="lastName"
                                                            name="lastName"
@@ -77,7 +77,7 @@ class PrimeReactForm extends React.Component {
                                             <div
                                                 className="flex align-items-center justify-content-center w-auto pr-2">
                                                 <label htmlFor="firstName"
-                                                       className="text-3xl font-medium w-full min-w-min">Institucion Educativa:</label>
+                                                       className="text-3xl font-medium w-full min-w-min"  style={{marginRight:"5px"}}>Institucion Educativa:</label>
                                                 <InputText className="w-full min-w-min text-2xl" id="firstName"
                                                            name="firstName"
                                                            onChange={this.handleChange}/>
@@ -85,7 +85,7 @@ class PrimeReactForm extends React.Component {
                                             <div
                                                 className="flex align-items-center justify-content-center w-auto pr-2">
                                                 <label htmlFor="lastName"
-                                                       className="text-3xl font-medium w-full min-w-min">Tiempo de estudio:</label>
+                                                       className="text-3xl font-medium w-full min-w-min"  style={{marginRight:"15px", marginLeft:"20px"}}>Tiempo de estudio:</label>
                                                 <InputText className="w-auto min-w-min text-2xl" id="lastName"
                                                            name="lastName"
                                                            onChange={this.handleChange}/>

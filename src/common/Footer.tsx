@@ -1,11 +1,9 @@
-import React from 'react';
 import '../styles/Footer.css';
 const Footer = () => {
-  const logo = 'assets/images/LogoCiculo.png';
 
   return (
     <footer>
-      Instituto Superior Tecnológico Del Azuay
+      Instituto Universitario Tecnológico Del Azuay
       ||
       <strong>
         Contáctanos: Dirección: Octavio Chacón Moscoso 1-98 y Primera Transversal (Parque industrial) |
