@@ -144,7 +144,7 @@ export default function CapacitacionesContext() {
   };
 
   const [selectCapacitacionesI, setSelectCapacitacionesI] =
-    useState<ICapacitaciones | null>(null);
+    useState<ICapacitaciones >();
   const persona: IPersona = {
     id_persona: 1,
     apellidos: "",
@@ -181,7 +181,7 @@ export default function CapacitacionesContext() {
   const handleSubmit = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
-    if (selectCapacitacionesI) {
+    if (selectCapacitacionesI && selectCapacitacionesI.id_capacitaciones !== null && selectCapacitacionesI.id_capacitaciones !== undefined) {
       const updatedCapacitaciones: ICapacitaciones = {
         ...selectCapacitacionesI,
         institucion: institucion,
@@ -189,14 +189,8 @@ export default function CapacitacionesContext() {
         nombre_evento: nombreEvento ?? "",
         area_estudios: selectArea ?? "",
         tipo_certificado: selectCertificado ?? "",
-        fecha_inicio:
-          Array.isArray(fechaInicio) && fechaInicio.length > 0
-            ? new Date(fechaInicio[0])
-            : null,
-        fecha_fin:
-          Array.isArray(fechaFin) && fechaFin.length > 0
-            ? new Date(fechaFin[0])
-            : null,
+        fecha_inicio: new Date(),
+        fecha_fin: new Date(),
         numero_dias: numeroDias ?? 0,
         cantidad_horas: cantidadHoras ?? 0,
       };
@@ -205,6 +199,11 @@ export default function CapacitacionesContext() {
       new CapacitacionesService()
         .updateCapacitaciones(id, updatedCapacitaciones)
         .then((response) => {
+          setCapacitaciones(
+              capacitaciones.map(
+                  (e)=> e.id_capacitaciones === selectCapacitacionesI.id_capacitaciones ? response: e
+              )
+          )
           console.log(response);
           fecthCapacitaciones();
           resetForm();
@@ -212,7 +211,7 @@ export default function CapacitacionesContext() {
         .catch((error) => {
           console.error(error);
         });
-    } else {
+    } /*else {
       const newCapacitaciones: ICapacitaciones = {
         institucion: institucion,
         tipo_evento: selectEvento ?? "",
@@ -236,7 +235,7 @@ export default function CapacitacionesContext() {
         .catch((error) => {
           console.error(error);
         });
-    }
+    }*/
   };
 
   const editCapacitacion = (rowData: ICapacitaciones) => {
@@ -244,10 +243,10 @@ export default function CapacitacionesContext() {
     setSelectEvento(rowData.tipo_evento);
     setSelectArea(rowData.area_estudios);
     setFechaInicio(
-      rowData.fecha_inicio ? new Date(rowData.fecha_inicio.toString()) : null
+      rowData.fecha_inicio ? new Date(rowData.fecha_inicio.toString()) : new Date
     );
     setFechaFin(
-      rowData.fecha_fin ? new Date(rowData.fecha_fin.toString()) : null
+      rowData.fecha_fin ? new Date(rowData.fecha_fin.toString()) : new Date()
     );
     setNumeroDias(rowData.numero_dias || 0);
     setCantidadHoras(rowData.cantidad_horas || 0);
