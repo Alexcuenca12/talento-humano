@@ -14,8 +14,8 @@ export class CapacitacionesService {
         return axios.post(this.baseUrl + "create", capacitaciones).then((res)=> res.data)
     }
 
-    updateCapacitaciones(id: number, capacitaciones: ICapacitaciones){
-        return axios.put<ICapacitaciones>(this.baseUrl + `update/${id}`, capacitaciones).then((res)=> res.data)
+    updateCapacitaciones(id: number, user: any){
+        return axios.put(this.baseUrl + "update"+id.toString(), user).then((res)=> res.data)
     }
 
     deleteCapacitaciones(id: number) {

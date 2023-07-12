@@ -178,54 +178,25 @@ export default function CapacitacionesContext() {
     tipo_sangre: "",
   };
 
-  const handleSubmit = (e: React.SyntheticEvent) => {
-    e.preventDefault();
+  const [editMode, setEditMode] = useState(false);
+  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
+  const capacitacionesService = new CapacitacionesService();
 
-    if (selectCapacitacionesI && selectCapacitacionesI.id_capacitaciones !== null && selectCapacitacionesI.id_capacitaciones !== undefined) {
-      const updatedCapacitaciones: ICapacitaciones = {
-        ...selectCapacitacionesI,
-        institucion: institucion,
-        tipo_evento: selectEvento ?? "",
-        nombre_evento: nombreEvento ?? "",
-        area_estudios: selectArea ?? "",
-        tipo_certificado: selectCertificado ?? "",
-        fecha_inicio: new Date(),
-        fecha_fin: new Date(),
-        numero_dias: numeroDias ?? 0,
-        cantidad_horas: cantidadHoras ?? 0,
-      };
-      const id: number = selectCapacitacionesI.id_capacitaciones || 0;
+  const guardarCapacitaciones = () => {
+    const newCapacitaciones: ICapacitaciones = {
+      institucion: institucion,
+      tipo_evento: selectEvento ?? "",
+      nombre_evento: nombreEvento ?? "",
+      area_estudios: selectArea ?? "",
+      tipo_certificado: selectCertificado ?? "",
+      fecha_inicio: new Date(),
+      fecha_fin: new Date(),
+      numero_dias: numeroDias ?? 0,
+      cantidad_horas: cantidadHoras ?? 0,
+      persona: persona,
+    };
 
-      new CapacitacionesService()
-        .updateCapacitaciones(id, updatedCapacitaciones)
-        .then((response) => {
-          setCapacitaciones(
-              capacitaciones.map(
-                  (e)=> e.id_capacitaciones === selectCapacitacionesI.id_capacitaciones ? response: e
-              )
-          )
-          console.log(response);
-          fecthCapacitaciones();
-          resetForm();
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    } /*else {
-      const newCapacitaciones: ICapacitaciones = {
-        institucion: institucion,
-        tipo_evento: selectEvento ?? "",
-        nombre_evento: nombreEvento ?? "",
-        area_estudios: selectArea ?? "",
-        tipo_certificado: selectCertificado ?? "",
-        fecha_inicio: new Date(),
-        fecha_fin: new Date(),
-        numero_dias: numeroDias ?? 0,
-        cantidad_horas: cantidadHoras ?? 0,
-        persona: persona
-      };
-
-      new CapacitacionesService()
+    capacitacionesService
         .guardarCapacitaciones(newCapacitaciones)
         .then((response) => {
           console.log(response);
@@ -235,7 +206,55 @@ export default function CapacitacionesContext() {
         .catch((error) => {
           console.error(error);
         });
-    }*/
+  };
+
+  const actualizarCapacitaciones = () => {
+    if (editItemId !== undefined) {
+      const updatedCapacitaciones: ICapacitaciones = {
+        ...selectCapacitacionesI!,
+        institucion: institucion,
+        tipo_evento: selectEvento ?? "",
+        nombre_evento: nombreEvento ?? "",
+        area_estudios: selectArea ?? "",
+        tipo_certificado: selectCertificado ?? "",
+        fecha_inicio: new Date(),
+        fecha_fin: new Date(),
+        numero_dias: numeroDias ?? 0,
+        cantidad_horas: cantidadHoras ?? 0,
+        persona: persona,
+      };
+      const id: number = selectCapacitacionesI!.id_capacitaciones || 0;
+
+      capacitacionesService
+          .updateCapacitaciones(id, updatedCapacitaciones)
+          .then((response) => {
+            setCapacitaciones(
+                capacitaciones.map((capacitacion) =>
+                    capacitacion.id_capacitaciones === selectCapacitacionesI!.id_capacitaciones
+                        ? response
+                        : capacitacion
+                )
+            );
+            console.log(response);
+            fecthCapacitaciones();
+            resetForm();
+            setEditMode(false);
+            setEditItemId(undefined);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (editMode) {
+      actualizarCapacitaciones();
+    } else {
+      guardarCapacitaciones();
+    }
   };
 
   const editCapacitacion = (rowData: ICapacitaciones) => {
@@ -243,17 +262,18 @@ export default function CapacitacionesContext() {
     setSelectEvento(rowData.tipo_evento);
     setSelectArea(rowData.area_estudios);
     setFechaInicio(
-      rowData.fecha_inicio ? new Date(rowData.fecha_inicio.toString()) : new Date
+        rowData.fecha_inicio ? new Date(rowData.fecha_inicio.toString()) : new Date()
     );
     setFechaFin(
-      rowData.fecha_fin ? new Date(rowData.fecha_fin.toString()) : new Date()
+        rowData.fecha_fin ? new Date(rowData.fecha_fin.toString()) : new Date()
     );
     setNumeroDias(rowData.numero_dias || 0);
     setCantidadHoras(rowData.cantidad_horas || 0);
 
     setIsEditMode(true);
-    setEditingCapacitaciones(rowData);
+    setEditItemId(rowData.id_capacitaciones);
   };
+
 
   const resetForm = () => {
     setSelectEvento(null);
@@ -425,9 +445,9 @@ export default function CapacitacionesContext() {
                         <Button
                           type="submit"
                           className="w-full text-3xl min-w-min "
-                          rounded
-                          label={isEditMode ? "Actualizar" : "Agregar"}
-                        />
+                          rounded>
+                          {editMode ? "Actualizar" : "Agregar"}
+                        </Button>
                       </div>
                       <div className="flex align-items-center justify-content-center w-auto min-w-min">
                         <Button
