@@ -1,12 +1,14 @@
+import {IPersona} from "./IPersona";
+
 export interface IExperiencia {
-  id_experiencia?: Number;
-  institucion: String;
-  puesto: String;
-  area_trabajo: String;
-  fecha_inicio: Date;
-  fecha_fin: Date;
-  actividades: String;
-  estado: Boolean;
-  certificado_trabajo: String;
-  persona: Object;
+    id_experiencia?: number;
+    institucion: string;
+    puesto: string;
+    area_trabajo: string;
+    fecha_inicio: Date | null;
+    fecha_fin: Date | null;
+    actividades: string;
+    estado: boolean;
+    certificado_trabajo: string | null;
+    persona: IPersona | null;
 }
