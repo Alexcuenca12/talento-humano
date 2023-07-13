@@ -446,7 +446,7 @@ export default function CapacitacionesContext() {
                           type="submit"
                           className="w-full text-3xl min-w-min "
                           rounded>
-                          {editMode ? "Actualizar" : "Agregar"}
+                          {isEditMode ? "Actualizar" : "Agregar"}
                         </Button>
                       </div>
                       <div className="flex align-items-center justify-content-center w-auto min-w-min">
