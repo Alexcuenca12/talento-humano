@@ -47,6 +47,8 @@ function ContratoContext() {
             return;
         }
 
+        
+
         // Validar solo números en anio_duracion
         const anioDuracionRegex = /^\d+$/;
         if (!anioDuracionRegex.test(formData.anio_duracion)) {
