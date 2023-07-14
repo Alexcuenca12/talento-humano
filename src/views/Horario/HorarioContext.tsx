@@ -1,374 +1,179 @@
-import React, { useEffect, useState } from 'react';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
+import React from 'react';
+import {InputText} from 'primereact/inputtext';
+import {Button} from 'primereact/button';
 import '../../styles/Horario.css';
-import { IHorarioData } from '../../interfaces/Primary/IHorario';
-import { HorarioService } from '../../services/HorarioService'
-import swal from 'sweetalert';
-
-function HorarioContext() {
-    const [hora1, sethora1] = useState<IHorarioData[]>([]);
-    const [formData, setFormData] = useState<IHorarioData>({
-        id_horario: 0,
-        periodo: "",
-        horario: "",
-        dias: "",
-        distributivo: "",
-    });
-
-    const [editMode, setEditMode] = useState(false);
-    const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
-    const horaService = new HorarioService();
-
-    useEffect(() => {
-        horaService.getAll()
-            .then((data) => {
-                sethora1(data);
-            })
-            .catch((error) => {
-                console.error("Error al obtener los datos:", error);
-            });
-    }, []);
+import {Fieldset} from "primereact/fieldset";
+import {Card} from "primereact/card";
+import cardHeader from "../../shared/CardHeader";
+import {Divider} from "primereact/divider";
+import {Column} from "primereact/column";
+import {DataTable} from "primereact/datatable";
+import {Calendar} from "primereact/calendar";
+import {FileUpload} from "primereact/fileupload";
+import {InputTextarea} from "primereact/inputtextarea";
 
 
-    const handleSubmit = (e: React.FormEvent) => {
-        e.preventDefault();
+class HorarioCont extends React.Component {
+    constructor(props: {} | Readonly<{}>) {
+        super(props);
+        this.state = {
+            firstName: '',
+            lastName: '',
+            email: '',
+            phone: ''
+        };
+    }
 
-        if (!formData.horario || !formData.periodo || !formData.dias || !formData.distributivo) {
-            swal('Advertencia', 'Por favor, complete todos los campos', 'warning');
-            return;
-        }
+    handleChange = (event: { target: { name: any; value: any; }; }) => {
+        const {name, value} = event.target;
+        this.setState({[name]: value});
+    }
 
+    handleSubmit = (event: { preventDefault: () => void; }) => {
+        event.preventDefault();
+        // Aquí puedes agregar la lógica para enviar los datos del formulario
+    }
 
-        horaService
-            .save(formData)
-            .then((response) => {
-                resetForm();
-                swal('Horario', 'Datos Guardados Correctamente', 'success');
-                horaService.getAll()
-                    .then((data) => {
-                        sethora1(data);
-                    })
-                    .catch((error) => {
-                        console.error("Error al obtener los datos:", error);
-                    });
-            })
-            .catch((error) => {
-                console.error('Error al enviar el formulario:', error);
-            });
-    };
-
-    const handleDelete = (id: number | undefined) => {
-        if (id !== undefined) {
-            swal({
-                title: 'Confirmar Eliminación',
-                text: '¿Estás seguro de eliminar este registro?',
-                icon: 'warning',
-                buttons: {
-                    cancel: {
-                        text: 'Cancelar',
-                        visible: true,
-                        className: 'cancel-button',
-                    },
-                    confirm: {
-                        text: 'Sí, eliminar',
-                        className: 'confirm-button',
-                    },
-                },
-            }).then((confirmed) => {
-                if (confirmed) {
-                    horaService
-                        .delete(id)
-                        .then(() => {
-                            sethora1(hora1.filter((hora) => hora.id_horario !== id));
-                            swal('Eliminado', 'El registro ha sido eliminado correctamente', 'success');
-                        })
-                        .catch((error) => {
-                            console.error('Error al eliminar el registro:', error);
-                            swal('Error', 'Ha ocurrido un error al eliminar el registro', 'error');
-                        });
-                }
-            });
-        }
-    };
-
-    const handleEdit = (id: number | undefined) => {
-        if (id !== undefined) {
-            const editItem = hora1.find(hora => hora.id_horario === id);
-            if (editItem) {
-                setFormData(editItem);
-                setEditMode(true);
-                setEditItemId(id);
-            }
-        }
-    };
-
-    const handleUpdate = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (editItemId !== undefined) {
-            horaService.update(Number(editItemId), formData as IHorarioData)
-                .then((response) => {
-                    swal({
-                        title: "Horario",
-                        text: "Datos actualizados correctamente",
-                        icon: "success"
-                    });
-                    setFormData({
-
-                        periodo: "",
-                        horario: "",
-                        dias: "",
-                        distributivo: "",
-
-                    });
-                    sethora1(hora1.map((hora) => hora.id_horario === editItemId ? response : hora));
-                    setEditMode(false);
-                    setEditItemId(undefined);
-                })
-                .catch((error) => {
-                    console.error("Error al actualizar el formulario:", error);
-                });
-        }
-    };
-
-    const resetForm = () => {
-        setFormData({
-            periodo: "",
-            horario: "",
-            dias: "",
-            distributivo: "",
-
-        });
-        setEditMode(false);
-        setEditItemId(undefined);
-    };
-
-    return (
-        <div className='div-page-horario'>
-            <div className='div-contenedor-horario div-general-horario'>
-                <div>
-                    <h1 className="page-title-horario">INSTITULO SUPERIOR TECNOLOGICO DEL AZUAY</h1>
-
-                </div>
-                <div className="title-container-horario ">
-                    <br />
-                    <div className="title-line-horario"></div>
-                    <h1 className="page-title-horario">HORARIO</h1>
-                    <div className="title-line-horario"></div>
-                </div>
-                <form onSubmit={editMode ? handleUpdate : handleSubmit}>
-                    <div className=''>
-
-
-                        <div className="form-rows-horario">
-
-                            <div className="input-container-horario">
-                                <div className="p-inputgroup fieldH">
-                                    <span className="p-float-label card flex justify-content-center">
-                                        <InputText
-                                            id="materia"
-                                            name="materia"
-                                            
-                                        />
-                                        <label htmlFor="materia">Materia</label>
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="input-container-horario">
-                                <div className="p-inputgroup fieldH">
-                                    <span className="p-float-label card flex justify-content-center">
-                                        <InputText
-                                            id="horario"
-                                            name="horario"
-                                            value={formData.horario}
-                                            onChange={(e) => setFormData({ ...formData, horario: e.target.value })}
-                                            required
-                                        />
-                                        <label htmlFor="horas">Horario</label>
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="input-container-horario">
-                                <div className="p-inputgroup fieldH">
-                                    <span className="p-float-label card flex justify-content-center">
-                                        <InputText
-                                            id="ciclo"
-                                            name="ciclo"
-                                        />
-                                        <label htmlFor="ciclo">Ciclo</label>
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="input-container-horario">
-                                <div className="p-inputgroup fieldH">
-                                    <span className="p-float-label card flex justify-content-center">
-                                        <InputText
-                                            id="curso"
-                                            name="curso"
-                                        />
-                                        <label htmlFor="curso">Curso</label>
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="input-container-horario">
-                                <div className="p-inputgroup fieldH">
-                                    <span className="p-float-label card flex justify-content-center">
-                                        <InputText
-                                            id="carrera"
-                                            name="carrera"
-                                        />
-                                        <label htmlFor="carrera">Carrera</label>
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="input-container-horario">
-                                <div className="p-inputgroup fieldH">
-                                    <span className="p-float-label card flex justify-content-center">
-                                        <InputText
-                                            id="periodo"
-                                            name="periodo"
-                                            value={formData.periodo}
-                                            onChange={(e) => setFormData({ ...formData, periodo: e.target.value })}
-                                            required
-                                        />
-                                        <label htmlFor="horas">Periodo</label>
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="input-container-horario">
-                                <div className="p-inputgroup fieldH">
-                                    <span className="p-float-label card flex justify-content-center">
-                                        <InputText
-                                            id="dias"
-                                            name="dias"
-                                            value={formData.dias}
-                                            onChange={(e) => setFormData({ ...formData, dias: e.target.value })}
-                                            required
-                                        />
-                                        <label htmlFor="horas">Dias</label>
-                                    </span>
-                                </div>
-                            </div>
-                            <div className="input-container-horario">
-                                <div className="p-inputgroup fieldH">
-                                    <span className="p-float-label card flex justify-content-center">
-                                        <InputText
-                                            id="distributivo"
-                                            name="distributivo"
-                                            value={formData.distributivo}
-                                            onChange={(e) => setFormData({ ...formData, distributivo: e.target.value })}
-                                            required
-                                        />
-                                        <label htmlFor="horas">Distributivo</label>
-                                    </span>
-                                </div>
-                            </div>
- 
-
+    render() {
+        return (
+            <Fieldset className="fgrid col-fixed">
+                <Card header={cardHeader}
+                      className="border-solid border-blue-800 border-3">
+                    <Card className="text-center">
+                        <div className="h1-rem">
+                            <Divider align="center">
+                                <h1 className="text-7xl font-smibold lg:md-2">Horario</h1>
+                            </Divider>
                         </div>
-                        <div className=''>
-                            <div className="table-container-horario">
-                                <table className="data-table-horario">
-                                    <thead>
-                                        <tr>
-                                            <th>Periodo</th>
-                                            <th>Horario</th>
-                                            <th>Dias</th>
-                                            <th>Operaciones</th>
 
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {hora1.map((horario) => (
-                                            <tr key={horario.id_horario?.toString()}>
+                        <div className="flex justify-content-center flex-wrap">
+                            <form onSubmit={this.handleSubmit}>
+                                <div className="flex flex-wrap flex-row align-content-center">
+                                    <div className="flex align-content-center">
+                                        <div
+                                            className="flex flex-column flex-wrap gap-4 align-items-center justify-content-center">
+                                            <div
+                                                className="flex flex-wrap w-full h-full align-items-center justify-content-center ">
+                                                <label htmlFor="materia"
+                                                       className="text-3xl font-medium w-auto min-w-min pr-2">Materia:</label>
+                                                <InputText className="text-2xl" id="materia" name="materia"
+                                                           onChange={this.handleChange}/>
 
-                                                <td>{horario.periodo}</td>
-                                                <td>{horario.horario}</td>
-                                                <td>{horario.dias}</td>
+                                            </div>
+                                            <div
+                                                className="flex flex-wrap w-full h-full align-items-center justify-content-center">
+                                                <label htmlFor="horas"
+                                                       className="text-3xl font-medium w-auto min-w-min pr-2">Horas
+                                                    Semanales:</label>
+                                                <InputText id="horas" name="horas" className="text-2xl"
+                                                           onChange={this.handleChange}/>
 
-                                                <td>
-                                                    <Button
-                                                        type="button"
-                                                        className="button-horario"
-                                                        label="✎"
+                                            </div>
+                                            <div
+                                                className="flex flex-wrap w-full h-full align-items-center justify-content-center">
+                                                <label htmlFor="ciclo"
+                                                       className="text-3xl font-medium w-auto min-w-min">Ciclo:</label>
+                                                <InputText className="text-2xl" id="ciclo" name="ciclo"
+                                                           onChange={this.handleChange}/>
 
-                                                        style={{
-                                                            background: '#ff9800',
-                                                            borderRadius: '10%',
-                                                            fontSize: '30px',
-                                                            color: "black",
-                                                            justifyContent: 'center',
-                                                            marginRight: '5px' // Espacio entre los botones
-                                                        }}
-                                                        onClick={() => handleEdit(horario.id_horario?.valueOf())}
-                                                    // Agrega el evento onClick para la operación de editar
+                                            </div>
+                                            <div
+                                                className="flex flex-wrap w-full h-full align-items-center justify-content-center">
+                                                <label htmlFor="curso"
+                                                       className="text-3xl font-medium w-auto min-w-min pr-2">Curso:</label>
+                                                <InputText className="text-2xl" id="curso" name="curso"
+                                                           onChange={this.handleChange}/>
+                                            </div>
+                                            <div
+                                                className="flex flex-wrap w-full h-full align-items-center justify-content-center">
+                                                <label htmlFor="carrera"
+                                                       className="text-3xl font-medium w-auto min-w-min pr-2">Carrera:</label>
+                                                <InputText className="text-2xl" id="carrera" name="carrera"
+                                                           onChange={this.handleChange}/>
+                                            </div>
+                                            <div className="">
+                                                <Divider align='center'>
+                                                    <h4 className="text-7xl font-smibold lg:md-2">Periodo</h4>
+                                                </Divider>
+                                            </div>
+                                            <div className="flex align-content-center">
+                                                <div
+                                                    className="flex flex-column flex-wrap gap-4 align-items-center justify-content-center">
 
-                                                    />
-                                                    <Button
-                                                        type="button"
-                                                        className="button-horario"
-                                                        label="✘"
-                                                        style={{
-                                                            background: '#ff0000',
-                                                            borderRadius: '10%',
-                                                            fontSize: '30px',
-                                                            color: "black",
-                                                            justifyContent: 'center'
-                                                        }}
-                                                        onClick={() => handleDelete(horario.id_horario?.valueOf())}
-                                                    // Agrega el evento onClick para la operación de eliminar
+                                                    <div
+                                                        className="flex flex-column flex-wrap gap-4 align-items-center justify-content-center">
+                                                        <div
+                                                            className="flex flex-wrap w-full h-full align-items-center ">
+                                                            <label htmlFor="horario"
+                                                                   className="text-3xl font-medium w-auto min-w-min pr-2">Horario Diario:</label>
+                                                            <InputText className="text-2xl" id="horario" name="horario"
+                                                                       onChange={this.handleChange}/>
 
-                                                    />
-                                                </td>
+                                                        </div>
+                                                        <div
+                                                            className="flex flex-wrap w-full h-full align-items-center ">
+                                                            <label htmlFor="descripcion"
+                                                                   className="text-3xl font-medium w-auto min-w-min pr-2">Descripcion:</label>
+                                                            <InputTextarea autoResize rows={5} cols={30} className="text-2xl" id="descripcion" name="descripcion"
+                                                                       onChange={this.handleChange}/>
 
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className="flex flex-column align-items-center justify-content-center ml-4">
+                                                    <label className="flex text-3xl font-medium">Subir PDF:</label>
+                                                    <FileUpload name="pdf"
+                                                                chooseLabel="Escoger"
+                                                                uploadLabel="Cargar"
+                                                                cancelLabel="Cancelar"
+                                                                emptyTemplate={<p className="m-0 p-button-rounded">Arrastre y suelte los
+                                                                    archivos aquí para
+                                                                    cargarlos.</p>}/>
+                                                </div>
+                                            </div>
 
-
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </div>
-                            <br />
-                            <div className='dividir-botons-final-horario'>
-                                <div className="">
-                                    <Button type="button" label={editMode ? 'Actualizar' : 'Guardar'} className='button-horario' style={{
-                                        background: '#ff9800',
-                                        borderRadius: '10%',
-                                        fontSize: '10px',
-                                        justifyContent: 'center'
-                                    }}
-                                        onClick={editMode ? handleUpdate : handleSubmit}
-                                    />
-
+                                        </div>
+                                    </div>
                                 </div>
-                                <div className=''>
-                                    <Button type="button" label="Cancelar" className='button-horario' onClick={resetForm} style={{
-                                        background: '#ff9800',
-                                        borderRadius: '10%',
-                                        fontSize: '10px',
-                                        justifyContent: 'center'
-                                        
-                                    }} />
+                                <div
+                                    className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
+                                    <div
+                                        className="flex align-items-center justify-content-center w-auto min-w-min">
+                                        <Button type="submit" label="Agregar"
+                                                className="w-full text-3xl min-w-min "
+                                                rounded/>
+                                    </div>
+                                    <div
+                                        className="flex align-items-center justify-content-center w-auto min-w-min">
+                                        <Button type="button" label="Cancel"
+                                                className="w-full text-3xl min-w-min"
+                                                rounded/>
+                                    </div>
                                 </div>
-                            </div>
-
+                            </form>
                         </div>
 
 
+                        <DataTable tableStyle={{minWidth: '50rem'}}
+                                   className="mt-5  w-full h-full text-3xl font-medium">
+                            <Column field="Materia" header="Materia"
+                                    headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                            <Column field="Nombre" header="Nombre"
+                                    headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                            <Column field="Horas Semanales" header="Horas Semanales"
+                                    headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                            <Column field="Acciones" header="Acciones"
+                                    headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
 
 
-                    </div>
-                </form>
+                        </DataTable>
 
 
-            </div>
-        </div>
-    );
-
-
-
-
-
+                    </Card>
+                </Card>
+            </Fieldset>
+        );
+    }
 }
 
-export default HorarioContext;
+export default HorarioCont;
