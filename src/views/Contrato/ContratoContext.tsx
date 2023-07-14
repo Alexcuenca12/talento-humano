@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { InputText } from 'primereact/inputtext';
-import { FileUpload } from 'primereact/fileupload';
+import { FileUpload, FileUploadHandlerEvent } from 'primereact/fileupload';
 import { Button } from 'primereact/button';
 import { Calendar, CalendarChangeEvent } from 'primereact/calendar';
 import '../../styles/Contrato.css';
 import { IContratoData } from '../../interfaces/Primary/IContrato';
 import { ContratoService } from '../../services/ContratoService'
 import swal from 'sweetalert';
+import { fileConverter } from "../../services/functions/fileConverter";
 
 
 
@@ -21,8 +22,11 @@ function ContratoContext() {
         cargo: "",
         salario: "",
         evidencia: "",
+        persona: null,
 
     });
+
+    const fileUploadRef = useRef<FileUpload>(null);
 
     const [editMode, setEditMode] = useState(false);
     const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
@@ -38,6 +42,56 @@ function ContratoContext() {
             });
     }, []);
 
+    const customBytesUploader = (event: React.ChangeEvent<HTMLInputElement>) => {
+        if (event.target.files && event.target.files.length > 0) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onloadend = function () {
+                const base64data = reader.result as string;
+                setFormData({ ...formData, evidencia: base64data });
+                console.log('pdf guardado....')
+            };
+
+            reader.onerror = (error) => {
+                console.error('Error al leer el archivo:', error);
+            };
+
+            reader.readAsDataURL(file);
+
+            if (fileUploadRef.current) {
+                fileUploadRef.current.clear();
+            }
+        }
+    };
+
+    const decodeBase64 = (base64Data: string) => {
+        try {
+            // Eliminar encabezados o metadatos de la cadena base64
+            const base64WithoutHeader = base64Data.replace(/^data:.*,/, '');
+
+            const decodedData = atob(base64WithoutHeader); // Decodificar la cadena base64
+            const byteCharacters = new Uint8Array(decodedData.length);
+
+            for (let i = 0; i < decodedData.length; i++) {
+                byteCharacters[i] = decodedData.charCodeAt(i);
+            }
+
+            const byteArray = new Blob([byteCharacters], { type: 'application/pdf' });
+            const fileUrl = URL.createObjectURL(byteArray);
+
+            const link = document.createElement('a');
+            link.href = fileUrl;
+            link.download = 'archivo.pdf';
+            link.click();
+            swal('Contrato', 'Descargando pdf....', 'success');
+            console.log('pdf descargado...')
+
+            URL.revokeObjectURL(fileUrl);
+        } catch (error) {
+            console.error('Error al decodificar la cadena base64:', error);
+        }
+    };
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -47,7 +101,7 @@ function ContratoContext() {
             return;
         }
 
-        
+
 
         // Validar solo números en anio_duracion
         const anioDuracionRegex = /^\d+$/;
@@ -159,6 +213,7 @@ function ContratoContext() {
                         salario: "",
                         cargo: "",
                         evidencia: "",
+                        persona: null,
 
                     });
                     setcontra1(contra1.map((contra) => contra.id_contrato === editItemId ? response : contra));
@@ -180,6 +235,7 @@ function ContratoContext() {
             salario: "",
             cargo: "",
             evidencia: "",
+            persona: null,
 
         });
         setEditMode(false);
@@ -203,7 +259,7 @@ function ContratoContext() {
                     <h1 className="page-title-contrato">CONTRATO</h1>
                     <div className="title-line-contrato"></div>
                 </div>
-                <form onSubmit={editMode ? handleUpdate : handleSubmit}>
+                <form onSubmit={editMode ? handleUpdate : handleSubmit} encType="multipart/form-data">
 
                     <div className=' '>
 
@@ -302,9 +358,9 @@ function ContratoContext() {
                                         <p>
                                             SUBIR PDF:
                                             <br />
-                                            <input type="file" accept="application/pdf"
 
-                                                onChange={(e) => setFormData({ ...formData, evidencia: e.target.value })}
+                                            <input type="file" accept="application/pdf"
+                                                onChange={(e) => customBytesUploader(e)}
                                                 required
                                             />
                                         </p>
@@ -338,6 +394,7 @@ function ContratoContext() {
                                             <th>Cargo</th>
                                             <th>Salario</th>
                                             <th>Operaciones</th>
+                                            <th>Evidencia</th>
 
                                         </tr>
                                     </thead>
@@ -391,6 +448,25 @@ function ContratoContext() {
                                                     // Agrega el evento onClick para la operación de eliminar
 
                                                     />
+                                                </td>
+                                                <td>
+                                                    {contrato.evidencia ? (
+                                                        <Button
+                                                            type="button"
+                                                            className="button-contrato"
+                                                            label="Descargar PDF"
+                                                            style={{
+                                                                background: '#009688',
+                                                                borderRadius: '10%',
+                                                                fontSize: '12px',
+                                                                color: 'black',
+                                                                justifyContent: 'center',
+                                                            }}
+                                                            onClick={() => decodeBase64(contrato.evidencia!)}
+                                                        />
+                                                    ) : (
+                                                        <span>Sin evidencia</span>
+                                                    )}
                                                 </td>
 
 
