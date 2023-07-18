@@ -1,7 +1,7 @@
 
 import React from "react";
 import LoginContext from "../views/Login/LoginContext";
-import ContratoFinal from "../views/Contrato/ContratoContext";
+import Habilidades from "../views/Habilidades/HabilidadesContext";
 import HorarioFinal from "../views/Horario/HorarioContext";
 import Inst from "../views/Instruc_Formal/Instrucc_FormalContext";
 import { useContext } from "react";

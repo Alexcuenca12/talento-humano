@@ -1,7 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { InputText } from 'primereact/inputtext';
-import { Button } from 'primereact/button';
-import '../../styles/Habilidades.css';
+import { Card } from "primereact/card";
+import { Fieldset } from "primereact/fieldset";
+import { Badge } from "primereact/badge";
+import { Button } from "primereact/button";
+import { DataTable } from "primereact/datatable";
+import { Column } from "primereact/column";
+import cardHeader from "../../shared/CardHeader";
+import { InputTextarea } from "primereact/inputtextarea";
+import React, { useEffect, useState } from "react";
+import { Divider } from "primereact/divider";
 import { IHabilidadesData } from '../../interfaces/Primary/IHabilidades';
 import { HabilidadesService } from '../../services/HabilidadesService'
 import swal from 'sweetalert';
@@ -32,6 +38,7 @@ function HabilidadesContext() {
     e.preventDefault();
 
     if (!formData.descripcion) {
+      
       swal('Advertencia', 'Por favor, complete todos los campos', 'warning');
       return;
     }
@@ -78,7 +85,7 @@ function HabilidadesContext() {
             .delete(id)
             .then(() => {
               sethabi1(habi1.filter((habi) => habi.id_habilidades !== id));
-              swal('Eliminado', 'El registro ha sido eliminado correctamente', 'success');
+              swal('Eliminado', 'El registro ha sido eliminado correctamente', 'error');
             })
             .catch((error) => {
               console.error('Error al eliminar el registro:', error);
@@ -92,10 +99,11 @@ function HabilidadesContext() {
   const handleEdit = (id: number | undefined) => {
     if (id !== undefined) {
       const editItem = habi1.find(habi => habi.id_habilidades === id);
-      if (editItem) {
+      if (editItem) { 
         setFormData(editItem);
         setEditMode(true);
         setEditItemId(id);
+        
       }
     }
   };
@@ -132,55 +140,54 @@ function HabilidadesContext() {
     });
     setEditMode(false);
     setEditItemId(undefined);
+    
   };
 
   return (
-    <div className='div-page-habilidad'>
-      <div className='div-contenedor-habilidad div-general-habilidad'>
-        <div className="title-container-habilidad">
-          <div className="title-line-habilidad"></div>
-          <h1 className="page-title-habilidad">HABILIDADES</h1>
-          <div className="title-line-habilidad"></div>
-        </div>
-        <form onSubmit={editMode ? handleUpdate : handleSubmit}>
-          <div className='contenedor-habilidad'>
+    <Fieldset className="fgrid col-fixed" >
+      <Card
+        header={cardHeader}
+        className="border-solid border-blue-800 border-3">
 
-            <div className="">
-              <label htmlFor="descripcion">Descripcion de Habilidad:</label>
-              <InputText className="" id="descripcion" name="descripcion"
+        <div className="h1-rem">
+          <Divider align="center">
+            <h1 className="text-7xl font-smibold lg:md-2">Habilidades</h1>
+          </Divider>
+        </div>
+        <div className="flex justify-content-center ">
+          <form onSubmit={editMode ? handleUpdate : handleSubmit}>
+            <div className="flex align-content-center w-auto max-w-full">
+              <InputTextarea autoResize rows={5} cols={30}
                 value={formData.descripcion}
                 onChange={(e) => setFormData({ ...formData, descripcion: e.target.value })}
-                style={{
-                  width: '400px',
-                  height: 'auto',
-                  resize: 'vertical',
-                  overflow: 'hidden',
-                  wordWrap: 'break-word',
-                  fontSize: '16px'
+                placeholder="Describa su habilidad"
+                className="w-max text-2xl " />
 
-                }}
-              />
             </div>
-            <br />
-            <div className='div-botons-habilidad'>
-              <Button type="button" label="CANCELAR" className="small-button-habilidad  " style={{ background: 'black' }} onClick={resetForm} />
 
-              <Button type="button" label={editMode ? 'Actualizar' : 'Guardar'} className='small-button-habilidad'  style={{
-                background: '#ff9800',
-                borderRadius: '10%',
-                fontSize: '10px',
-                justifyContent: 'center'
-              }}
+            <div
+              className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
+              <div
+                className="flex align-items-center justify-content-center w-auto min-w-min">
+                <Button type="submit" label={editMode ? 'Actualizar' : 'Guardar'}
                 onClick={editMode ? handleUpdate : handleSubmit}
-              />
+                  className="w-full text-3xl min-w-min "
+                  rounded />
+              </div>
+              <div
+                className="flex align-items-center justify-content-center w-auto min-w-min">
+                <Button type="button" label="Cancel" onClick={resetForm}
+                  className="w-full text-3xl min-w-min"
+                  rounded />
+              </div>
             </div>
 
-          </div>
-          <div className=''>
-            <div className="table-container-habilidad">
-              <table className="data-table-habilidad">
+          </form>
+        </div>
+
+        <table style={{ minWidth: '70rem' }} className="mt-5  w-full h-full text-3xl font-medium">
                 <thead>
-                  <tr>
+                  <tr style={{backgroundColor: '#0C3255', color: 'white' }}>
                     <th>Descripciones Agregadas</th>
                     <th>Acciones</th>
                     <th>Operaciones</th>
@@ -188,14 +195,14 @@ function HabilidadesContext() {
                 </thead>
                 <tbody>
                   {habi1.map((habilidad) => (
-                    <tr key={habilidad.id_habilidades?.toString()}>
+                    <tr className='text-center' key={habilidad.id_habilidades?.toString()} >
 
                       <td>{habilidad.descripcion}</td>
                       <td></td>
                       <td>
                         <Button
                           type="button"
-                          className="button-habilidad"
+                          className="w-30 text-3xl min-w-min"
                           label="✎"
 
                           style={{
@@ -214,7 +221,7 @@ function HabilidadesContext() {
                         />
                         <Button
                           type="button"
-                          className="button-habilidad"
+                          className="w-30 text-3xl min-w-min"
                           label="✘"
                           style={{
                             background: '#ff0000',
@@ -234,29 +241,12 @@ function HabilidadesContext() {
                   ))}
                 </tbody>
               </table>
-            </div>
-          </div>
 
+        
 
-          <br />
-          <div className="div-button-habilidad">
-            <Button type="button" label="CONTINUAR ➠" className="button-habilidad" style={{ background: 'black' }} />
-          </div>
-        </form>
-
-
-
-
-      </div>
-
-
-    </div>
-  );
-
-
-
-
-
+      </Card>
+    </Fieldset>
+  )
 }
 
 export default HabilidadesContext;

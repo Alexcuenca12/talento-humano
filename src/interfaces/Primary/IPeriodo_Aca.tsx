@@ -1,6 +1,9 @@
 export interface IPeriodo_Aca {
   id_periodoacademico?: Number;
-  nombre: String;
-  fecha_inicio: Date;
-  fecha_fin: Date;
+  nombre: string;
+  fecha_inicio: string;
+  fecha_fin: string;
+  horario_diario: string;
+  descripcion: string;
+  evidencia: string;
 }

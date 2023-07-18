@@ -4,7 +4,7 @@ export interface IHorarioData{
     horario: string;
     dias: string;
     distributivo: string;
-    //periodoAc: Object;
-    //persona: Object;
+    id_periodo: null;
+    id_persona: null;
   }
   

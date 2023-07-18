@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { InputText } from 'primereact/inputtext';
-import { FileUpload } from 'primereact/fileupload';
+import { FileUpload, FileUploadSelectEvent } from 'primereact/fileupload';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import '../../styles/Contrato.css';
@@ -13,6 +13,7 @@ import { ContratoService } from '../../services/ContratoService'
 import swal from 'sweetalert';
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+
 
 
 function ContratoContext() {
@@ -46,15 +47,16 @@ function ContratoContext() {
             });
     }, []);
 
-    const customBytesUploader = (event: React.ChangeEvent<HTMLInputElement>) => {
-        if (event.target.files && event.target.files.length > 0) {
-            const file = event.target.files[0];
+    const customBytesUploader = (event: FileUploadSelectEvent) => {
+        if (event.files && event.files.length > 0) {
+            const file = event.files[0];
             const reader = new FileReader();
 
             reader.onloadend = function () {
                 const base64data = reader.result as string;
                 setFormData({ ...formData, evidencia: base64data });
-                console.log('pdf guardado....')
+
+                console.log('pdf guardado....');
             };
 
             reader.onerror = (error) => {
@@ -88,7 +90,12 @@ function ContratoContext() {
             link.href = fileUrl;
             link.download = 'archivoCon.pdf';
             link.click();
-            swal('Contrato', 'Descargando pdf....', 'success');
+            swal({
+                title: 'Contrato',
+                text: 'Descargando pdf....',
+                icon: 'success',
+                timer: 1000
+            });
             console.log('pdf descargado...')
 
             URL.revokeObjectURL(fileUrl);
@@ -141,10 +148,6 @@ function ContratoContext() {
             .then((response) => {
                 resetForm();
                 swal('Contrato', 'Datos Guardados Correctamente', 'success');
-                if (fileUploadRef.current) {
-                    fileUploadRef.current.clear();
-                }
-
 
                 contratService.getAll()
                     .then((data) => {
@@ -154,6 +157,9 @@ function ContratoContext() {
                     .catch((error) => {
                         console.error("Error al obtener los datos:", error);
                     });
+                if (fileUploadRef.current) {
+                    fileUploadRef.current.clear();
+                }
             })
             .catch((error) => {
                 console.error('Error al enviar el formulario:', error);
@@ -183,7 +189,7 @@ function ContratoContext() {
                         .delete(id)
                         .then(() => {
                             setcontra1(contra1.filter((contra) => contra.id_contrato !== id));
-                            swal('Eliminado', 'El registro ha sido eliminado correctamente', 'success');
+                            swal('Eliminado', 'El registro ha sido eliminado correctamente', 'error');
                         })
                         .catch((error) => {
                             console.error('Error al eliminar el registro:', error);
@@ -364,118 +370,120 @@ function ContratoContext() {
 
                             </div>
                             <div className="flex flex-column align-items-center justify-content-center ml-4">
-                                <label className="flex text-3xl font-medium">Subir PDF:</label>
-                                <input type="file" accept="application/pdf"
+                                <FileUpload
+                                    name="pdf"
+                                    chooseLabel="Escoger"
+                                    uploadLabel="Cargar"
+                                    cancelLabel="Cancelar"
+                                    emptyTemplate={<p className="m-0 p-button-rounded">Arrastre y suelte los archivos aquí para cargarlos.</p>}
+                                    customUpload
+                                    onSelect={customBytesUploader}
 
-                                    onChange={(e) => customBytesUploader(e)}
-                                    required
+                                    accept="application/pdf"
                                 />
+
 
                             </div>
                         </div>
-                        <table
-                            style={{ minWidth: '50rem' }}
-                            className="mt-5  w-full h-full text-3xl font-medium">
-                            <thead>
-                                <tr style={{ backgroundColor: '#0C3255', color: 'white' }}>
-                                    <th>Fecha Inicio</th>
-                                    <th>Fecha Fin </th>
-                                    <th>Años de Duración</th>
-                                    <th>Horas</th>
-                                    <th>Cargo</th>
-                                    <th>Salario</th>
-                                    <th>Operaciones</th>
-                                    <th>Evidencia</th>
-
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {contra1.map((contrato) => (
-                                    <tr className='text-center'
-                                        key={contrato.id_contrato?.toString()}>
-                                        <td>{contrato.fecha_inicio ? new Date(contrato.fecha_inicio).toLocaleDateString('es-ES', {
-                                            year: 'numeric',
-                                            month: '2-digit',
-                                            day: '2-digit'
-                                        }) : ''}</td>
-                                        <td>{contrato.fecha_fin ? new Date(contrato.fecha_fin).toLocaleDateString('es-ES', {
-                                            year: 'numeric',
-                                            month: '2-digit',
-                                            day: '2-digit'
-                                        }) : ''}</td>
-                                        <td>{contrato.anio_duracion}</td>
-                                        <td>{contrato.horas_diarias}</td>
-                                        <td>{contrato.cargo}</td>
-                                        <td>{contrato.salario}</td>
-                                        <td>
-                                            <Button
-                                                type="button"
-                                                className=""
-                                                label="✎"
-
-                                                style={{
-                                                    background: '#ff9800',
-                                                    borderRadius: '5%',
-                                                    fontSize: '25px',
-                                                    width: '50px',
-                                                    color: "black",
-                                                    justifyContent: 'center',
-                                                    marginRight: '8px' // Espacio entre los botones
-                                                }}
-                                                onClick={() => handleEdit(contrato.id_contrato?.valueOf())}
-                                            // Agrega el evento onClick para la operación de editar
-
-                                            />
-                                            <Button
-                                                type="button"
-                                                className="button-contrato"
-                                                label="✘"
-                                                style={{
-                                                    background: '#ff0000',
-                                                    borderRadius: '10%',
-                                                    fontSize: '25px',
-                                                    width: '50px',
-                                                    color: "black",
-                                                    justifyContent: 'center'
-                                                }}
-                                                onClick={() => handleDelete(contrato.id_contrato?.valueOf())}
-                                            // Agrega el evento onClick para la operación de eliminar
-
-                                            />
-                                        </td>
-                                        <td>
-                                            {contrato.evidencia ? (
-                                                <Button
-                                                    type="button"
-                                                    className="flex align-items-center justify-content-center w-auto min-w-min"
-                                                    label="Descargar PDF"
-                                                    style={{
-                                                        background: '#009688',
-                                                        borderRadius: '20%',
-                                                        fontSize: '10px',
-                                                        color: 'black',
-                                                        justifyContent: 'center',
-                                                    }}
-                                                    onClick={() => decodeBase64(contrato.evidencia!)}
-                                                />
-                                            ) : (
-                                                <span>Sin evidencia</span>
-                                            )}
-                                        </td>
-
-
-
-                                    </tr>
-                                ))}
-
-                            </tbody>
-                        </table>
-
-
-
-
                     </form>
                 </div>
+                <table
+                    style={{ minWidth: '50rem' }}
+                    className="mt-5  w-full h-full text-3xl font-medium">
+                    <thead>
+                        <tr style={{ backgroundColor: '#0C3255', color: 'white' }}>
+                            <th>Fecha Inicio</th>
+                            <th>Fecha Fin </th>
+                            <th>Años de Duración</th>
+                            <th>Horas</th>
+                            <th>Cargo</th>
+                            <th>Salario</th>
+                            <th>Operaciones</th>
+                            <th>Evidencia</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {contra1.map((contrato) => (
+                            <tr className='text-center'
+                                key={contrato.id_contrato?.toString()}>
+                                <td>{contrato.fecha_inicio ? new Date(contrato.fecha_inicio).toLocaleDateString('es-ES', {
+                                    year: 'numeric',
+                                    month: '2-digit',
+                                    day: '2-digit'
+                                }) : ''}</td>
+                                <td>{contrato.fecha_fin ? new Date(contrato.fecha_fin).toLocaleDateString('es-ES', {
+                                    year: 'numeric',
+                                    month: '2-digit',
+                                    day: '2-digit'
+                                }) : ''}</td>
+                                <td>{contrato.anio_duracion}</td>
+                                <td>{contrato.horas_diarias}</td>
+                                <td>{contrato.cargo}</td>
+                                <td>{contrato.salario}</td>
+                                <td>
+                                    <Button
+                                        type="button"
+                                        className=""
+                                        label="✎"
+
+                                        style={{
+                                            background: '#ff9800',
+                                            borderRadius: '5%',
+                                            fontSize: '25px',
+                                            width: '50px',
+                                            color: "black",
+                                            justifyContent: 'center',
+                                            marginRight: '8px' // Espacio entre los botones
+                                        }}
+                                        onClick={() => handleEdit(contrato.id_contrato?.valueOf())}
+                                    // Agrega el evento onClick para la operación de editar
+
+                                    />
+                                    <Button
+                                        type="button"
+                                        className=""
+                                        label="✘"
+                                        style={{
+                                            background: '#ff0000',
+                                            borderRadius: '10%',
+                                            fontSize: '25px',
+                                            width: '50px',
+                                            color: "black",
+                                            justifyContent: 'center'
+                                        }}
+                                        onClick={() => handleDelete(contrato.id_contrato?.valueOf())}
+                                    // Agrega el evento onClick para la operación de eliminar
+
+                                    />
+                                </td>
+                                <td>
+                                    {contrato.evidencia ? (
+                                        <Button
+                                            type="button"
+                                            className=""
+                                            label="Descargar PDF"
+                                            style={{
+                                                background: '#009688',
+                                                borderRadius: '10%',
+                                                fontSize: '12px',
+                                                color: 'black',
+                                                justifyContent: 'center',
+                                            }}
+                                            onClick={() => decodeBase64(contrato.evidencia!)}
+                                        />
+                                    ) : (
+                                        <span>Sin evidencia</span>
+                                    )}
+                                </td>
+
+
+
+                            </tr>
+                        ))}
+
+                    </tbody>
+                </table>
 
 
             </Card>
