@@ -13,7 +13,6 @@ import {Fieldset} from "primereact/fieldset";
 import {Divider} from "primereact/divider";
 import {CargaFamiliarService} from "../../services/CargaFamiliarService";
 import {ICargaFamiliar} from "../../interfaces/Primary/ICargaFamiliar";
-import {IPersona} from "../../interfaces/Primary/IPersona";
 import {fileConverter} from "../../services/functions/fileConverter";
 import ToastMessage from "../../shared/ToastMessage";
 import {IMessage} from "../../interfaces/Secondary/IMessage";

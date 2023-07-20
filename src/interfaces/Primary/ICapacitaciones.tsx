@@ -2,15 +2,16 @@ import {IPersona} from "./IPersona";
 
 export interface ICapacitaciones {
   id_capacitaciones?: number;
-  institucion: String;
+  institucion: string;
   tipo_evento: string | null;
-  nombre_evento: String;
+  nombre_evento: string;
   area_estudios: string | null;
-  tipo_certificado: String;
+  tipo_certificado: string;
   fecha_inicio: Date | null;
   fecha_fin: Date | null;
-  numero_dias: number;
-  cantidad_horas: number;
+  numero_dias: number | null;
+  cantidad_horas: number | null;
+  evidencia: string | null;
 
-  persona: IPersona;
+  persona: IPersona | null;
 }
