@@ -232,7 +232,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <ListadoDocentes />
+                    <RecomendacionesContext />
                     <Footer />
                   </>
                 ) : rol === 2 ? (
