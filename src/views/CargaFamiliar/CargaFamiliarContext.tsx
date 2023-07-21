@@ -17,6 +17,7 @@ import {fileConverter} from "../../services/functions/fileConverter";
 import ToastMessage from "../../shared/ToastMessage";
 import {IMessage} from "../../interfaces/Secondary/IMessage";
 import {useFormik} from "formik";
+import {ICapacitaciones} from "../../interfaces/Primary/ICapacitaciones";
 
 const apiService = new CargaFamiliarService();
 
@@ -153,26 +154,27 @@ const Persona = () => {
         fetchCargaFamiliar();
     }
 
-    const handleDeleteItem = () => {
-        if (selectedItem) {
-            apiService.deleteCarga(selectedItem.id_cargaFamiliar!)
-                .then(() => {
-                    console.log('Eliminado');
-                    setMessage({
-                        severity: 'info', detail: 'Registro Eliminado'
-                    });
-                    fetchCargaFamiliar(); // reload items
-                })
-                .catch(error => {
-                    console.error(error);
-                    setMessage({
-                        severity: 'error', summary: 'Error', detail: error.message
-                    });
-                })
-        }
-        setSelectedItem(null);
-        formik.resetForm();
-    }
+    const handleDeleteItem = (rowData: ICargaFamiliar) => {
+
+        apiService
+            .deleteCarga(rowData.id_cargaFamiliar!)
+            .then(() => {
+                console.log('Eliminado');
+                setMessage({
+                    severity: 'info',
+                    detail: 'Registro Eliminado'
+                });
+                fetchCargaFamiliar();
+            })
+            .catch(error => {
+                console.error(error);
+                setMessage({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.message
+                });
+            });
+    };
 
 
     //Carga PDF
@@ -362,7 +364,7 @@ const Persona = () => {
                                             onClick={() => handleSelectedRow(rowData)}/>
                                     <Button icon="pi pi-trash" className="p-button-rounded p-button-danger"
 
-                                            onClick={handleDeleteItem}/>
+                                            onClick={() => handleDeleteItem(rowData)}/>
                                 </>
                             )}></Column>
 

@@ -1,7 +1,7 @@
 import {IPersona} from "./IPersona";
 
 export interface ICapacitaciones {
-  id_capacitaciones?: number;
+  id_capacitaciones?: number | null;
   institucion: string;
   tipo_evento: string | null;
   nombre_evento: string;

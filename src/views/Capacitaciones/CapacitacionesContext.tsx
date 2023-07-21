@@ -234,26 +234,27 @@ export default function CapacitacionesContext() {
         fecthCapacitaciones();
     }
 
-    const handleDeleteItem = () => {
-        if (selectItem) {
-            apiService.deleteCapacitaciones(selectItem.id_capacitaciones!)
-                .then(() => {
-                    console.log('Eliminado');
-                    setMessage({
-                        severity: 'info', detail: 'Registro Eliminado'
-                    });
-                    fecthCapacitaciones(); // reload items
-                })
-                .catch(error => {
-                    console.error(error);
-                    setMessage({
-                        severity: 'error', summary: 'Error', detail: error.message
-                    });
-                })
-        }
-        setSelectItem(null);
-        formik.resetForm();
-    }
+    const handleDeleteItem = (rowData: ICapacitaciones) => {
+
+        apiService
+            .deleteCapacitaciones(rowData.id_capacitaciones!)
+            .then(() => {
+                console.log('Eliminado');
+                setMessage({
+                    severity: 'info',
+                    detail: 'Registro Eliminado'
+                });
+                fecthCapacitaciones();
+            })
+            .catch(error => {
+                console.error(error);
+                setMessage({
+                    severity: 'error',
+                    summary: 'Error',
+                    detail: error.message
+                });
+            });
+    };
 
 //Carga PDF
     const customBytesUploader = async (event: FileUploadHandlerEvent) => {
@@ -560,8 +561,7 @@ export default function CapacitacionesContext() {
                                     <Button icon="pi pi-pencil" className="p-button-rounded p-button-text mr-4"
                                             onClick={() => handleSelectedRow(rowData)}/>
                                     <Button icon="pi pi-trash" className="p-button-rounded p-button-danger"
-
-                                            onClick={handleDeleteItem}/>
+                                            onClick={() => handleDeleteItem(rowData)}/>
                                 </>
                             )}
                         />
