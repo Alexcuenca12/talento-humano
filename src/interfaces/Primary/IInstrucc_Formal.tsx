@@ -4,8 +4,8 @@ export interface InstruccionFormalData {
     institucionEducativa: string;
     tituloObtenido: string;
     num_SenecytRegistro: string;
-    tiempoEstudio: Number;
-    anioGraduacion: Number;
+    tiempoEstudio: number;
+    anioGraduacion: number;
     areaEstudios: string;
     titulo:  string; 
     

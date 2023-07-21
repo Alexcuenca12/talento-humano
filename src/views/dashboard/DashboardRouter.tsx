@@ -9,6 +9,8 @@ import PersonaContext from "../Persona/PersonaContext";
 import ContratoContext from "../Contrato/ContratoContext";
 import ContratoFinal from "../Contrato/ContratoContext";
 import Instrucc_FormalContext from "../Instruc_Formal/Instrucc_FormalContext";
+
+import Recomendaciones from "../Recomendaciones/RecomendacionesContext";
 import HorarioContext from "../Horario/HorarioContext";
 import HorarioFinal from "../Horario/HorarioContext";
 import CapacitacionesContext from "../Capacitaciones/CapacitacionesContext";
@@ -113,7 +115,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <Instrucc_FormalContext/>
+                    <Instrucc_FormalContext2/>
                   </>
                 ) : rol === 2 ? (
                   <>
