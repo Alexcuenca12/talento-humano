@@ -14,6 +14,10 @@ import {ExperienciaService} from "../../services/ExperienciaService";
 import ToastMessage from "../../shared/ToastMessage";
 import {IMessage} from "../../interfaces/Secondary/IMessage";
 import {fileConverter} from "../../services/functions/fileConverter";
+import React from "react";
+import {ConfirmDialog, confirmDialog} from "primereact/confirmdialog";
+import {decoder} from "../../services/functions/decoder";
+import {formatDate} from "../../services/functions/formatter";
 
 const apiService = new ExperienciaService();
 
@@ -51,7 +55,7 @@ const Experiencia = () => {
         validate: (values) => {
             let errors: any = {};
 
-            if (!values.institucion) {
+            if (!values.institucion.trim()) {
                 errors.institucion = 'Institución es requerida';
             }
             if (!values.fecha_inicio) {
@@ -60,14 +64,14 @@ const Experiencia = () => {
             if (!values.area_trabajo) {
                 errors.area_trabajo = 'Área de trabajo es requerida';
             }
-            if (!values.puesto) {
+            if (!values.puesto.trim()) {
                 errors.puesto = 'Puesto es requerida';
             }
             if (!values.fecha_fin) {
                 errors.fecha_fin = 'Fecha Final es requerida';
             }
             if (!values.certificado_trabajo) {
-                errors.certificado_trabajo = 'Certificado de trabajo es requerida';
+                errors.certificado_trabajo = 'Certificado de trabajo es requerido';
             }
 
             return errors;
@@ -102,14 +106,13 @@ const Experiencia = () => {
     };
 
 
-    const handleSelectedRow = (e: any) => {
-        const rowData = e.value;
+    const loadDataToForm = (rowData: IExperiencia) => {
         setSelectedItem(rowData);
         if (rowData) {
             formik.setValues({
                 ...rowData,
-                fecha_inicio: new Date(rowData.fecha_inicio),
-                fecha_fin: new Date(rowData.fecha_fin)
+                fecha_inicio: new Date(rowData.fecha_inicio!),
+                fecha_fin: new Date(rowData.fecha_fin!)
             });
         } else {
             formik.resetForm();
@@ -171,30 +174,73 @@ const Experiencia = () => {
         fetchItems();
     }
 
-    const handleDeleteItem = () => {
-        if (selectedItem) {
-            apiService.deleteItem(selectedItem.id_experiencia!)
-                .then(() => {
-                    console.log('Eliminado');
-                    setMessage({
-                        severity: 'info', detail: 'Registro Eliminado'
-                    });
-                    fetchItems(); // reload items
-                })
-                .catch(error => {
-                    console.error(error);
-                    setMessage({
-                        severity: 'error', summary: 'Error', detail: error.message
-                    });
-                })
-        }
+    const handleDeleteItem = (item_id: number) => {
+        apiService.deleteItem(item_id)
+            .then(() => {
+                console.log('Eliminado');
+                setMessage({
+                    severity: 'info', detail: 'Registro Eliminado'
+                });
+                fetchItems(); // reload items
+            })
+            .catch(error => {
+                console.error(error);
+                setMessage({
+                    severity: 'error', summary: 'Error', detail: error.message
+                });
+            })
         setSelectedItem(null);
         formik.resetForm();
     }
 
+    // row templates
+    const actionBodyTemplate = (rowData: IExperiencia) => {
+        return (
+            <React.Fragment>
+                <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => loadDataToForm(rowData)}/>
+                <Button icon="pi pi-trash" rounded outlined severity="danger" className="mr-2"
+                        onClick={() => confirmDeleteItem(rowData)}/>
+            </React.Fragment>
+        )
+    }
+
+    const dateBodyTemplate = (date: string) => {
+        const options: Intl.DateTimeFormatOptions = {
+            weekday: 'long',
+            day: 'numeric',
+            month: 'long',
+            year: 'numeric',
+            timeZone: 'UTC'
+        };
+
+        return new Date(date).toLocaleDateString('es-ES', options);
+    }
+
+    const confirmDeleteItem = (rowData: IExperiencia) => {
+        confirmDialog({
+            message: '¿Estás seguro de eliminar el elemento seleccionado?',
+            header: 'Confirmación',
+            icon: 'pi pi-exclamation-triangle',
+            accept: () => handleDeleteItem(rowData.id_experiencia!),
+            acceptLabel: "Si"
+        })
+    }
+
+    const annexBodyTemplate = (rowData: IExperiencia) => {
+
+        const base64File = rowData.certificado_trabajo;
+        const fileName = `${rowData.puesto}_${formatDate(rowData.fecha_inicio!)}_${formatDate(rowData.fecha_fin!)}`
+        return base64File ? (
+            <Button type="button" icon="pi pi-file-pdf" severity="danger" rounded
+                    onClick={() => decoder(base64File, fileName)}
+                    data-pr-tooltip="PDF"/>) : (<span>Sin Anexo</span>)
+    }
+
+
     return (
         <>
             <Card className="m-5">
+                <ToastMessage message={message}/>
                 <Divider align="center">
                     <h2>Experiencia</h2>
                 </Divider>
@@ -251,7 +297,7 @@ const Experiencia = () => {
                         <label htmlFor="end-date">Fecha Final</label>
                         <Calendar id="end-date"
                                   dateFormat="dd/mm/yy"
-                                  className="p-inputtext-sm w-full"
+                                  className="p-calendar-sm w-full"
                                   name="fecha_fin"
                                   value={formik.values.fecha_fin}
                                   onChange={formik.handleChange}
@@ -259,19 +305,24 @@ const Experiencia = () => {
                         />
                         <small className="p-error">{formik.touched.fecha_fin && formik.errors.fecha_fin}</small>
                     </div>
-                    <div className="field col-4 flex justify-content-center align-items-center flex-column">
-                        <ToastMessage message={message}/>
+                    <div className="field col-4 flex flex-column">
+                        <label htmlFor="annex-file">Anexo</label>
                         <FileUpload
+                            id="annex-file"
                             ref={fileUploadRef}
-                            mode="basic"
+                            mode="advanced"
                             name="file"
                             accept=".pdf"
-                            chooseLabel="Subir PDF"
                             customUpload
                             uploadHandler={customBytesUploader}
+                            chooseLabel="Seleccionar"
+                            uploadLabel="Cargar"
+                            cancelLabel="Cancelar"
+                            emptyTemplate={<p className="m-0">{
+                                formik.values.certificado_trabajo ? "Archivo Cargado" : "Arrastre y suelte aquí los archivos para cargarlos."}</p>}
                         />
                         <small
-                            className="p-error w-full text-center">{formik.touched.certificado_trabajo && formik.errors.certificado_trabajo}</small>
+                            className="p-error w-full">{formik.touched.certificado_trabajo && formik.errors.certificado_trabajo}</small>
                     </div>
 
                     <div className="col-12 flex justify-content-evenly align-content-center mt-4">
@@ -285,30 +336,30 @@ const Experiencia = () => {
                 </form>
 
                 <Card className="my-5 mx-auto">
-                    <div className="flex justify-content-end mb-2">
-                        <Button icon="pi pi-trash" severity="danger" aria-label="Cancel"
-                                disabled={selectedItem == null}
-                                onClick={handleDeleteItem}/>
-                    </div>
                     <DataTable value={items}
-                               selectionMode={'radiobutton'}
-                               selection={selectedItem!}
-                               onSelectionChange={(e) => handleSelectedRow(e)}
-                               dataKey="id_experiencia">
-                        <Column selectionMode="single" headerStyle={{width: '3rem'}}></Column>
+                               dataKey="id_experiencia"
+                               paginator
+                               rows={10}
+                               rowsPerPageOptions={[5, 10, 25]}
+                    >
+
                         <Column field="institucion" header="Institución"></Column>
                         <Column field="area_trabajo" header="Área de trabajo"></Column>
                         <Column field="puesto" header="Puesto"></Column>
-                        <Column field="fecha_inicio" header="Fecha Inicial"></Column>
-                        <Column field="fecha_fin" header="Fecha Final"></Column>
+                        <Column field="fecha_inicio" header="Fecha Inicial"
+                                body={(rowData) => dateBodyTemplate(rowData.fecha_inicio)}></Column>
+                        <Column field="fecha_fin" header="Fecha Final"
+                                body={(rowData) => dateBodyTemplate(rowData.fecha_fin)}></Column>
+                        <Column body={(rowData) => annexBodyTemplate(rowData)}
+                                header="Anexo"></Column>
+                        <Column body={actionBodyTemplate}></Column>
                     </DataTable>
                 </Card>
 
                 <div className="flex justify-content-end">
                     <Button label="Continuar" icon="pi pi-arrow-right" iconPos="right"/>
                 </div>
-
-
+                <ConfirmDialog/>
             </Card>
 
         </>
