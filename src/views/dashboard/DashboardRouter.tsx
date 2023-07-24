@@ -21,6 +21,7 @@ import { ListadoDocentes } from "../Resumen/ListadoDocentes";
 import Habilidades from "../Habilidades/Habilidades";
 import RecomendacionesContext from "../Recomendaciones/RecomendacionesContext"; 
 import Instrucc_FormalContext2 from "../Instruct_Formal2/Instrucc_FormalContext2";
+import Resumen from "../Resumen/Resumen";
 
 export const DashboardRouter = () => {
   //Datos del sessionStorage
@@ -232,7 +233,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <ListadoDocentes />
+                    <Resumen />
                     <Footer />
                   </>
                 ) : rol === 2 ? (
