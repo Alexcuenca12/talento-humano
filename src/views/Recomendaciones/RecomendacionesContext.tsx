@@ -1,39 +1,147 @@
-import React from 'react';
+
+import React, { useState, useEffect } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { FileUpload } from 'primereact/fileupload';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import '../../styles/Recomendaciones.css';
+import {IRecomendaciones} from '../../interfaces/Primary/Recomendaciones'
+import {RecomendacionesService} from '../../services/RecomendacionesService'
+import { log } from 'console';
 
-class Recomendaciones extends React.Component {
-  constructor(props: {} | Readonly<{}>) {
-    super(props);
-    this.state = {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-      file: null,
-    };
-  }
+function Recomendaciones() {
+  const [evidencia, setevidencia] = useState<Uint8Array | null>(null);
+  const [reco1, setReco1] = useState<IRecomendaciones[]>([]);
+  const [formData, setFormData] = useState<IRecomendaciones>({
+    id_recomendaciones: 0,
+    primer_nombre   : "",
+    segundo_nombre: "",
+    primer_apellido: "",
+    segundo_apellido   : "",
+    correo: "",
+    documentoRecomendacion: null,
+    
+  });
 
-  handleChange = (event: { target: { name: any; value: any; }; }) => {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
-  }
+  const [editMode, setEditMode] = useState(false);
+  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
 
-  handleFileUpload = (event: { target: { files: any[]; }; }) => {
-    const file = event.target.files[0];
-    this.setState({ file });
-  }
+  const recomendacionesService = new RecomendacionesService();
 
-  handleSubmit = (event: { preventDefault: () => void; }) => {
-    event.preventDefault();
-    // Aquí puedes agregar la lógica para enviar los datos del formulario
-  }
+  const createProduct = (product: any) => {
+    recomendacionesService.save(product).then((data: any) => {
+      setReco1([...reco1, data]);
+    });
+  };
 
-  render() {
+  const guardarProduct = () => {   
+        createProduct(formData);
+        
+
+      }
+  useEffect(() => {
+    recomendacionesService.getAll()
+      .then((data) => {
+        setReco1(data);
+      })
+      .catch((error) => {
+        console.error("Error al obtener los datos:", error);
+      });
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editMode && editItemId !== undefined) {
+      const updatedFormData = { ...formData, id: editItemId };
+      recomendacionesService.update(Number(editItemId), formData as IRecomendaciones)
+        .then((response) => {
+          console.log('Formulario actualizado exitosamente:', response);
+          resetForm();
+          setEditMode(false);
+          setEditItemId(undefined);
+        })
+        .catch((error) => {
+          console.error('Error al actualizar el formulario:', error);
+        });
+    } else {
+      recomendacionesService
+        .save(createProduct(formData))
+        
+        .catch((error) => {
+          console.error('Error al enviar el formulario:', error);
+        });
+    }
+  };
+
+
+
+
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editItemId !== undefined) {
+      recomendacionesService.update(Number(editItemId), formData as IRecomendaciones)
+        .then((response) => {
+          setFormData({
+            id_recomendaciones: 0,
+            primer_nombre   : "",
+            segundo_nombre: "",
+            primer_apellido: "",
+            segundo_apellido   : "",
+            correo: "",
+            documentoRecomendacion: null,
+            
+          });
+          setReco1(reco1.map((reco) => reco.id_recomendaciones === editItemId ? response : reco));
+          setEditMode(false);
+          setEditItemId(undefined);
+        })
+        .catch((error) => {
+          console.error("Error al actualizar el formulario:", error);
+        });
+    }
+  };
+
+  
+
+  const handleEdit = (id: number | undefined) => {
+    if (id !== undefined) {
+      const editItem = reco1.find(reco => reco.id_recomendaciones === id);
+      if (editItem) {
+        setFormData(editItem);
+        setEditMode(true);
+        setEditItemId(id);
+      }
+    }
+  };
+
+  const handleDelete = (id: number | undefined) => {
+    if (id !== undefined) {
+      recomendacionesService.delete(id)
+        .then(() => {
+          setReco1(reco1.filter((reco) => reco.id_recomendaciones !== id));
+        })
+        .catch((error) => {
+          console.error('Error al eliminar el registro:', error);
+        });
+    }
+  };
+  const resetForm = () => {
+    setFormData({
+    id_recomendaciones: 0,
+    primer_nombre   : "",
+    segundo_nombre: "",
+    primer_apellido: "",
+    segundo_apellido   : "",
+    correo: "",
+    documentoRecomendacion: null,
+    
+    });
+    setEditMode(false);
+    setEditItemId(undefined);
+  };
+  
     return (
+      <div>
       <div>
       <div style={{ marginBottom: '120px' }}></div>
 
@@ -44,28 +152,48 @@ class Recomendaciones extends React.Component {
           <h1 className="page-title">RECOMENDACIONES PERSONALES</h1>
           <div className="title-line"></div>
         </div>
-        <form className='formulario' onSubmit={this.handleSubmit}>
+        <form className='formulario' onSubmit={editMode ? handleUpdate : handleSubmit}>
           <div className="form-row">
             <div className="input-container">
               <label className="etiqueta"htmlFor="level">Nombres:</label>
-              <InputText className="small-input" id="level" name="level" onChange={this.handleChange} />
+              <InputText  className="small-input"
+              id="firstName"
+              name="firstName"
+              value={formData.primer_nombre}
+              onChange={(e) => setFormData({ ...formData, primer_nombre: e.target.value })}/>
             </div>
             <div className="input-container">
               <label className="etiqueta" htmlFor="title">Apellidos:</label>
-              <InputText className="small-input" id="title" name="title" onChange={this.handleChange} />
+              <InputText 
+              className="small-input"
+              id="lastName"
+              name="lastName"
+              value={formData.primer_apellido}
+              onChange={(e) => setFormData({ ...formData, primer_apellido: e.target.value })}/> 
             </div>
             <div className="input-container">
   <label className="etiqueta" htmlFor="institution">Email:</label>
-  <InputText className="small-input" id="title" name="title" onChange={this.handleChange} />
+  <InputText 
+  
+              id="email"
+              className="small-input"
+              name="email"
+              value={formData.correo}
+              onChange={(e) => setFormData({ ...formData, correo: e.target.value })} />
 </div>
           </div>
           <div className="form-row">
             <div className="input-container">
               <label className="etiqueta" htmlFor="duration">Telefono:</label>
-              <InputText className="small-input" id="duration" name="duration" onChange={this.handleChange} />
+              <InputText 
+              className="small-input"
+              id="secondName"
+              name="secondName"
+              value={formData.segundo_nombre}
+              onChange={(e) => setFormData({ ...formData, segundo_nombre: e.target.value })} />
             </div>
             
-            <div className="input-container">
+            {/* <div className="input-container">
   <label className="etiqueta" htmlFor="pdf">Subir PDF:</label>
   <FileUpload
     className="small-input"
@@ -79,7 +207,7 @@ class Recomendaciones extends React.Component {
     
     accept=".pdf"
   />
-</div>
+</div> */}
           </div>
           <div className="form-row">
             
@@ -90,8 +218,20 @@ class Recomendaciones extends React.Component {
  
           </div>
           <div className="form-row-buttons">
-            <Button type="submit" label="Agregar" className="small-button p-button-success" style={{ background: '#0C3255' }} />
-            <Button type="button" label="Cancelar" className="small-button p-button-secondary" style={{background: '#FF9800' }} />
+          <Button
+  type="submit"
+  label={editMode ? 'Actualizar' : 'Submit'}
+  className="small-button p-button-success"
+  style={{ background: '#0C3255' }}
+  onClick={editMode? handleUpdate : handleSubmit}
+/>
+            <Button
+              type="button"
+              label="Cancel"
+              className="small-button p-button-secondary"
+              style={{ background: '#FF9800' }}
+              onClick={resetForm}
+            />
           </div>
         </form>
         <div className="table-container">
@@ -104,21 +244,17 @@ class Recomendaciones extends React.Component {
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>Primaria</td>
-                <td>Escuela XYZ</td>
-               
-              </tr>
-              <tr>
-                <td>Secundaria</td>
-                <td>Colegio ABC</td>
-             
-              </tr>
-              <tr>
-                <td>Universidad</td>
-                <td>Universidad 123</td>
-               
-              </tr>
+            {reco1.map((reco) => (
+                <tr key={reco.id_recomendaciones?.toString()}>
+                  <td>{reco.correo}</td>
+                  
+                  <td>
+                    <button onClick={() => handleDelete(reco.id_recomendaciones?.valueOf())}>Eliminar</button>
+                     <button onClick={() => handleEdit(reco.id_recomendaciones?.valueOf())}>Editar</button> 
+                    
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
@@ -127,8 +263,10 @@ class Recomendaciones extends React.Component {
         </div>
       </div>
     </div>
+      </div>
+      
     );
-  }
+  
 }
 
 export default Recomendaciones;
