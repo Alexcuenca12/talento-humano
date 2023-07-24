@@ -2,9 +2,10 @@ import {IPersona} from "./IPersona";
 
 export interface ICargaFamiliar {
   id_cargaFamiliar?: number;
-  cedula: String;
-  nombre_pariente: String;
-  apellido_pariente: String;
+  cedula: string;
+  nombre_pariente: string;
+  apellido_pariente: string;
   fecha_nacimiento?: Date | null;
-  persona: IPersona;
+  evidencia: string | null;
+  persona: IPersona | null;
 }
