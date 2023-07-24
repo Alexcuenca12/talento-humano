@@ -1,4 +1,6 @@
-export interface IContrato {
+import {IPersona} from "./IPersona";
+
+export interface IContratoData {
   id_contrato?: Number;
   fecha_inicio: string;
   fecha_fin: string;
@@ -6,6 +8,6 @@ export interface IContrato {
   horas_diarias: string;
   cargo: string;
   salario: string;
-  evidencia: string;
-  persona: Object;
+  evidencia: string | null;
+  persona: IPersona | null
 }
