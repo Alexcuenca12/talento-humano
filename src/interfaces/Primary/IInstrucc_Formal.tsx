@@ -1,13 +1,13 @@
-export interface IHorario{
+export interface InstruccionFormalData {
     id_instruccion?: Number;
-    nivel_instruccion: String;
-    institucion_educativa: String;
-    titulo_obtenido: String;
-    No_RegistroSenescyt: String;
-    tiempo_estudio: Number;
-    anio_graduacion: Number;
-    area_estudios: String;
-    titulo: Date;
-    persona: Object;
+    nivelInstruccion: string;
+    institucionEducativa: string;
+    tituloObtenido: string;
+    num_SenecytRegistro: string;
+    tiempoEstudio: number;
+    anioGraduacion: number;
+    areaEstudios: string;
+    titulo:  string; 
+    
   }
   
