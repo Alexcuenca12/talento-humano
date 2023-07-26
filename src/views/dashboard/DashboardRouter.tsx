@@ -15,7 +15,7 @@ import CargaFamiliarContext from "../CargaFamiliar/CargaFamiliarContext";
 import Experiencia from "../Experiencia/Experiencia";
 import HabilidadesContext from "../Habilidades/HabilidadesContext";
 import {ListadoDocentes} from "../Resumen/ListadoDocentes";
-import Habilidades from "../Habilidades/Habilidades";
+import Habilidades from "../Habilidades/HabilidadesPDF";
 import Instrucc_FormalContext2 from "../Instruct_Formal2/Instrucc_FormalContext2";
 
 
