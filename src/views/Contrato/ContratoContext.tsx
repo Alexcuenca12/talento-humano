@@ -59,6 +59,9 @@ function ContratoContext() {
         setContratoVigente((prevValue) => !prevValue);
         setFormData({ ...formData, contrato_vigente: !contratoVigente });
     };
+    const getContratoVigenteText = (contrato_vigente: boolean) => {
+        return contrato_vigente ? "Por terminar" : "Finalizado";
+      };
 
     useEffect(() => {
         contratService.getAll()
@@ -525,7 +528,7 @@ function ContratoContext() {
                                 <td>{contrato.salario}</td>
                                 <td>{contrato.tiempo_dedicacion}</td>
                                 <td>{contrato.salario_publico}</td>
-                                <td>{contrato.contrato_vigente?.toString() || ''}</td>
+                                <td>{getContratoVigenteText(contrato.contrato_vigente )}</td>
                                 <td>
                                     <Button
                                         type="button"
