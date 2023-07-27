@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState, useRef } from 'react';
 import { InputText } from 'primereact/inputtext';
 import { FileUpload, FileUploadSelectEvent } from 'primereact/fileupload';
@@ -13,6 +14,8 @@ import { ContratoService } from '../../services/ContratoService'
 import swal from 'sweetalert';
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
+import { Dropdown } from 'primereact/dropdown';
+
 
 
 
@@ -27,6 +30,9 @@ function ContratoContext() {
         cargo: "",
         salario: "",
         evidencia: "",
+        tiempo_dedicacion: "",
+        salario_publico: "",
+        contrato_vigente: false,
         persona: null,
 
     });
@@ -36,6 +42,26 @@ function ContratoContext() {
     const [editMode, setEditMode] = useState(false);
     const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
     const contratService = new ContratoService();
+    const tiempoDedicacionOptions = [
+        { label: 'Tiempo completo', value: 'Tiempo Completo' },
+        { label: 'Medio tiempo', value: 'Medio Tiempo' },
+        { label: 'Por horas', value: 'Por Horas' },
+    ];
+    const salariopublicoOptions = [
+        { label: '1', value: '1' },
+        { label: '2', value: '2' },
+        { label: '3', value: '3' },
+        { label: '4', value: '4' },
+    ];
+    const [contratoVigente, setContratoVigente] = useState<boolean>(false);
+
+    const handleContratoVigenteToggle = () => {
+        setContratoVigente((prevValue) => !prevValue);
+        setFormData({ ...formData, contrato_vigente: !contratoVigente });
+    };
+    const getContratoVigenteText = (contrato_vigente: boolean) => {
+        return contrato_vigente ? "Por terminar" : "Finalizado";
+      };
 
     useEffect(() => {
         contratService.getAll()
@@ -45,7 +71,10 @@ function ContratoContext() {
             .catch((error) => {
                 console.error("Error al obtener los datos:", error);
             });
-    }, []);
+        if (!formData.contrato_vigente) {
+            setFormData(prevFormData => ({ ...prevFormData, fecha_fin: '' }));
+        }
+    }, [formData.contrato_vigente]);
 
     const customBytesUploader = (event: FileUploadSelectEvent) => {
         if (event.files && event.files.length > 0) {
@@ -107,7 +136,7 @@ function ContratoContext() {
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!formData.fecha_inicio || !formData.anio_duracion || !formData.fecha_fin || !formData.cargo || !formData.horas_diarias || !formData.salario) {
+        if (!formData.fecha_inicio || !formData.anio_duracion || !formData.tiempo_dedicacion || !formData.cargo || !formData.horas_diarias || !formData.salario || !formData.salario_publico) {
             swal('Advertencia', 'Por favor, complete todos los campos', 'warning');
             return;
         }
@@ -207,6 +236,7 @@ function ContratoContext() {
             const editItem = contra1.find(contra => contra.id_contrato === id);
             if (editItem) {
                 setFormData(editItem);
+
                 setEditMode(true);
                 setEditItemId(id);
             }
@@ -216,6 +246,14 @@ function ContratoContext() {
     const handleUpdate = (e: React.FormEvent) => {
         e.preventDefault();
         if (editItemId !== undefined) {
+            // Validating "Fecha Inicio" and "Fecha Fin"
+            const fechaInicio = new Date(formData.fecha_inicio);
+            const fechaFin = new Date(formData.fecha_fin);
+            if (fechaInicio > fechaFin) {
+                swal('Advertencia', 'La fecha de inicio debe ser menor que la fecha de fin', 'warning');
+                return;
+            }
+
             contratService.update(Number(editItemId), formData as IContratoData)
                 .then((response) => {
                     swal({
@@ -231,6 +269,9 @@ function ContratoContext() {
                         salario: "",
                         cargo: "",
                         evidencia: "",
+                        tiempo_dedicacion: "",
+                        salario_publico: "",
+                        contrato_vigente: false,
                         persona: null,
 
                     });
@@ -254,6 +295,9 @@ function ContratoContext() {
             salario: "",
             cargo: "",
             evidencia: "",
+            tiempo_dedicacion: "",
+            salario_publico: "",
+            contrato_vigente: false,
             persona: null,
 
         });
@@ -299,10 +343,11 @@ function ContratoContext() {
                                         />
 
                                     </div>
-                                    <div
-                                        className="flex flex-wrap w-full h-full  justify-content-between ">
-                                        <label htmlFor="fin" className="text-3xl font-medium w-auto min-w-min">Fecha
-                                            Fin:</label>
+
+                                    <div className="flex flex-wrap w-full h-full justify-content-between">
+                                        <label htmlFor="fin" className="text-3xl font-medium w-auto min-w-min">
+                                            Fecha Fin:
+                                        </label>
                                         <Calendar
                                             className="text-2xl"
                                             id="fin"
@@ -310,11 +355,17 @@ function ContratoContext() {
                                             required
                                             dateFormat="dd/mm/yy"
                                             showIcon
-                                            onChange={(e) => setFormData({ ...formData, fecha_fin: e.value instanceof Date ? e.value.toISOString() : '' })}
+                                            disabled={!formData.contrato_vigente} // Disable the calendar when contrato_vigente is false
+                                            onChange={(e) =>
+                                                setFormData({
+                                                    ...formData,
+                                                    fecha_fin: e.value instanceof Date ? e.value.toISOString() : '',
+                                                })
+                                            }
                                             value={typeof formData.fecha_fin === 'string' ? new Date(formData.fecha_fin) : null}
                                         />
-
                                     </div>
+
                                     <div
                                         className="flex flex-wrap w-full h-full  justify-content-between  ">
                                         <label htmlFor="anios" className="text-3xl font-medium w-auto min-w-min">Años
@@ -350,6 +401,52 @@ function ContratoContext() {
                                             onChange={(e) => setFormData({ ...formData, salario: e.currentTarget.value })}
                                             value={formData.salario} />
 
+                                    </div>
+                                    <div className="flex flex-wrap w-full h-full justify-content-between">
+                                        <label htmlFor="tiempo_dedicacion" className="text-3xl font-medium w-auto min-w-min">
+                                            Tiempo Dedicación:
+                                        </label>
+                                        <Dropdown
+                                            className="text-2xl"
+                                            id="tiempo_dedicacion"
+                                            name="tiempo_dedicacion"
+                                            options={tiempoDedicacionOptions}
+                                            onChange={(e) => setFormData({ ...formData, tiempo_dedicacion: e.value })}
+                                            value={formData.tiempo_dedicacion}
+                                            optionLabel="label"
+                                            optionValue="value"
+                                            placeholder="Seleccionar....."
+                                        />
+                                    </div>
+                                    <div className="flex flex-wrap w-full h-full justify-content-between">
+                                        <label htmlFor="salario_publico" className="text-3xl font-medium w-auto min-w-min">
+                                            Salario Público:
+                                        </label>
+                                        <Dropdown
+                                            className="text-2xl"
+                                            id="salario_publico"
+                                            name="salario_publico"
+                                            options={salariopublicoOptions}
+                                            onChange={(e) => setFormData({ ...formData, salario_publico: e.value })}
+                                            value={formData.salario_publico}
+                                            optionLabel="label"
+                                            optionValue="value"
+                                            placeholder="Seleccionar....."
+                                        />
+                                    </div>
+                                    <div className="flex flex-wrap w-full h-full justify-content-between">
+                                        <label htmlFor="contratoVigente" className="text-3xl font-medium w-auto min-w-min">
+                                            Contrato Vigente:
+                                        </label>
+                                        <label className="switch">
+                                            <input
+                                                type="checkbox"
+                                                id="contratoVigente"
+                                                checked={formData.contrato_vigente}
+                                                onChange={handleContratoVigenteToggle}
+                                            />
+                                            <span className="slider"></span>
+                                        </label>
                                     </div>
 
 
@@ -403,6 +500,9 @@ function ContratoContext() {
                             <th>Horas</th>
                             <th>Cargo</th>
                             <th>Salario</th>
+                            <th>Tiempo de Dedicación</th>
+                            <th>Salario Público</th>
+                            <th>Contrato Vigente</th>
                             <th>Operaciones</th>
                             <th>Evidencia</th>
 
@@ -426,6 +526,9 @@ function ContratoContext() {
                                 <td>{contrato.horas_diarias}</td>
                                 <td>{contrato.cargo}</td>
                                 <td>{contrato.salario}</td>
+                                <td>{contrato.tiempo_dedicacion}</td>
+                                <td>{contrato.salario_publico}</td>
+                                <td>{getContratoVigenteText(contrato.contrato_vigente )}</td>
                                 <td>
                                     <Button
                                         type="button"
