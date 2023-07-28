@@ -51,7 +51,7 @@ const Persona = () => {
                     className="text-2xl"
                     type="number"
                     placeholder="Ingrese su Cedula"
-                    style={{ marginLeft:"10px" }}
+                    style={{ marginLeft: "10px" }}
                   />
                 </div>
                 <div className="flex align-items-center justify-content-center w-auto h-5rem">
@@ -80,7 +80,7 @@ const Persona = () => {
                 <div className="flex align-items-center justify-content-center w-auto h-5rem">
                   <label
                     className="text-3xl font-medium w-full min-w-min"
-                    style={{ marginLeft: "-20px"}}
+                    style={{ marginLeft: "-20px" }}
                   >
                     Primer Nombre:
                   </label>

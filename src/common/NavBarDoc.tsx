@@ -100,6 +100,22 @@ export const NavBarDoc: React.FC = () => {
               <li className="nav-item">
                 <Link
                   className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
+                  to="/recomendacion"
+                >
+                  RECOMENDACIONES
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
+                  to="/publicacion"
+                >
+                  PUBLICACIONES
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
                   to="/resumen"
                 >
                   RESUMEN DOCENTE

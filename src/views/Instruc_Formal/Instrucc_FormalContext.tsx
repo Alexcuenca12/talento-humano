@@ -1,7 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { Formik, Form, Field, ErrorMessage, useFormik } from "formik";
-import * as Yup from "yup";
-
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Instruc_FormalService } from "../../services/Instru_FormalService";

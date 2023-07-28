@@ -15,8 +15,9 @@ import CargaFamiliarContext from "../CargaFamiliar/CargaFamiliarContext";
 import Experiencia from "../Experiencia/Experiencia";
 import HabilidadesContext from "../Habilidades/HabilidadesContext";
 import {ListadoDocentes} from "../Resumen/ListadoDocentes";
-import Habilidades from "../Habilidades/HabilidadesPDF";
-import Instrucc_FormalContext2 from "../Instruct_Formal2/Instrucc_FormalContext2";
+import PublicacionesContext from "../Publicaciones/PublicacionesContext";
+import Footer from "../../common/Footer";
+import Recomendaciones from "../Recomendaciones/RecomendacionesContext";
 
 
 export const DashboardRouter = () => {
@@ -206,6 +207,38 @@ export const DashboardRouter = () => {
                   <>
                     <NavBar />
                     <HabilidadesContext/>
+                  </>
+                ) : (
+                  <NavBarUserDisabled />
+                )}
+              </Route>
+              <Route path="/recomendacion">
+                {rol === 1 ? (
+                  <>
+                    <NavBarDoc />
+                    <Recomendaciones />
+                    <Footer />
+                  </>
+                ) : rol === 2 ? (
+                  <>
+                    <NavBar />
+                    <Footer />
+                  </>
+                ) : (
+                  <NavBarUserDisabled />
+                )}
+              </Route>
+              <Route path="/publicacion">
+                {rol === 1 ? (
+                  <>
+                    <NavBarDoc />
+                    <PublicacionesContext />
+                    <Footer />
+                  </>
+                ) : rol === 2 ? (
+                  <>
+                    <NavBar />
+                    <Footer />
                   </>
                 ) : (
                   <NavBarUserDisabled />
