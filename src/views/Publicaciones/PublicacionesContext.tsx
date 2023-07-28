@@ -268,9 +268,10 @@ function ContratoContext() {
                     </label>
                     <InputText
                       className="text-2xl"
+                      placeholder="Ingrese el Titulo"
                       id="cargo"
                       name="cargo"
-                      style={{width: "221px"}}
+                      style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
@@ -331,7 +332,7 @@ function ContratoContext() {
               <div className="flex flex-column align-items-center justify-content-center ml-4">
                 <FileUpload
                   name="pdf"
-                  style={{marginLeft:"480px"}}
+                  style={{ marginLeft: "480px" }}
                   chooseLabel="Escoger"
                   uploadLabel="Cargar"
                   cancelLabel="Cancelar"

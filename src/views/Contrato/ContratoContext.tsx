@@ -361,228 +361,252 @@ function ContratoContext() {
             <div className="flex flex-wrap flex-row">
               <div className="flex align-items-center justify-content-center">
                 <div className="flex flex-column flex-wrap gap-4">
-                  <div className="flex flex-wrap w-full h-full justify-content-between">
-                    <label
-                      htmlFor="inicio"
-                      className="text-3xl font-medium w-auto min-w-min"
-                    >
-                      Fecha Inicio:
-                    </label>
-                    <Calendar
-                      className=" text-2xl"
-                      id="inicio"
-                      name="inicio"
-                      required
-                      dateFormat="dd/mm/yy"
-                      showIcon
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          fecha_inicio:
-                            e.value instanceof Date
-                              ? e.value.toISOString()
-                              : "",
-                        })
-                      }
-                      value={
-                        typeof formData.fecha_inicio === "string"
-                          ? new Date(formData.fecha_inicio)
-                          : null
-                      }
-                    />
-                  </div>
-
-                  <div className="flex flex-wrap w-full h-full justify-content-between">
-                    <label
-                      htmlFor="fin"
-                      className="text-3xl font-medium w-auto min-w-min"
-                    >
-                      Fecha Fin:
-                    </label>
-                    <Calendar
-                      className="text-2xl"
-                      id="fin"
-                      name="fin"
-                      required
-                      dateFormat="dd/mm/yy"
-                      showIcon
-                      disabled={!formData.contrato_vigente} // Disable the calendar when contrato_vigente is false
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          fecha_fin:
-                            e.value instanceof Date
-                              ? e.value.toISOString()
-                              : "",
-                        })
-                      }
-                      value={
-                        typeof formData.fecha_fin === "string"
-                          ? new Date(formData.fecha_fin)
-                          : null
-                      }
-                    />
-                  </div>
-
-                  <div className="flex flex-wrap w-full h-full  justify-content-between  ">
-                    <label
-                      htmlFor="anios"
-                      className="text-3xl font-medium w-auto min-w-min"
-                    >
-                      Años de duracion:
-                    </label>
-                    <InputText
-                      className="text-2xl"
-                      id="anios"
-                      required
-                      name="anios"
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          anio_duracion: e.currentTarget.value,
-                        })
-                      }
-                      value={formData.anio_duracion}
-                    />
-                  </div>
-                  <div className="flex flex-wrap w-full h-full  justify-content-between  ">
-                    <label
-                      htmlFor="horas"
-                      className="text-3xl font-medium w-auto min-w-min"
-                    >
-                      Horas:
-                    </label>
-                    <InputText
-                      className="text-2xl"
-                      id="horas"
-                      name="horas"
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          horas_diarias: e.currentTarget.value,
-                        })
-                      }
-                      value={formData.horas_diarias}
-                    />
-                  </div>
-                  <div className="flex flex-wrap w-full h-full  justify-content-between  ">
-                    <label
-                      htmlFor="cargo"
-                      className="text-3xl font-medium w-auto min-w-min"
-                    >
-                      Cargo:
-                    </label>
-                    <InputText
-                      className="text-2xl"
-                      id="cargo"
-                      name="cargo"
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          cargo: e.currentTarget.value,
-                        })
-                      }
-                      value={formData.cargo}
-                    />
-                  </div>
-                  <div className="flex flex-wrap w-full h-full  justify-content-between  ">
-                    <label
-                      htmlFor="salario"
-                      className="text-3xl font-medium w-auto min-w-min"
-                    >
-                      Salario:
-                    </label>
-                    <InputText
-                      className="text-2xl"
-                      id="salario"
-                      name="salario"
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          salario: e.currentTarget.value,
-                        })
-                      }
-                      value={formData.salario}
-                    />
-                  </div>
-                  <div className="flex flex-wrap w-full h-full justify-content-between">
-                    <label
-                      htmlFor="tiempo_dedicacion"
-                      className="text-3xl font-medium w-auto min-w-min"
-                    >
-                      Tiempo Dedicación:
-                    </label>
-                    <Dropdown
-                      className="text-2xl"
-                      id="tiempo_dedicacion"
-                      name="tiempo_dedicacion"
-                      options={tiempoDedicacionOptions}
-                      onChange={(e) =>
-                        setFormData({ ...formData, tiempo_dedicacion: e.value })
-                      }
-                      value={formData.tiempo_dedicacion}
-                      optionLabel="label"
-                      optionValue="value"
-                      placeholder="Seleccionar....."
-                    />
-                  </div>
-                  <div className="flex flex-wrap w-full h-full justify-content-between">
-                    <label
-                      htmlFor="salario_publico"
-                      className="text-3xl font-medium w-auto min-w-min"
-                    >
-                      Salario Público:
-                    </label>
-                    <Dropdown
-                      className="text-2xl"
-                      id="salario_publico"
-                      name="salario_publico"
-                      options={salariopublicoOptions}
-                      onChange={(e) =>
-                        setFormData({ ...formData, salario_publico: e.value })
-                      }
-                      value={formData.salario_publico}
-                      optionLabel="label"
-                      optionValue="value"
-                      placeholder="Seleccionar....."
-                    />
-                  </div>
-                  <div className="flex flex-wrap w-full h-full justify-content-between">
-                    <label
-                      htmlFor="contratoVigente"
-                      className="text-3xl font-medium w-auto min-w-min"
-                    >
-                      Contrato Vigente:
-                    </label>
-                    <label className="switch">
-                      <input
-                        type="checkbox"
-                        id="contratoVigente"
-                        checked={formData.contrato_vigente}
-                        onChange={handleContratoVigenteToggle}
-                      />
-                      <span className="slider"></span>
-                    </label>
-                  </div>
-
-                  <div className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
-                    <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                      <Button
-                        type="submit"
-                        label={editMode ? "Actualizar" : "Guardar"}
-                        className="w-full text-3xl min-w-min "
-                        rounded
-                        onClick={editMode ? handleUpdate : handleSubmit}
+                  <div style={{ marginRight: "600px" }}>
+                    <div className="flex flex-wrap w-full h-full justify-content-between">
+                      <label
+                        htmlFor="inicio"
+                        className="text-3xl font-medium w-auto min-w-min"
+                      >
+                        Fecha Inicio:
+                      </label>
+                      <Calendar
+                        className=" text-2xl"
+                        id="inicio"
+                        name="inicio"
+                        required
+                        dateFormat="dd/mm/yy"
+                        showIcon
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            fecha_inicio:
+                              e.value instanceof Date
+                                ? e.value.toISOString()
+                                : "",
+                          })
+                        }
+                        value={
+                          typeof formData.fecha_inicio === "string"
+                            ? new Date(formData.fecha_inicio)
+                            : null
+                        }
                       />
                     </div>
-                    <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                      <Button
-                        type="button"
-                        label="Cancel"
-                        className="w-full text-3xl min-w-min"
-                        rounded
-                        onClick={resetForm}
+                    <div className="flex flex-wrap w-full h-full justify-content-between">
+                      <label
+                        htmlFor="fin"
+                        className="text-3xl font-medium w-auto min-w-min"
+                        style={{ marginTop: "15px" }}
+                      >
+                        Fecha Fin:
+                      </label>
+                      <Calendar
+                        className="text-2xl"
+                        id="fin"
+                        name="fin"
+                        style={{ marginTop: "15px" }}
+                        required
+                        dateFormat="dd/mm/yy"
+                        showIcon
+                        disabled={!formData.contrato_vigente} // Disable the calendar when contrato_vigente is false
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            fecha_fin:
+                              e.value instanceof Date
+                                ? e.value.toISOString()
+                                : "",
+                          })
+                        }
+                        value={
+                          typeof formData.fecha_fin === "string"
+                            ? new Date(formData.fecha_fin)
+                            : null
+                        }
                       />
+                    </div>
+                    <div className="flex flex-wrap w-full h-full  justify-content-between  ">
+                      <label
+                        htmlFor="anios"
+                        className="text-3xl font-medium w-auto min-w-min"
+                        style={{ marginTop: "15px" }}
+                      >
+                        Años Duracion:
+                      </label>
+                      <InputText
+                        className="text-2xl"
+                        id="anios"
+                        required
+                        name="anios"
+                        style={{
+                          marginTop: "15px",
+                          width: "220px",
+                          marginLeft: "15px",
+                        }}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            anio_duracion: e.currentTarget.value,
+                          })
+                        }
+                        value={formData.anio_duracion}
+                      />
+                    </div>
+                  </div>
+                  <div style={{ marginTop: "-155px", marginLeft: "65px" }}>
+                    <div className="flex flex-wrap w-full h-full  justify-content-between">
+                      <label
+                        htmlFor="horas"
+                        className="text-3xl font-medium w-auto min-w-min"
+                      >
+                        Horas:
+                      </label>
+                      <InputText
+                        className="text-2xl"
+                        id="horas"
+                        name="horas"
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            horas_diarias: e.currentTarget.value,
+                          })
+                        }
+                        value={formData.horas_diarias}
+                      />
+                    </div>
+                    <div className="flex flex-wrap w-full h-full  justify-content-between  ">
+                      <label
+                        htmlFor="cargo"
+                        className="text-3xl font-medium w-auto min-w-min"
+                        style={{ marginTop: "15px" }}
+                      >
+                        Cargo:
+                      </label>
+                      <InputText
+                        className="text-2xl"
+                        id="cargo"
+                        name="cargo"
+                        style={{ marginTop: "15px" }}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            cargo: e.currentTarget.value,
+                          })
+                        }
+                        value={formData.cargo}
+                      />
+                    </div>
+                    <div className="flex flex-wrap w-full h-full  justify-content-between  ">
+                      <label
+                        htmlFor="salario"
+                        className="text-3xl font-medium w-auto min-w-min"
+                        style={{ marginTop: "15px" }}
+                      >
+                        Salario:
+                      </label>
+                      <InputText
+                        className="text-2xl"
+                        id="salario"
+                        name="salario"
+                        style={{ marginTop: "15px", marginLeft: "15px" }}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            salario: e.currentTarget.value,
+                          })
+                        }
+                        value={formData.salario}
+                      />
+                    </div>
+                  </div>
+                  <div style={{ marginTop: "-158px", marginLeft: "675px" }}>
+                    <div className="flex flex-wrap w-full h-full justify-content-between">
+                      <label
+                        htmlFor="tiempo_dedicacion"
+                        className="text-3xl font-medium w-auto min-w-min"
+                        style={{ marginRight: "15px" }}
+                      >
+                        Tiempo Dedicación:
+                      </label>
+                      <Dropdown
+                        className="text-2xl"
+                        id="tiempo_dedicacion"
+                        name="tiempo_dedicacion"
+                        options={tiempoDedicacionOptions}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            tiempo_dedicacion: e.value,
+                          })
+                        }
+                        value={formData.tiempo_dedicacion}
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Seleccionar....."
+                      />
+                    </div>
+                    <div className="flex flex-wrap w-full h-full justify-content-between">
+                      <label
+                        htmlFor="salario_publico"
+                        className="text-3xl font-medium w-auto min-w-min"
+                        style={{ marginTop: "5px" }}
+                      >
+                        Salario Público:
+                      </label>
+                      <Dropdown
+                        className="text-2xl"
+                        id="salario_publico"
+                        name="salario_publico"
+                        style={{ marginTop: "15px" }}
+                        options={salariopublicoOptions}
+                        onChange={(e) =>
+                          setFormData({ ...formData, salario_publico: e.value })
+                        }
+                        value={formData.salario_publico}
+                        optionLabel="label"
+                        optionValue="value"
+                        placeholder="Seleccionar....."
+                      />
+                    </div>
+                    <div className="flex flex-wrap w-full h-full justify-content-between">
+                      <label
+                        htmlFor="contratoVigente"
+                        className="text-3xl font-medium w-auto min-w-min"
+                        style={{ marginTop: "15px" }}
+                      >
+                        Contrato Vigente:
+                      </label>
+                      <label className="switch" style={{ marginTop: "15px" }}>
+                        <input
+                          type="checkbox"
+                          id="contratoVigente"
+                          checked={formData.contrato_vigente}
+                          onChange={handleContratoVigenteToggle}
+                        />
+                        <span className="slider"></span>
+                      </label>
+                    </div>
+                  </div>
+                  <div style={{ marginLeft: "35%" }}>
+                    <div className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
+                      <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                        <Button
+                          type="submit"
+                          label={editMode ? "Actualizar" : "Guardar"}
+                          className="w-full text-3xl min-w-min "
+                          rounded
+                          onClick={editMode ? handleUpdate : handleSubmit}
+                        />
+                      </div>
+                      <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                        <Button
+                          type="button"
+                          label="Cancelar"
+                          className="w-full text-3xl min-w-min"
+                          rounded
+                          onClick={resetForm}
+                        />
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -593,6 +617,7 @@ function ContratoContext() {
                   chooseLabel="Escoger"
                   uploadLabel="Cargar"
                   cancelLabel="Cancelar"
+                  style={{ marginBottom: "50px", marginLeft: "15px" }}
                   emptyTemplate={
                     <p className="m-0 p-button-rounded">
                       Arrastre y suelte los archivos aquí para cargarlos.
