@@ -9,5 +9,8 @@ export interface IContratoData {
   cargo: string;
   salario: string;
   evidencia: string | null;
+  tiempo_dedicacion: string;
+  salario_publico: string;
+  contrato_vigente: boolean;
   persona: IPersona | null
 }

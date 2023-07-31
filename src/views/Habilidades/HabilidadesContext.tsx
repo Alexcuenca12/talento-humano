@@ -11,6 +11,8 @@ import { Divider } from "primereact/divider";
 import { IHabilidadesData } from '../../interfaces/Primary/IHabilidades';
 import { HabilidadesService } from '../../services/HabilidadesService'
 import swal from 'sweetalert';
+import { PDFDownloadLink, Page, Text, View, Document, StyleSheet } from '@react-pdf/renderer';
+
 
 function HabilidadesContext() {
   const [habi1, sethabi1] = useState<IHabilidadesData[]>([]);
@@ -22,6 +24,7 @@ function HabilidadesContext() {
   const [editMode, setEditMode] = useState(false);
   const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
   const habilidadService = new HabilidadesService();
+  const [pdfContent, setPdfContent] = useState<React.ReactNode | null>(null);
 
   useEffect(() => {
     habilidadService.getAll()
@@ -33,12 +36,11 @@ function HabilidadesContext() {
       });
   }, []);
 
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.descripcion) {
-      
+
       swal('Advertencia', 'Por favor, complete todos los campos', 'warning');
       return;
     }
@@ -99,11 +101,11 @@ function HabilidadesContext() {
   const handleEdit = (id: number | undefined) => {
     if (id !== undefined) {
       const editItem = habi1.find(habi => habi.id_habilidades === id);
-      if (editItem) { 
+      if (editItem) {
         setFormData(editItem);
         setEditMode(true);
         setEditItemId(id);
-        
+
       }
     }
   };
@@ -140,8 +142,57 @@ function HabilidadesContext() {
     });
     setEditMode(false);
     setEditItemId(undefined);
-    
+
   };
+
+  const generatePdfContent = () => {
+    return habi1.map((habilidad) => habilidad.descripcion);
+  };
+
+  const handleGeneratePDF = () => {
+    const dataToPdf = generatePdfContent();
+
+    const styles = StyleSheet.create({
+      page: {
+        flexDirection: 'column',
+        backgroundColor: '#ffffff',
+        padding: 20,
+      },
+      title: {
+        fontSize: 24,
+        marginBottom: 20,
+      },
+      description: {
+        fontSize: 16,
+        marginBottom: 10,
+      },
+    });
+
+    const MyDocument = () => (
+      <Document>
+        <Page style={styles.page}>
+          <Text style={styles.title}>Habilidades</Text>
+          {dataToPdf.map((descripcion, index) => (
+            <View key={index}>
+              <Text style={styles.description}>{descripcion}</Text>
+            </View>
+          ))}
+        </Page>
+      </Document>
+    );
+
+    // Generar el blob del PDF y descargarlo
+    const pdfBlob = <PDFDownloadLink document={<MyDocument />} fileName="habilidades.pdf">
+      {({ blob, url, loading, error }) =>
+        loading ? 'Generando PDF...' : 'Descargar PDF'
+      }
+    </PDFDownloadLink>;
+
+    // Mostrar el enlace para descargar el PDF
+    setPdfContent(pdfBlob);
+  };
+
+
 
   return (
     <Fieldset className="fgrid col-fixed" >
@@ -170,7 +221,7 @@ function HabilidadesContext() {
               <div
                 className="flex align-items-center justify-content-center w-auto min-w-min">
                 <Button type="submit" label={editMode ? 'Actualizar' : 'Guardar'}
-                onClick={editMode ? handleUpdate : handleSubmit}
+                  onClick={editMode ? handleUpdate : handleSubmit}
                   className="w-full text-3xl min-w-min "
                   rounded />
               </div>
@@ -186,63 +237,87 @@ function HabilidadesContext() {
         </div>
 
         <table style={{ minWidth: '70rem' }} className="mt-5  w-full h-full text-3xl font-medium">
-                <thead>
-                  <tr style={{backgroundColor: '#0C3255', color: 'white' }}>
-                    <th>Descripciones Agregadas</th>
-                    <th>Acciones</th>
-                    <th>Operaciones</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {habi1.map((habilidad) => (
-                    <tr className='text-center' key={habilidad.id_habilidades?.toString()} >
+          <thead>
+            <tr style={{ backgroundColor: '#0C3255', color: 'white' }}>
+              <th>Descripciones Agregadas</th>
+              <th>Acciones</th>
+              <th>Operaciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {habi1.map((habilidad) => (
+              <tr className='text-center' key={habilidad.id_habilidades?.toString()} >
 
-                      <td>{habilidad.descripcion}</td>
-                      <td></td>
-                      <td>
-                        <Button
-                          type="button"
-                          className="w-30 text-3xl min-w-min"
-                          label="✎"
+                <td>{habilidad.descripcion}</td>
+                <td></td>
+                <td>
+                  <Button
+                    type="button"
+                    className="w-30 text-3xl min-w-min"
+                    label="✎"
 
-                          style={{
-                            background: '#ff9800',
-                            borderRadius: '10%',
-                            fontSize: '30px',
-                            width: '70px',
-                            height: '50px',
-                            color: "black",
-                            justifyContent: 'center',
-                            marginRight: '5px' // Espacio entre los botones
-                          }}
-                          onClick={() => handleEdit(habilidad.id_habilidades?.valueOf())}
-                        // Agrega el evento onClick para la operación de editar
+                    style={{
+                      background: '#ff9800',
+                      borderRadius: '10%',
+                      fontSize: '30px',
+                      width: '70px',
+                      height: '50px',
+                      color: "black",
+                      justifyContent: 'center',
+                      marginRight: '5px' // Espacio entre los botones
+                    }}
+                    onClick={() => handleEdit(habilidad.id_habilidades?.valueOf())}
+                  // Agrega el evento onClick para la operación de editar
 
-                        />
-                        <Button
-                          type="button"
-                          className="w-30 text-3xl min-w-min"
-                          label="✘"
-                          style={{
-                            background: '#ff0000',
-                            borderRadius: '10%',
-                            fontSize: '30px',
-                            width: '70px',
-                            height: '50px',
-                            color: "black",
-                            justifyContent: 'center'
-                          }}
-                          onClick={() => handleDelete(habilidad.id_habilidades?.valueOf())}
-                        // Agrega el evento onClick para la operación de eliminar
+                  />
+                  <Button
+                    type="button"
+                    className="w-30 text-3xl min-w-min"
+                    label="✘"
+                    style={{
+                      background: '#ff0000',
+                      borderRadius: '10%',
+                      fontSize: '30px',
+                      width: '70px',
+                      height: '50px',
+                      color: "black",
+                      justifyContent: 'center'
+                    }}
+                    onClick={() => handleDelete(habilidad.id_habilidades?.valueOf())}
+                  // Agrega el evento onClick para la operación de eliminar
 
-                        />
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
+                  />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-        
+        <div
+          className="flex align-items-center justify-content-center w-auto min-w-min">
+          <Button
+            type="button"
+            className="w-30 text-3xl min-w-min"
+            label="Generar pdf"
+            style={{
+              background: '#ff0000',
+              borderRadius: '10%',
+              fontSize: '30px',
+              width: '70px',
+              height: '50px',
+              color: "black",
+              justifyContent: 'center'
+            }}
+            onClick={handleGeneratePDF}
+          />
+          {pdfContent}
+
+        </div>
+
+
+
+
+
 
       </Card>
     </Fieldset>

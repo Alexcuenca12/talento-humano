@@ -2,8 +2,6 @@ import React from "react";
 import "../styles/NavbarHome.css";
 import { Link } from "react-router-dom";
 
-
-
 export const NavBar: React.FC = () => {
   const eliminarUser = () => {
     sessionStorage.removeItem("user");
@@ -23,7 +21,10 @@ export const NavBar: React.FC = () => {
                 <Link
                   className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
                   to="/home"
-                  style={{borderTopLeftRadius:"10px", borderBottomLeftRadius:"10px"}}
+                  style={{
+                    borderTopLeftRadius: "10px",
+                    borderBottomLeftRadius: "10px",
+                  }}
                 >
                   HOME
                 </Link>
@@ -103,6 +104,22 @@ export const NavBar: React.FC = () => {
               <li className="nav-item">
                 <Link
                   className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
+                  to="/recomendacion"
+                >
+                  RECOMENDACIONES
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
+                  to="/publicacion"
+                >
+                  PUBLICACIONES
+                </Link>
+              </li>
+              <li className="nav-item">
+                <Link
+                  className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
                   to="/resumen"
                 >
                   RESUMEN DOCENTE
@@ -112,7 +129,11 @@ export const NavBar: React.FC = () => {
                 <Link
                   className="nav-link text-white ls-1 text-uppercase fw-6 fs-22"
                   to="/inicio"
-                  style={{borderTopRightRadius:"10px", borderBottomRightRadius:"10px",marginRight:"5px"}}
+                  style={{
+                    borderTopRightRadius: "10px",
+                    borderBottomRightRadius: "10px",
+                    marginRight: "5px",
+                  }}
                   onClick={eliminarUser}
                 >
                   LOG OUT
