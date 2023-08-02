@@ -1,475 +1,668 @@
-import React, {useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {InputText} from "primereact/inputtext";
 import {Button} from "primereact/button";
-import {Fieldset} from "primereact/fieldset";
 import {Card} from "primereact/card";
-import cardHeader from "../../shared/CardHeader";
 import {Divider} from "primereact/divider";
 import {Calendar} from "primereact/calendar";
 import {Dropdown} from "primereact/dropdown";
-import {RadioButton} from "primereact/radiobutton";
 import "../../styles/Persona.css";
+import ToastMessage from "../../shared/ToastMessage";
+import {IMessage} from "../../interfaces/Secondary/IMessage";
+import {useFormik} from "formik";
+import {IPersona} from "../../interfaces/Primary/IPersona";
+import {VistaPersonaService} from "../../services/VistaPersonaService";
+import {PersonaService} from "../../services/PersonaService";
+import {InputNumber} from "primereact/inputnumber";
+import {FileUpload, FileUploadHandlerEvent} from "primereact/fileupload";
+import {fileConverter} from "../../services/functions/fileConverter";
+import {InputTextarea} from "primereact/inputtextarea";
+import {DataTable} from "primereact/datatable";
+import {Column} from "primereact/column";
+import {decoder} from "../../services/functions/decoder";
+
+const apiViewService = new VistaPersonaService();
+const apiService = new PersonaService();
 
 const Persona = () => {
-  const [nombre, setNombre] = useState("");
-  const [email, setEmail] = useState("");
+  const [items, setItems] = useState<IPersona[]>([]);
+  const [message, setMessage] = useState<IMessage | null>(null);
+  const [selectedItem, setSelectedItem] = useState<IPersona | null>(null);
+  const fileUploadRef = useRef<FileUpload>(null);
+  const estadoCivil = ["Soltero", "Casado", "Divorciado", "Viudo", "Unión libre"]
+  const sexos = ["Hombre", "Mujer"]
+  const generos = ["Masculino", "Femenino", "Otro"]
+  const sangres = ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-", "No sabe"]
+  const etnias = ["Afroecuatoriano", "Indígena", "Montubio", "Mestizo", "Blanco", "Mulato", "Otro"]
 
-  const handleSubmit = (e: { preventDefault: () => void }) => {
-    e.preventDefault();
-    setNombre("");
-    setEmail("");
+  const customBytesUploader = async (event: FileUploadHandlerEvent) => {
+    // convert file to base64 encoded
+    fileConverter(event.files[0])
+        .then(data => {
+          formik.setFieldValue('cv_socioempleo', data);
+          setMessage(
+              {severity: 'info', detail: 'Archivo Cargado'}
+          );
+        }).catch(error => {
+      console.error(error);
+      setMessage({severity: 'error', summary: 'Error', detail: error.message});
+    })
+
+    if (fileUploadRef.current) {
+      // clean the file uploaded
+      fileUploadRef.current.clear();
+    }
   };
 
+  const annexBodyTemplate = (rowData: IPersona) => {
+    const base64File = rowData.cv_socioempleo;
+    return base64File ? (
+        <Button type="button" icon="pi pi-file-pdf" severity="danger" rounded
+                onClick={() => decoder(base64File, 'CV Socioempleo')}
+                data-pr-tooltip="PDF"/>) : (<span>Sin Anexo</span>)
+  }
+
+
+  const formik = useFormik<IPersona>({
+    initialValues: {
+      cedula: '',
+      apellido_paterno: '',
+      apellido_materno: '',
+      primer_nombre: '',
+      segundo_nombre: '',
+      fecha_nacimiento: null,
+      pais_natal: '',
+      edad: 0,
+      genero: '',
+      sexo: '',
+      tipo_sangre: '',
+      estado_civil: '',
+      etnia: '',
+      idioma_raiz: '',
+      idioma_secundario: '',
+      foto: null,
+      cv_socioempleo: null,
+      descripcion_perfil:'',
+
+      pais_residencia: '',
+      provincia_residencia: '',
+      canton_residencia: '',
+      parroquia_residencia: '',
+      calles: '',
+      numero_casa: '',
+      sector: '',
+      referencia: '',
+
+      celular: '',
+      telefono: '',
+      correo: '',
+      correo_institucional: '',
+
+      discapacidad: false,
+      tipo_discapacidad: '',
+      porcentaje_discapacidad: '',
+      carnet_conadis: '',
+      foto_carnet: null,
+    },
+    onSubmit: values => {
+      console.log(values);
+      handleSubmit(values);
+      formik.resetForm();
+    },
+    validate: (values) => {
+      let errors: any = {};
+
+      if (!values.cedula.trim()) {
+        errors.cedula = 'Cedula es requerida';
+      }
+      if (!values.descripcion_perfil) {
+        errors.descripcion_perfil = 'La descripcion es requerida';
+      }
+      if (!values.cv_socioempleo) {
+        errors.cv_socioempleo = 'El Curriculum Vitae es requerido';
+      }
+      if (!values.foto) {
+        errors.foto = 'Foto requerida';
+      }
+
+      return errors;
+    }
+  });
+
+  useEffect(() => {
+    fetchItems();
+  }, [])
+
+  // SERVICE METHODS
+  const fetchItems = () => {
+    apiService.getAll()
+        .then(response => {
+          setItems(response);
+        })
+        .catch(error => {
+          console.error(error);
+          setMessage({
+            severity: 'error',
+            summary: 'Error',
+            detail: error.message
+          })
+        })
+  }
+  const handleSubmit = async (data: IPersona) => {
+    if (selectedItem) {
+      // update an existing item
+      await apiViewService.getAll(selectedItem.cedula!, data)
+          .then(response => {
+            console.log(response);
+            setMessage({severity: 'success', detail: 'Registro actualizado'});
+          })
+          .catch(error => {
+            console.error(error);
+            setMessage({
+              severity: 'error', summary: 'Error', detail: error.message
+            });
+          });
+      setSelectedItem(null);
+    } else {
+      // create new item
+      await apiService.save(data)
+          .then(response => {
+            console.log(response);
+            setMessage({severity: 'success', detail: 'Registro creado'});
+          })
+          .catch(error => {
+            console.error(error);
+            setMessage({
+              severity: 'error', summary: 'Error', detail: error.message
+            });
+          });
+    }
+    fetchItems();
+  };
+
+
   return (
-      <Fieldset className="fgrid col-fixed">
-        <Card header={cardHeader}
-              className="border-solid border-blue-800 border-3 flex-1 w-full h-full flex-wrap">
+      <>
+        <Card className="m-5">
+          <ToastMessage message={message}/>
+          <form className="formgrid grid" onSubmit={formik.handleSubmit}>
 
-          <div className="h1-rem">
             <Divider align="center">
-              <h4 className="text-7xl font-smibold lg:md-2">Datos Personales</h4>
+              <h2 className="text-6xl font-smibold lg:md-2">Datos Personales</h2>
             </Divider>
-          </div>
-
-          <div className="flex justify-content-center ">
-            <div className="flex flex-column">
-              <form className="flex flex-column flex-wrap gap-2">
-
-
-                <div
-                    className="flex flex-row  w-full h-full  justify-content-around  flex-grow-1  row-gap-8 gap-8 flex-wrap ">
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Cedula:
-                    </label>
-                    <InputText
-                        type="number"
-                        placeholder="Cedula"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Apellido Paterno:
-                    </label>
-                    <InputText
-                        type="text"
-                        placeholder="Apellido Paterno"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Apellido Materno:
-                    </label>
-                    <InputText
-                        type="text"
-                        placeholder="Apellido Materno"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                </div>
-
-
-                <div
-                    className="flex flex-row  w-full h-full  justify-content-around  flex-grow-1  row-gap-8 gap-8 flex-wrap ">
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Primer Nombre:
-                    </label>
-                    <InputText
-                        type="text"
-                        placeholder="Primer Nombre"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Segundo Nombre:
-                    </label>
-                    <InputText
-                        type="text"
-                        placeholder="Segundo Nombre"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Estado Civil:
-                    </label>
-                    <Dropdown
-                        type="text"
-                        placeholder="Seleccione"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                </div>
-
-
-                <div
-                    className="flex flex-row  w-full h-full  justify-content-around  flex-grow-1  row-gap-8 gap-8 flex-wrap ">
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Edad:
-                    </label>
-                    <InputText
-                        type="number"
-                        placeholder="Edad"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto h-6rem ">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Fecha de nacimiento:
-                    </label>
-                    <Calendar
-                        placeholder="Fecha de Nacimiento"
-                        showIcon={true}
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem ">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Pais Natal:
-                    </label>
-                    <InputText
-                        type="text"
-                        placeholder="Pais Natal"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                </div>
-
-
-                <div
-                    className="flex flex-row  w-full h-full  justify-content-around  flex-grow-1  row-gap-8 gap-8 flex-wrap ">
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Sexo:
-                    </label>
-                    <Dropdown
-                        type="text"
-                        placeholder="Seleccione"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Genero:
-                    </label>
-                    <Dropdown
-                        type="text"
-                        placeholder="Seleccione"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Tipo de Sangre:
-                    </label>
-                    <Dropdown
-                        type="text"
-                        placeholder="Seleccione"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                </div>
-
-
-                <div
-                    className="flex flex-row  w-full h-full  justify-content-around  flex-grow-1  row-gap-8 gap-8 flex-wrap ">
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Etnia:
-                    </label>
-                    <Dropdown
-                        type="text"
-                        placeholder="Seleccione"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Idioma Raíz:
-                    </label>
-                    <InputText
-                        type="text"
-                        placeholder="Idioma Raíz"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Idioma Secundario:
-                    </label>
-                    <InputText
-                        type="text"
-                        placeholder="Idioma Secundario"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                </div>
-
-
-                <div className="h1-rem">
-                  <Divider align="center">
-                    <h4 className="text-7xl font-smibold">Contacto</h4>
-                  </Divider>
-                </div>
-
-                <div
-                    className="flex flex-row  w-full h-full  justify-content-around  flex-grow-1  row-gap-8 gap-8 flex-wrap ">
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Numero Celular:
-                    </label>
-                    <InputText
-                        type="number"
-                        placeholder="Numero Celular"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Numero Telefonico:
-                    </label>
-                    <InputText
-                        type="number"
-                        placeholder="Numero Telefonico"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                </div>
-
-                <div
-                    className="flex flex-row  w-full h-full  justify-content-around  flex-grow-1  row-gap-8 gap-8 flex-wrap ">
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Correo Personal:
-                    </label>
-                    <InputText
-                        type="text"
-                        placeholder="Correo Personal"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Correo Institucional:
-                    </label>
-                    <InputText
-                        type="text"
-                        placeholder="Correo Institucional"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                </div>
-
-
-                <div className="h1-rem">
-                  <Divider align="center">
-                    <h4 className="text-7xl font-smibold lg:md-2">Dirección</h4>
-                  </Divider>
-                </div>
-
-                <div
-                    className="flex flex-row  w-full h-full  justify-content-around  flex-grow-1  row-gap-8 gap-8 flex-wrap">
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min">
-                      Pais:
-                    </label>
-                    <Dropdown
-                        optionLabel="name"
-                        placeholder="Seleccione"
-                        className="w-full md:w-15rem"
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-auto pr-2 min-w-min">
-                      Provincia:
-                    </label>
-                    <Dropdown
-                        optionLabel="name"
-                        placeholder="Seleccione"
-                        className="w-full md:w-15rem"
-                    />
-                  </div>
-
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem ">
-                    <label className="text-3xl font-medium w-auto pr-2 min-w-min">
-                      Canton:
-                    </label>
-                    <Dropdown
-                        optionLabel="name"
-                        placeholder="Seleccione"
-                        className="w-full md:w-15rem"
-                    />
-                  </div>
-                </div>
-
-                <div
-                    className="flex flex-row  w-full h-full  justify-content-around  flex-grow-1  row-gap-8 gap-8 flex-wrap">
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-auto pr-2 min-w-min">
-                      Parroquia:
-                    </label>
-                    <Dropdown
-                        optionLabel="name"
-                        placeholder="Seleccione"
-                        className="w-full md:w-15rem"
-                    />
-                  </div>
-
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-auto pr-2 min-w-min">
-                      Calles:
-                    </label>
-                    <InputText
-                        type="text"
-                        placeholder="Ingrese las calles"
-                        className="w-full text-2xl"
-                    />
-                  </div>
-
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem-table ">
-                    <label className="text-3xl font-medium w-full min-w-min">
-                      Nro de casa:
-                    </label>
-                    <InputText
-                        type="number"
-                        placeholder="Numero de casa"
-                        className="w-full text-2xl"
-                    />
-                  </div>
-                </div>
-
-                <div
-                    className="flex flex-row  w-full h-full  justify-content-around  flex-grow-1  row-gap-8 gap-8 flex-wrap ">
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Sector:
-                    </label>
-                    <InputText
-                        type="text"
-                        placeholder="Sector"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Referencia:
-                    </label>
-                    <InputText
-                        type="text"
-                        placeholder="Referencia"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                </div>
-
-                <div className="h1-rem">
-                  <Divider align="center">
-                    <h4 className="text-7xl font-smibold lg:md-2">Discapacidad</h4>
-                  </Divider>
-                </div>
-
-                <div
-                    className="flex flex-row  w-full h-full  justify-content-around  flex-grow-1  row-gap-8 gap-8 flex-wrap ">
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Discapacidad:
-                    </label>
-                    <InputText
-                        type="text"
-                        placeholder="Discapacidad"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Tipo de Discapacidad:
-                    </label>
-                    <InputText
-                        type="text"
-                        placeholder="Tipo de Discapacidad"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                </div>
-
-                <div
-                    className="flex flex-row  w-full h-full  justify-content-around  flex-grow-1  row-gap-8 gap-8 flex-wrap ">
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Porcentaje:
-                    </label>
-                    <InputText
-                        type="text"
-                        placeholder="Porcentaje"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto h-5rem">
-                    <label className="text-3xl font-medium w-full min-w-min" style={{marginLeft: "10px"}}>
-                      Nro de Carnet:
-                    </label>
-                    <InputText
-                        type="text"
-                        placeholder="Nro de Carnet"
-                        className="w-full min-w-min text-2xl"
-                        style={{marginLeft: "10px"}}
-                    />
-                  </div>
-                </div>
-
-                <div
-                    className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap ">
-                  <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                    <Button
-                        type="submit"
-                        label="Agregar"
-                        className="w-full text-3xl min-w-min "
-                        rounded
-                    />
-                  </div>
-                  <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                    <Button
-                        type="button"
-                        label="Cancel"
-                        className="w-full text-3xl min-w-min"
-                        rounded
-                    />
-                  </div>
-                </div>
-              </form>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="cedula">Cedula</label>
+              <InputText id="cedula"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="cedula"
+                         value={formik.values.cedula}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.cedula && formik.errors.cedula}</small>
             </div>
-          </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="apellido_paterno">Apellido Paterno</label>
+              <InputText id="apellido_paterno"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="apellido_paterno"
+                         value={formik.values.apellido_paterno}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.apellido_paterno && formik.errors.apellido_paterno}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="apellido_materno">Apellido Materno</label>
+              <InputText id="apellido_materno"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="apellido_materno"
+                         value={formik.values.apellido_materno}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.apellido_materno && formik.errors.apellido_materno}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="primer_nombre">Primer Nombre</label>
+              <InputText id="primer_nombre"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="primer_nombre"
+                         value={formik.values.primer_nombre}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.primer_nombre && formik.errors.primer_nombre}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="segundo_nombre">Segundo Nombre</label>
+              <InputText id="segundo_nombre"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="segundo_nombre"
+                         value={formik.values.segundo_nombre}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.segundo_nombre && formik.errors.segundo_nombre}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="estado_civil">Estado Civil</label>
+              <Dropdown
+                  id="estado_civil"
+                  placeholder="Seleccione"
+                  className="p-inputtext-lg w-full text-2xl"
+                  options={estadoCivil}
+                  name="estado_civil"
+                  value={formik.values.estado_civil}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.estado_civil && formik.errors.estado_civil}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="edad">Edad</label>
+              <InputNumber id="edad"
+                         className="p-inputtext-lg w-full text-2xl"
+                         name="edad"
+                         value={formik.values.edad}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.edad && formik.errors.edad}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="start-date">Fecha de Nacimiento</label>
+              <Calendar id="start-date"
+                        dateFormat="dd/mm/yy"
+                        name="fecha_inicio"
+                        className="p-inputtextarea-resizable w-full text-2xl"
+                        value={formik.values.fecha_nacimiento}
+                        onChange={formik.handleChange}
+                        onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.fecha_nacimiento && formik.errors.fecha_nacimiento}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="pais_natal">Pais Natal</label>
+              <InputText id="pais_natal"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="pais_natal"
+                         value={formik.values.pais_natal}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.pais_natal && formik.errors.pais_natal}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="sexo">Sexo</label>
+              <Dropdown
+                  id="sexo"
+                  placeholder="Seleccione"
+                  className="p-inputtext-lg w-full text-2xl"
+                  options={sexos}
+                  name="sexo"
+                  value={formik.values.sexo}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.sexo && formik.errors.sexo}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="genero">Genero</label>
+              <Dropdown
+                  id="genero"
+                  placeholder="Seleccione"
+                  className="p-inputtext-lg w-full text-2xl"
+                  options={generos}
+                  name="genero"
+                  value={formik.values.genero}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.genero && formik.errors.genero}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="tipo_sangre">Tipo de Sangre</label>
+              <Dropdown
+                  id="tipo_sangre"
+                  placeholder="Seleccione"
+                  className="p-inputtext-lg w-full text-2xl"
+                  options={sangres}
+                  name="tipo_sangre"
+                  value={formik.values.tipo_sangre}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.tipo_sangre && formik.errors.tipo_sangre}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="etnia">Etnia</label>
+              <Dropdown
+                  id="etnia"
+                  placeholder="Seleccione"
+                  className="p-inputtext-lg w-full text-2xl"
+                  options={etnias}
+                  name="etnia"
+                  value={formik.values.etnia}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.etnia && formik.errors.etnia}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="idioma_raiz ">Idioma Raíz</label>
+              <InputText id="idioma_raiz"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="idioma_raiz"
+                         value={formik.values.idioma_raiz}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.idioma_raiz && formik.errors.idioma_raiz}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="idioma_secundario ">Idioma Secundario</label>
+              <InputText id="idioma_secundario"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="idioma_secundario"
+                         value={formik.values.idioma_secundario}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.idioma_secundario && formik.errors.idioma_secundario}</small>
+            </div>
+            <div className="field col-3">
+            </div>
+            <div className="field col-3">
+              <label className="font-medium" htmlFor="descripcion_perfil ">Descripcion de Perfil</label>
+              <InputTextarea id="descripcion_perfil"
+                         className="p-inputtextarea w-full text-2xl"
+                         name="descripcion_perfil"
+                         value={formik.values.descripcion_perfil}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.descripcion_perfil && formik.errors.descripcion_perfil}</small>
+            </div>
+            <div className="field col-4 flex flex-column">
+              <label className="font-medium" htmlFor="cv_socioempleo">Curriculum Vitae SocioEmpleo</label>
+              <FileUpload
+                  id="cv_socioempleo"
+                  ref={fileUploadRef}
+                  mode="advanced"
+                  name="file"
+                  accept=".pdf"
+                  customUpload
+                  uploadHandler={customBytesUploader}
+                  chooseLabel="Seleccionar"
+                  uploadLabel="Cargar"
+                  cancelLabel="Cancelar"
+                  emptyTemplate={<p className="m-0">{
+                    formik.values.cv_socioempleo ? "Archivo Cargado" : "Arrastre y suelte aquí los archivos para cargarlos."}</p>}
+              />
+              <small
+                  className="p-error w-full">{formik.touched.cv_socioempleo && formik.errors.cv_socioempleo}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium"></label>
+            </div>
+
+
+            <Divider align="center">
+              <h2 className="text-6xl font-smibold lg:md-2">Dirección</h2>
+            </Divider>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="pais_residencia">Pais</label>
+              <InputText id="pais_residencia"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="pais_residencia"
+                         value={formik.values.pais_residencia}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.pais_residencia && formik.errors.pais_residencia}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="provincia_residencia">Provincia</label>
+              <InputText id="provincia_residencia"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="provincia_residencia"
+                         value={formik.values.provincia_residencia}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.provincia_residencia && formik.errors.provincia_residencia}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="canton_residencia">Canton</label>
+              <InputText id="canton_residencia"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="canton_residencia"
+                         value={formik.values.canton_residencia}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.canton_residencia && formik.errors.canton_residencia}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="parroquia_residencia">Parroquia</label>
+              <InputText id="parroquia_residencia"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="parroquia_residencia"
+                         value={formik.values.parroquia_residencia}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.parroquia_residencia && formik.errors.parroquia_residencia}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="calles">Calles</label>
+              <InputText id="calles"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="calles"
+                         value={formik.values.calles}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.calles && formik.errors.calles}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="numero_casa">Numero de Casa</label>
+              <InputText id="numero_casa"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="numero_casa"
+                         value={formik.values.numero_casa}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.numero_casa && formik.errors.numero_casa}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="sector">Sector</label>
+              <InputText id="sector"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="sector"
+                         value={formik.values.sector}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.sector && formik.errors.sector}</small>
+            </div>
+            <div className="field col-4">
+            </div>
+            <div className="field col-4">
+              <label className="font-medium" htmlFor="referencia">Referencia</label>
+              <InputText id="referencia"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="referencia"
+                         value={formik.values.referencia}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.referencia && formik.errors.referencia}</small>
+            </div>
+            <div className="field col-4">
+              <label className="font-medium"></label>
+            </div>
+
+
+
+            <Divider align="center">
+              <h2 className="text-6xl font-smibold lg:md-2">Contacto</h2>
+            </Divider>
+            <div className="field col-2">
+            </div>
+            <div className="field col-3">
+              <label className="font-medium" htmlFor="celular ">Numero Celular</label>
+              <InputText id="celular"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="celular"
+                         value={formik.values.celular}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.celular && formik.errors.celular}</small>
+            </div>
+            <div className="field col-2">
+            </div>
+            <div className="field col-3">
+              <label className="font-medium" htmlFor="telefono ">Numero Telefónico</label>
+              <InputText id="telefono"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="telefono"
+                         value={formik.values.telefono}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.telefono && formik.errors.telefono}</small>
+            </div>
+            <div className="field col-2">
+            </div>
+            <div className="field col-2">
+            </div>
+            <div className="field col-3">
+              <label className="font-medium" htmlFor="correo ">Correo Personal</label>
+              <InputText id="correo"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="correo"
+                         value={formik.values.correo}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.correo && formik.errors.correo}</small>
+            </div>
+            <div className="field col-2">
+            </div>
+            <div className="field col-3">
+              <label className="font-medium" htmlFor="correo_institucional ">Correo Institucional</label>
+              <InputText id="correo_institucional"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="correo_institucional"
+                         value={formik.values.correo_institucional}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.correo_institucional && formik.errors.correo_institucional}</small>
+            </div>
+            <div className="field col-2">
+            </div>
+            <div className="field col-4">
+              <label className="font-medium"></label>
+            </div>
+
+
+
+            <Divider align="center">
+              <h2 className="text-6xl font-smibold lg:md-2">Discapacidad</h2>
+            </Divider>
+            <div className="field col-2">
+            </div>
+            <div className="field col-3">
+              <label className="font-medium" htmlFor="discapacidad ">Discapacidad</label>
+              <InputText id="telefono"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="telefono"
+                         value={formik.values.telefono}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.discapacidad && formik.errors.discapacidad}</small>
+            </div>
+            <div className="field col-2">
+            </div>
+            <div className="field col-3">
+              <label className="font-medium" htmlFor="tipo_discapacidad ">Tipo de Discapacidad</label>
+              <InputText id="tipo_discapacidad"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="tipo_discapacidad"
+                         value={formik.values.tipo_discapacidad}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.tipo_discapacidad && formik.errors.tipo_discapacidad}</small>
+            </div>
+            <div className="field col-2">
+            </div>
+            <div className="field col-2">
+            </div>
+            <div className="field col-3">
+              <label className="font-medium" htmlFor="porcentaje_discapacidad ">Porcentaje</label>
+              <InputText id="porcentaje_discapacidad"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="porcentaje_discapacidad"
+                         value={formik.values.porcentaje_discapacidad}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.porcentaje_discapacidad && formik.errors.porcentaje_discapacidad}</small>
+            </div>
+            <div className="field col-2">
+            </div>
+            <div className="field col-3">
+              <label className="font-medium" htmlFor="carnet_conadis ">Número de Carnet Conadis</label>
+              <InputText id="carnet_conadis"
+                         className="p-inputtext-sm w-full text-2xl"
+                         name="carnet_conadis"
+                         value={formik.values.carnet_conadis}
+                         onChange={formik.handleChange}
+                         onBlur={formik.handleBlur}
+              />
+              <small className="p-error">{formik.touched.carnet_conadis && formik.errors.carnet_conadis}</small>
+            </div>
+            <div className="field col-2">
+            </div>
+            <div className="field col-4">
+              <label className="font-medium"></label>
+            </div>
+
+
+            <div className="col-12 flex justify-content-evenly align-content-center mt-4">
+              <Button label={selectedItem ? 'Actualizar' : 'Guardar'}
+                      severity={selectedItem ? 'warning' : 'success'} type="submit"/>
+              <Button label="Cancelar" severity="secondary" type="button" onClick={() => {
+                formik.resetForm();
+                setSelectedItem(null);
+              }}/>
+            </div>
+
+
+            <Card className="my-5 mx-auto">
+              <DataTable value={items}
+                         dataKey="id_experiencia"
+                         paginator
+                         rows={10}
+                         rowsPerPageOptions={[5, 10, 25]}
+              >
+
+                <Column field="institucion" header="Institución"></Column>
+                <Column field="area_trabajo" header="Área de trabajo"></Column>
+                <Column field="puesto" header="Puesto"></Column>
+                <Column body={(rowData) => annexBodyTemplate(rowData)}
+                        header="Anexo"></Column>
+              </DataTable>
+            </Card>
+          </form>
         </Card>
-      </Fieldset>
+      </>
   );
 };
 

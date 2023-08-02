@@ -5,13 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9af82001-1699-42ac-aed2-937398d463ad" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/services/VistaPersonaService.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/Contrato/ContratoContext.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Contrato/ContratoContext.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/views/Instruc_Formal/Instrucc_FormalContext.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Instruc_Formal/Instrucc_FormalContext.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/interfaces/Primary/IPersona.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces/Primary/IPersona.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/Persona/PersonaContext.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Persona/PersonaContext.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -56,6 +53,10 @@
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "",
+  "associatedIndex": 8
+}]]></component>
   <component name="ProjectId" id="2R7y00C9hC7r9gwUNDzgxJmlsSO" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -64,6 +65,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "ReactCreateComponentLastSelected": "arrowFunctionComponent",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "WebServerToolWindowFactoryState": "false",
@@ -88,6 +90,11 @@
       </map>
     </option>
   </component>
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\bryan\Documents\Github\talento-humano\src\services" />
+    </key>
+  </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -107,6 +114,7 @@
       <workItem from="1689614229320" duration="44000" />
       <workItem from="1690145323143" duration="130000" />
       <workItem from="1690146867100" duration="6800000" />
+      <workItem from="1690946359990" duration="16450000" />
     </task>
     <servers />
   </component>
