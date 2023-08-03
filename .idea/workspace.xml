@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9af82001-1699-42ac-aed2-937398d463ad" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/src/services/VistaPersonaService.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces/Primary/IPersona.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces/Primary/IPersona.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/PersonaService.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/PersonaService.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/services/VistaPersonaService.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/VistaPersonaService.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/Persona/PersonaContext.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Persona/PersonaContext.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -114,7 +113,7 @@
       <workItem from="1689614229320" duration="44000" />
       <workItem from="1690145323143" duration="130000" />
       <workItem from="1690146867100" duration="6800000" />
-      <workItem from="1690946359990" duration="16450000" />
+      <workItem from="1690946359990" duration="21858000" />
     </task>
     <servers />
   </component>

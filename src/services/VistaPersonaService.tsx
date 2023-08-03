@@ -1,10 +1,22 @@
 import axios from "axios";
-import {IPersona} from "../interfaces/Primary/IPersona";
+import {AxiosInstance} from "axios/index";
 
 export class VistaPersonaService {
   baseUrl = "http://localhost:8080/api/vistaPersona/";
 
-  getAll(s: String, data: IPersona) {
-    return axios.get(this.baseUrl + "{cedula}").then((res) => res.data);
+  private api: AxiosInstance;
+
+  constructor() {
+    this.api = axios.create({
+      baseURL: this.baseUrl
+    });
   }
+  getByCedula(cedula: string) {
+    return this.api.get(`${this.baseUrl}${cedula}`)
+        .then(response => response.data)
+        .catch(error => {
+          throw error
+        })
+  }
+
 };

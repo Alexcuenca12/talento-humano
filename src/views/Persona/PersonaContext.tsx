@@ -116,13 +116,13 @@ const Persona = () => {
       }
       if (!values.descripcion_perfil) {
         errors.descripcion_perfil = 'La descripcion es requerida';
-      }
+      }/*
       if (!values.cv_socioempleo) {
         errors.cv_socioempleo = 'El Curriculum Vitae es requerido';
       }
       if (!values.foto) {
         errors.foto = 'Foto requerida';
-      }
+      }*/
 
       return errors;
     }
@@ -147,12 +147,16 @@ const Persona = () => {
           })
         })
   }
-  const handleSubmit = async (data: IPersona) => {
-    if (selectedItem) {
-      // update an existing item
-      await apiViewService.getAll(selectedItem.cedula!, data)
+  useEffect(() => {
+    if (formik.values.cedula.length == 10){
+      apiViewService.getByCedula(formik.values.cedula)
           .then(response => {
             console.log(response);
+            const persona = response[0] as IPersona;
+            formik.setFieldValue('apellido_paterno', persona.apellido_paterno);
+            formik.setFieldValue('apellido_materno', persona.apellido_materno);
+            formik.setFieldValue('primer_nombre', persona.primer_nombre);
+            formik.setFieldValue('segundo_nombre', persona.segundo_nombre);
             setMessage({severity: 'success', detail: 'Registro actualizado'});
           })
           .catch(error => {
@@ -161,6 +165,17 @@ const Persona = () => {
               severity: 'error', summary: 'Error', detail: error.message
             });
           });
+    }
+
+  },[formik.values.cedula])
+  const handleSubmit = async (data: IPersona) => {
+    if (selectedItem) {
+      // update item
+      await apiService.update(selectedItem.id_persona!, data)
+          .then(response => {
+            console.log(response);
+            setMessage({severity: 'success', detail: 'Registro actualizado'});
+          })
       setSelectedItem(null);
     } else {
       // create new item
