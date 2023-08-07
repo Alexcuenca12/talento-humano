@@ -23,6 +23,10 @@ import {
 } from "primereact/inputnumber";
 import {IMessage} from "../../interfaces/Secondary/IMessage";
 
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
 
 const apiService = new CapacitacionesService();
 export default function CapacitacionesContext() {
@@ -118,14 +122,14 @@ export default function CapacitacionesContext() {
             .then((data) => {
                 setItems(data);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
-                setMessage({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error.message
-                })
-            })
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message,
+                });
+            });
     };
     const formik = useFormik<ICapacitaciones>({
         initialValues: {
@@ -203,72 +207,86 @@ export default function CapacitacionesContext() {
 
 
     const handleSubmit = async (data: ICapacitaciones) => {
-        if (selectItem) {
-            // update an existing item
-            await apiService.updateCapacitaciones(selectItem.id_capacitaciones!, data)
-                .then(response => {
-                    console.log(response);
-                    setMessage({severity: 'success', detail: 'Registro actualizado'});
-                })
-                .catch(error => {
-                    console.error(error);
-                    setMessage({
-                        severity: 'error', summary: 'Error', detail: error.message
-                    });
+        try {
+            if (selectItem) {
+                // update an existing item
+                const response = await apiService.updateCapacitaciones(selectItem.id_capacitaciones!, data);
+                console.log(response);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Registro actualizado',
                 });
-            setSelectItem(null);
-        } else {
-            // create new item
-            await apiService.guardarCapacitaciones(data)
-                .then(response => {
-                    console.log(response);
-                    setMessage({severity: 'success', detail: 'Registro creado'});
-                })
-                .catch(error => {
-                    console.error(error);
-                    setMessage({
-                        severity: 'error', summary: 'Error', detail: error.message
-                    });
+            } else {
+                // create new item
+                const response = await apiService.guardarCapacitaciones(data);
+                console.log(response);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Registro creado',
                 });
+            }
+            fecthCapacitaciones();
+        } catch (error:any) {
+            console.error(error);
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message,
+            });
         }
-        fecthCapacitaciones();
-    }
+        setSelectItem(null);
+    };
 
     const handleDeleteItem = (rowData: ICapacitaciones) => {
-
-        apiService
-            .deleteCapacitaciones(rowData.id_capacitaciones!)
-            .then(() => {
-                console.log('Eliminado');
-                setMessage({
-                    severity: 'info',
-                    detail: 'Registro Eliminado'
-                });
-                fecthCapacitaciones();
-            })
-            .catch(error => {
-                console.error(error);
-                setMessage({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error.message
-                });
-            });
+        Swal.fire({
+            title: '¿Estás seguro?',
+            text: 'Esta acción no se puede deshacer',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                apiService
+                    .deleteCapacitaciones(rowData.id_capacitaciones!)
+                    .then(() => {
+                        console.log('Eliminado');
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Registro eliminado',
+                        });
+                        fecthCapacitaciones();
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: error.message,
+                        });
+                    });
+            }
+        });
     };
 
 //Carga PDF
     const customBytesUploader = async (event: FileUploadHandlerEvent) => {
-        // convert file to base64 encoded
-        fileConverter(event.files[0])
-            .then(data => {
-                formik.setFieldValue('evidencia', data);
-                setMessage(
-                    {severity: 'info', detail: 'Archivo Cargado'}
-                );
-            }).catch(error => {
+        try {
+            // convert file to base64 encoded
+            const data = await fileConverter(event.files[0]);
+            formik.setFieldValue('evidencia', data);
+            Swal.fire({
+                icon: 'info',
+                title: 'Archivo Cargado',
+            });
+        } catch (error:any) {
             console.error(error);
-            setMessage({severity: 'error', summary: 'Error', detail: error.message});
-        })
+            Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message,
+            });
+        }
 
         if (fileUploadRef.current) {
             // clean the file uploaded

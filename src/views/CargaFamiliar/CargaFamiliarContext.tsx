@@ -17,7 +17,13 @@ import {fileConverter} from "../../services/functions/fileConverter";
 import ToastMessage from "../../shared/ToastMessage";
 import {IMessage} from "../../interfaces/Secondary/IMessage";
 import {useFormik} from "formik";
-import {ICapacitaciones} from "../../interfaces/Primary/ICapacitaciones";
+import { differenceInYears, parse, format } from 'date-fns';
+
+import Swal from 'sweetalert2';
+import withReactContent from 'sweetalert2-react-content';
+
+const MySwal = withReactContent(Swal);
+
 
 const apiService = new CargaFamiliarService();
 
@@ -34,18 +40,19 @@ const Persona = () => {
     }, []);
 
     const fetchCargaFamiliar = () => {
-        new CargaFamiliarService().getAll()
+        new CargaFamiliarService()
+            .getAll()
             .then((data) => {
                 setItems(data);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
-                setMessage({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error.message
-                })
-            })
+                MySwal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message ? error.message : 'Error desconocido',
+                });
+            });
     };
     const cargaBodyTemplate = (cargaFamiliarObj: ICargaFamiliar) => {
         return <div className="flex">
@@ -88,24 +95,46 @@ const Persona = () => {
 
             if (!values.cedula) {
                 errors.cedula = 'Cedula es requerida';
+            } else {
+                // Validar que la cédula solo contenga números y tenga hasta 10 dígitos
+                const cedulaRegex = /^\d{1,10}$/;
+                if (!cedulaRegex.test(values.cedula)) {
+                    errors.cedula = 'Cedula inválida. Debe contener solo números y tener hasta 10 dígitos.';
+                }
             }
             if (!values.nombre_pariente) {
-                errors.nombre_pariente = 'Nombre del pareinte es requerido';
+                errors.nombre_pariente = 'Nombre del pariente es requerido';
             }
             if (!values.apellido_pariente) {
-                errors.apellido_pariente = 'Apellido del pariente es requerida';
+                errors.apellido_pariente = 'Apellido del pariente es requerido';
             }
             if (!values.fecha_nacimiento) {
                 errors.fecha_nacimiento = 'Fecha de nacimiento es requerida';
+            } else {
+                // Convertir la fecha de tipo Date a formato de cadena 'dd/MM/yyyy'
+                const fechaNacimientoString = format(values.fecha_nacimiento, 'dd/MM/yyyy');
+
+                // Validar que la fecha de nacimiento no sea mayor a la fecha actual
+                const fechaNacimiento = parse(fechaNacimientoString, 'dd/MM/yyyy', new Date());
+                const fechaActual = new Date();
+
+                if (fechaNacimiento > fechaActual) {
+                    errors.fecha_nacimiento = 'La fecha de nacimiento no puede ser mayor a la fecha actual';
+                }
+
+                // Validar que el individuo tenga al menos 18 años
+                const edad = differenceInYears(fechaActual, fechaNacimiento);
+                if (edad < 18) {
+                    errors.fecha_nacimiento = 'El individuo debe tener al menos 18 años';
+                }
             }
+
             if (!values.evidencia) {
                 errors.evidencia = 'Evidencia es requerida';
             }
 
             return errors;
-
         }
-
     });
 
 
@@ -125,71 +154,93 @@ const Persona = () => {
     const handleSubmit = async (data: ICargaFamiliar) => {
         if (selectedItem) {
             // update an existing item
-            await apiService.updateCarga(selectedItem.id_cargaFamiliar!, data)
-                .then(response => {
-                    console.log(response);
-                    setMessage({severity: 'success', detail: 'Registro actualizado'});
-                })
-                .catch(error => {
-                    console.error(error);
-                    setMessage({
-                        severity: 'error', summary: 'Error', detail: error.message
-                    });
+            try {
+                await apiService.updateCarga(selectedItem.id_cargaFamiliar!, data);
+                MySwal.fire({
+                    icon: 'success',
+                    title: 'Registro actualizado',
                 });
+            } catch (error: any) { // Declara el tipo del error como "any" o utiliza el tipo específico del error que estás esperando.
+                console.error(error);
+                MySwal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message ? error.message : 'Error desconocido',
+                });
+            }
             setSelectedItem(null);
         } else {
             // create new item
-            await apiService.saveCarga(data)
-                .then(response => {
-                    console.log(response);
-                    setMessage({severity: 'success', detail: 'Registro creado'});
-                })
-                .catch(error => {
-                    console.error(error);
-                    setMessage({
-                        severity: 'error', summary: 'Error', detail: error.message
-                    });
+            try {
+                await apiService.saveCarga(data);
+                MySwal.fire({
+                    icon: 'success',
+                    title: 'Registro creado',
                 });
+            } catch (error: any) { // Declara el tipo del error como "any" o utiliza el tipo específico del error que estás esperando.
+                console.error(error);
+                MySwal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: error.message ? error.message : 'Error desconocido',
+                });
+            }
         }
         fetchCargaFamiliar();
-    }
+    };
+
 
     const handleDeleteItem = (rowData: ICargaFamiliar) => {
-
-        apiService
-            .deleteCarga(rowData.id_cargaFamiliar!)
-            .then(() => {
-                console.log('Eliminado');
-                setMessage({
-                    severity: 'info',
-                    detail: 'Registro Eliminado'
-                });
-                fetchCargaFamiliar();
-            })
-            .catch(error => {
-                console.error(error);
-                setMessage({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error.message
-                });
-            });
+        MySwal.fire({
+            icon: 'warning',
+            title: '¿Estás seguro?',
+            text: '¡No podrás revertir esta acción!',
+            showCancelButton: true,
+            confirmButtonText: 'Sí, eliminar',
+            cancelButtonText: 'Cancelar',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                apiService
+                    .deleteCarga(rowData.id_cargaFamiliar!)
+                    .then(() => {
+                        console.log('Eliminado');
+                        MySwal.fire({
+                            icon: 'info',
+                            title: 'Registro Eliminado',
+                        });
+                        fetchCargaFamiliar();
+                    })
+                    .catch((error) => {
+                        console.error(error);
+                        MySwal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: error.message ? error.message : 'Error desconocido',
+                        });
+                    });
+            }
+        });
     };
 
 
     //Carga PDF
     const customBytesUploader = async (event: FileUploadHandlerEvent) => {
         // convert file to base64 encoded
-        fileConverter(event.files[0])
-            .then(data => {
-                formik.setFieldValue('evidencia', data);
-                setMessage(
-                    {severity: 'info', detail: 'Archivo Cargado'}
-                );
-            }).catch(error => {
+        try {
+            const data = await fileConverter(event.files[0]);
+            formik.setFieldValue('evidencia', data);
+            MySwal.fire({
+                icon: 'info',
+                title: 'Archivo Cargado',
+            });
+        } catch (error:any) {
             console.error(error);
-            setMessage({severity: 'error', summary: 'Error', detail: error.message});
-        })
+            MySwal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: error.message ? error.message : 'Error desconocido',
+            });
+        }
 
         if (fileUploadRef.current) {
             // clean the file uploaded
