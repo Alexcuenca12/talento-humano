@@ -1,7 +1,7 @@
 
 import React from "react";
 import LoginContext from "../views/Login/LoginContext";
-import Habilidades from "../views/Habilidades/HabilidadesPDF";
+import Ficha from "../views/Vfichapersona/VfichaPDF";
 import Inst from "../views/Instruc_Formal/Instrucc_FormalContext";
 import { useContext } from "react";
 import {
@@ -48,7 +48,7 @@ export function AppRouter() {
         </Route>
         <Route path="/resumen">
            {/* Ruta para direccionarse al router de login */}
-          <Habilidades />
+          <Ficha />
         </Route>
         {/* Acceso a las rutas privadas del sistema solamente cuando este logueado */}
         <PrivateRouter loggedIn={user?.loggedIn} component={DashboardRouter} />

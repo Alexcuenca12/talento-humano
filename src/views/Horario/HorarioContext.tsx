@@ -27,8 +27,8 @@ function HorarioContext() {
         horario: "",
         dias: "",
         distributivo: "",
-        id_periodo: null,
-        id_persona: null,
+        id_periodo: 0,
+        id_persona: 0,
     });
 
     const [editMode, setEditMode] = useState(false);
@@ -53,9 +53,22 @@ function HorarioContext() {
             return;
         }
 
+        // Crear una instancia de Persona con el id deseado (por ejemplo, 1)
+        const personaData = {
+            id_persona: 1,
+           // Coloca aquí el id válido de la persona
+        };
+
+
+        // Asignar el valor "1" al campo id_persona en formData
+        const dataToSend = {
+            ...formData,
+            persona: personaData, // Aquí se establece el valor "1" como una cadena
+        };
+
 
         horaService
-            .save(formData)
+            .save(dataToSend)
             .then((response) => {
                 resetForm();
                 swal('Horario', 'Datos Guardados Correctamente', 'success');
@@ -133,8 +146,8 @@ function HorarioContext() {
                         horario: "",
                         dias: "",
                         distributivo: "",
-                        id_periodo: null,
-                        id_persona: null,
+                        id_periodo: 0,
+                        id_persona: 0,
 
                     });
                     sethora1(hora1.map((hora) => hora.id_horario === editItemId ? response : hora));
@@ -153,8 +166,8 @@ function HorarioContext() {
             horario: "",
             dias: "",
             distributivo: "",
-            id_periodo: null,
-            id_persona: null,
+            id_periodo: 0,
+            id_persona: 0,
 
         });
         setEditMode(false);

@@ -33,7 +33,7 @@ function ContratoContext() {
         tiempo_dedicacion: "",
         salario_publico: "",
         contrato_vigente: false,
-        persona: null,
+        id_persona: 0,
 
     });
 
@@ -61,7 +61,7 @@ function ContratoContext() {
     };
     const getContratoVigenteText = (contrato_vigente: boolean) => {
         return contrato_vigente ? "Por terminar" : "Finalizado";
-      };
+    };
 
     useEffect(() => {
         contratService.getAll()
@@ -171,9 +171,21 @@ function ContratoContext() {
             return;
         }
 
+        // Crear una instancia de Persona con el id deseado (por ejemplo, 1)
+        const personaData = {
+            id_persona: 1, // Coloca aquí el id válido de la persona
+        };
+
+
+        // Asignar el valor "1" al campo id_persona en formData
+        const dataToSend = {
+            ...formData,
+            persona: personaData, // Aquí se establece el valor "1" como una cadena
+        };
+
 
         contratService
-            .save(formData)
+            .save(dataToSend)
             .then((response) => {
                 resetForm();
                 swal('Contrato', 'Datos Guardados Correctamente', 'success');
@@ -272,7 +284,7 @@ function ContratoContext() {
                         tiempo_dedicacion: "",
                         salario_publico: "",
                         contrato_vigente: false,
-                        persona: null,
+                        id_persona: 0,
 
                     });
                     setcontra1(contra1.map((contra) => contra.id_contrato === editItemId ? response : contra));
@@ -298,7 +310,7 @@ function ContratoContext() {
             tiempo_dedicacion: "",
             salario_publico: "",
             contrato_vigente: false,
-            persona: null,
+            id_persona: 0,
 
         });
         setEditMode(false);
@@ -435,6 +447,7 @@ function ContratoContext() {
                                         />
                                     </div>
                                     <div className="flex flex-wrap w-full h-full justify-content-between">
+                                        
                                         <label htmlFor="contratoVigente" className="text-3xl font-medium w-auto min-w-min">
                                             Contrato Vigente:
                                         </label>
@@ -528,7 +541,7 @@ function ContratoContext() {
                                 <td>{contrato.salario}</td>
                                 <td>{contrato.tiempo_dedicacion}</td>
                                 <td>{contrato.salario_publico}</td>
-                                <td>{getContratoVigenteText(contrato.contrato_vigente )}</td>
+                                <td>{getContratoVigenteText(contrato.contrato_vigente)}</td>
                                 <td>
                                     <Button
                                         type="button"
