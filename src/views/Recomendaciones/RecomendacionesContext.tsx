@@ -1,145 +1,272 @@
-import React from "react";
-import { InputText } from "primereact/inputtext";
-import { FileUpload } from "primereact/fileupload";
-import { Button } from "primereact/button";
-import "../../styles/Recomendaciones.css";
-import {Fieldset} from "primereact/fieldset";
-import {Card} from "primereact/card";
-import cardHeader from "../../shared/CardHeader";
-import {Divider} from "primereact/divider";
-import {DataTable} from "primereact/datatable";
-import {Column} from "primereact/column";
-import {InputNumber} from "primereact/inputnumber";
 
-class Recomendaciones extends React.Component {
-  constructor(props: {} | Readonly<{}>) {
-    super(props);
-    this.state = {
-      firstName: "",
-      lastName: "",
-      email: "",
-      phone: "",
-      file: null,
-    };
-  }
+import React, { useState, useEffect } from 'react';
+import { InputText } from 'primereact/inputtext';
+import { FileUpload } from 'primereact/fileupload';
+import { Button } from 'primereact/button';
+import { Calendar } from 'primereact/calendar';
+import '../../styles/Recomendaciones.css';
+import {IRecomendaciones} from '../../interfaces/Primary/Recomendaciones'
+import {RecomendacionesService} from '../../services/RecomendacionesService'
+import { log } from 'console';
 
-  handleChange = (event: { target: { name: any; value: any } }) => {
-    const { name, value } = event.target;
-    this.setState({ [name]: value });
+function Recomendaciones() {
+  const [evidencia, setevidencia] = useState<Uint8Array | null>(null);
+  const [reco1, setReco1] = useState<IRecomendaciones[]>([]);
+  const [formData, setFormData] = useState<IRecomendaciones>({
+    id_recomendaciones: 0,
+    primer_nombre   : "",
+    segundo_nombre: "",
+    primer_apellido: "",
+    segundo_apellido   : "",
+    correo: "",
+    documentoRecomendacion: null,
+    
+  });
+
+  const [editMode, setEditMode] = useState(false);
+  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
+
+  const recomendacionesService = new RecomendacionesService();
+
+  const createProduct = (product: any) => {
+    recomendacionesService.save(product).then((data: any) => {
+      setReco1([...reco1, data]);
+    });
   };
 
-  handleFileUpload = (event: { target: { files: any[] } }) => {
-    const file = event.target.files[0];
-    this.setState({ file });
+  const guardarProduct = () => {   
+        createProduct(formData);
+        
+
+      }
+  useEffect(() => {
+    recomendacionesService.getAll()
+      .then((data) => {
+        setReco1(data);
+      })
+      .catch((error) => {
+        console.error("Error al obtener los datos:", error);
+      });
+  }, []);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editMode && editItemId !== undefined) {
+      const updatedFormData = { ...formData, id: editItemId };
+      recomendacionesService.update(Number(editItemId), formData as IRecomendaciones)
+        .then((response) => {
+          console.log('Formulario actualizado exitosamente:', response);
+          resetForm();
+          setEditMode(false);
+          setEditItemId(undefined);
+        })
+        .catch((error) => {
+          console.error('Error al actualizar el formulario:', error);
+        });
+    } else {
+      recomendacionesService
+        .save(createProduct(formData))
+        
+        .catch((error) => {
+          console.error('Error al enviar el formulario:', error);
+        });
+    }
   };
 
-  handleSubmit = (event: { preventDefault: () => void }) => {
-    event.preventDefault();
-    // Aquí puedes agregar la lógica para enviar los datos del formulario
+
+
+
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editItemId !== undefined) {
+      recomendacionesService.update(Number(editItemId), formData as IRecomendaciones)
+        .then((response) => {
+          setFormData({
+            id_recomendaciones: 0,
+            primer_nombre   : "",
+            segundo_nombre: "",
+            primer_apellido: "",
+            segundo_apellido   : "",
+            correo: "",
+            documentoRecomendacion: null,
+            
+          });
+          setReco1(reco1.map((reco) => reco.id_recomendaciones === editItemId ? response : reco));
+          setEditMode(false);
+          setEditItemId(undefined);
+        })
+        .catch((error) => {
+          console.error("Error al actualizar el formulario:", error);
+        });
+    }
   };
 
-  render() {
+  
+
+  const handleEdit = (id: number | undefined) => {
+    if (id !== undefined) {
+      const editItem = reco1.find(reco => reco.id_recomendaciones === id);
+      if (editItem) {
+        setFormData(editItem);
+        setEditMode(true);
+        setEditItemId(id);
+      }
+    }
+  };
+
+  const handleDelete = (id: number | undefined) => {
+    if (id !== undefined) {
+      recomendacionesService.delete(id)
+        .then(() => {
+          setReco1(reco1.filter((reco) => reco.id_recomendaciones !== id));
+        })
+        .catch((error) => {
+          console.error('Error al eliminar el registro:', error);
+        });
+    }
+  };
+  const resetForm = () => {
+    setFormData({
+    id_recomendaciones: 0,
+    primer_nombre   : "",
+    segundo_nombre: "",
+    primer_apellido: "",
+    segundo_apellido   : "",
+    correo: "",
+    documentoRecomendacion: null,
+    
+    });
+    setEditMode(false);
+    setEditItemId(undefined);
+  };
+  
     return (
-        <Fieldset className="fgrid col-fixed">
-          <Card header={cardHeader}
-                className="border-solid border-blue-800 border-3">
-            <Divider align="center">
-              <h1 className="text-7xl font-smibold lg:md-2">Recomendaciones Personales</h1>
-            </Divider>
+      <div>
+      <div>
+      <div style={{ marginBottom: '120px' }}></div>
 
-            <div className="flex justify-content-between flex-wrap">
-              <form>
-                <div className="flex flex-wrap flex-row justify-content-center">
-
-                  <div className="flex align-items-center justify-content-center">
-                    <div className="flex flex-column justify-content-center ml-6 ">
-                      <div
-                          className="flex flex-row flex-wrap w-full h-full  justify-content-between  flex-grow-1 ">
-                        <div
-                            className="flex align-items-center justify-content-center w-auto pr-2">
-                          <label htmlFor="nombres"
-                                 className="text-3xl font-medium w-auto min-w-min">Nombres:</label>
-                          <InputText id="nombres"
-                                     className="w-full min-w-min text-2xl"/>
-
-                        </div>
-                        <div
-                            className="flex align-items-center justify-content-center w-auto pr-2">
-                          <label htmlFor="apellidos"
-                                 className="text-3xl font-medium w-auto min-w-min">Apellidos:</label>
-                          <InputText id="apellidos"
-                                     className="w-full min-w-min text-2xl"/>
-                        </div>
-
-                      </div>
-
-
-                      <div
-                          className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1 mt-5">
-                        <div
-                            className="flex align-items-center justify-content-center w-auto pr-2">
-                          <label htmlFor="job" className="text-3xl font-medium w-full  min-w-min">Email:</label>
-                          <InputText id="job"
-                                     className="w-auto min-w-min text-2xl"/>
-
-
-                        </div>
-                        <div
-                            className="flex align-items-center justify-content-center w-auto pr-2">
-                          <label htmlFor="telefono"
-                                 className="text-3xl font-medium w-auto min-w-min">Telefono:</label>
-                          <InputNumber id="telefono"
-                                     className="w-full min-w-min text-2xl"/>
-                        </div>
-
-
-                      </div>
-                      <div
-                          className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
-                        <div
-                            className="flex align-items-center justify-content-center w-auto min-w-min">
-                          <Button type="submit" label="Agregar"
-                                  className="w-full text-3xl min-w-min "
-                                  rounded/>
-                        </div>
-                        <div
-                            className="flex align-items-center justify-content-center w-auto min-w-min">
-                          <Button type="button" label="Cancel"
-                                  className="w-full text-3xl min-w-min"
-                                  rounded/>
-                        </div>
-                      </div>
-
-                    </div>
-                  </div>
-
-                  <div className="flex flex-column align-items-center justify-content-center ml-4">
-                    <label className="flex text-3xl font-medium">Subir PDF:</label>
-                    <FileUpload name="pdf"
-                                chooseLabel="Escoger"
-                                uploadLabel="Cargar"
-                                cancelLabel="Cancelar"
-                                emptyTemplate={<p className="m-0 p-button-rounded">Arrastre y suelte los
-                                  archivos aquí para
-                                  cargarlos.</p>}/>
-                  </div>
-                </div>
-              </form>
+      <div className="centered-form">
+      <div className="icono_insti"></div>
+        <div className="title-container">
+          <div className="title-line"></div>
+          <h1 className="page-title">RECOMENDACIONES PERSONALES</h1>
+          <div className="title-line"></div>
+        </div>
+        <form className='formulario' onSubmit={editMode ? handleUpdate : handleSubmit}>
+          <div className="form-row">
+            <div className="input-container">
+              <label className="etiqueta"htmlFor="level">Nombres:</label>
+              <InputText  className="small-input"
+              id="firstName"
+              name="firstName"
+              value={formData.primer_nombre}
+              onChange={(e) => setFormData({ ...formData, primer_nombre: e.target.value })}/>
             </div>
-
-            <DataTable tableStyle={{minWidth: '50rem'}} className="mt-5  w-full h-full text-3xl font-medium">
-              <Column field='Experiencia Agregada' header="Recomendaciones Personales"
-                      headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
-              <Column field='Acciones' header="Acciones"
-                      headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
-            </DataTable>
-
-
-          </Card>
-
-        </Fieldset>
+            <div className="input-container">
+              <label className="etiqueta" htmlFor="title">Apellidos:</label>
+              <InputText 
+              className="small-input"
+              id="lastName"
+              name="lastName"
+              value={formData.primer_apellido}
+              onChange={(e) => setFormData({ ...formData, primer_apellido: e.target.value })}/> 
+            </div>
+            <div className="input-container">
+  <label className="etiqueta" htmlFor="institution">Email:</label>
+  <InputText 
+  
+              id="email"
+              className="small-input"
+              name="email"
+              value={formData.correo}
+              onChange={(e) => setFormData({ ...formData, correo: e.target.value })} />
+</div>
+          </div>
+          <div className="form-row">
+            <div className="input-container">
+              <label className="etiqueta" htmlFor="duration">Telefono:</label>
+              <InputText 
+              className="small-input"
+              id="secondName"
+              name="secondName"
+              value={formData.segundo_nombre}
+              onChange={(e) => setFormData({ ...formData, segundo_nombre: e.target.value })} />
+            </div>
+            
+            {/* <div className="input-container">
+  <label className="etiqueta" htmlFor="pdf">Subir PDF:</label>
+  <FileUpload
+    className="small-input"
+    id="pdf"
+    name="pdf"
+    chooseLabel="Seleccionar"
+    mode="basic"
+    uploadLabel="Subir"
+    cancelLabel="Cancelar"
+    customUpload
+    
+    accept=".pdf"
+  />
+</div> */}
+          </div>
+          <div className="form-row">
+            
+            <div className="input-container">
+              
+              
+            </div>
+ 
+          </div>
+          <div className="form-row-buttons">
+          <Button
+  type="submit"
+  label={editMode ? 'Actualizar' : 'Submit'}
+  className="small-button p-button-success"
+  style={{ background: '#0C3255' }}
+  onClick={editMode? handleUpdate : handleSubmit}
+/>
+            <Button
+              type="button"
+              label="Cancel"
+              className="small-button p-button-secondary"
+              style={{ background: '#FF9800' }}
+              onClick={resetForm}
+            />
+          </div>
+        </form>
+        <div className="table-container">
+          <table className="data-table">
+            <thead>
+              <tr>
+                <th style={{ width: '70%' }}>Recomendaciones Agregadas</th>
+                <th style={{ width: '30%' }}>Acciones</th>
+               
+              </tr>
+            </thead>
+            <tbody>
+            {reco1.map((reco) => (
+                <tr key={reco.id_recomendaciones?.toString()}>
+                  <td>{reco.correo}</td>
+                  
+                  <td>
+                    <button onClick={() => handleDelete(reco.id_recomendaciones?.valueOf())}>Eliminar</button>
+                     <button onClick={() => handleEdit(reco.id_recomendaciones?.valueOf())}>Editar</button> 
+                    
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <div className="">
+          <Button type="button" label="Continuar" className="small-button p-button-secondary additional-button" style={{ background: '#0C3255'}} />
+        </div>
+      </div>
+    </div>
+      </div>
+      
     );
-  }
+  
 }
 
 export default Recomendaciones;
