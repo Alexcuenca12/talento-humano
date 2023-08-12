@@ -19,6 +19,7 @@ function HabilidadesContext() {
   const [formData, setFormData] = useState<IHabilidadesData>({
     id_habilidades: 0,
     descripcion: "",
+    id_persona: 0,
   });
 
   const [editMode, setEditMode] = useState(false);
@@ -26,7 +27,10 @@ function HabilidadesContext() {
   const habilidadService = new HabilidadesService();
   const [pdfContent, setPdfContent] = useState<React.ReactNode | null>(null);
 
+
   useEffect(() => {
+
+
     habilidadService.getAll()
       .then((data) => {
         sethabi1(data);
@@ -34,7 +38,9 @@ function HabilidadesContext() {
       .catch((error) => {
         console.error("Error al obtener los datos:", error);
       });
+
   }, []);
+
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,17 +49,31 @@ function HabilidadesContext() {
 
       swal('Advertencia', 'Por favor, complete todos los campos', 'warning');
       return;
-    }
 
+    }
+    // Crear una instancia de Persona con el id deseado (por ejemplo, 1)
+    const personaData = {
+      id_persona: 1, // Coloca aquí el id válido de la persona
+    };
+
+
+    // Asignar el valor "1" al campo id_persona en formData
+    const dataToSend = {
+      ...formData,
+      persona: personaData, // Aquí se establece el valor "1" como una cadena
+    };
 
     habilidadService
-      .save(formData)
+      .save(dataToSend)
       .then((response) => {
+
         resetForm();
+        console.log("guardado: ", dataToSend)
         swal('Habilidad', 'Datos Guardados Correctamente', 'success');
         habilidadService.getAll()
           .then((data) => {
             sethabi1(data);
+            console.log("datos son: ", data)
           })
           .catch((error) => {
             console.error("Error al obtener los datos:", error);
@@ -120,11 +140,7 @@ function HabilidadesContext() {
             text: "Datos actualizados correctamente",
             icon: "success"
           });
-          setFormData({
-
-            descripcion: "",
-
-          });
+          setFormData({ ...formData });
           sethabi1(habi1.map((habi) => habi.id_habilidades === editItemId ? response : habi));
           setEditMode(false);
           setEditItemId(undefined);
@@ -138,6 +154,7 @@ function HabilidadesContext() {
   const resetForm = () => {
     setFormData({
       descripcion: "",
+      id_persona: formData.id_persona,
 
     });
     setEditMode(false);
