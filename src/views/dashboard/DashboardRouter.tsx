@@ -14,11 +14,10 @@ import EvaDocente from "../Eva_Docente/EvaDocente";
 import CargaFamiliarContext from "../CargaFamiliar/CargaFamiliarContext";
 import Experiencia from "../Experiencia/Experiencia";
 import HabilidadesContext from "../Habilidades/HabilidadesContext";
-import {ListadoDocentes} from "../Resumen/ListadoDocentes";
+import { ListadoDocentes } from "../Resumen/ListadoDocentes";
 import PublicacionesContext from "../Publicaciones/PublicacionesContext";
 import Footer from "../../common/Footer";
 import Recomendaciones from "../Recomendaciones/RecomendacionesContext";
-
 
 export const DashboardRouter = () => {
   //Datos del sessionStorage
@@ -95,8 +94,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBar />
-                    <ContratoContext/>
-
+                    <ContratoContext />
                   </>
                 ) : rol === 2 ? (
                   <>
@@ -112,7 +110,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <Instrucc_FormalContext/>
+                    <Instrucc_FormalContext />
                   </>
                 ) : rol === 2 ? (
                   <>
@@ -127,13 +125,12 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                      <HorarioContext/>
-
+                    <HorarioContext />
                   </>
                 ) : rol === 2 ? (
                   <>
                     <NavBar />
-                    <HorarioContext/>
+                    <HorarioContext />
                   </>
                 ) : (
                   <NavBarUserDisabled />
@@ -144,7 +141,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <CargaFamiliarContext />
+                    <CargaFamiliarContext/>
                   </>
                 ) : rol === 2 ? (
                   <>
@@ -201,12 +198,12 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <HabilidadesContext/>
+                    <HabilidadesContext />
                   </>
                 ) : rol === 2 ? (
                   <>
                     <NavBar />
-                    <HabilidadesContext/>
+                    <HabilidadesContext />
                   </>
                 ) : (
                   <NavBarUserDisabled />
@@ -248,7 +245,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <ListadoDocentes/>
+                    <ListadoDocentes />
                   </>
                 ) : rol === 2 ? (
                   <>

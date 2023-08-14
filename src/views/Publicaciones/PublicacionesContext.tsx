@@ -12,7 +12,7 @@ import { IPublicaciones } from "../../interfaces/Primary/IPublicaciones";
 import { PublicacionesService } from "../../services/PublicacionesService";
 import swal from "sweetalert";
 
-function ContratoContext() {
+function PublicacionesContext() {
   const [contra1, setcontra1] = useState<IPublicaciones[]>([]);
   const [formData, setFormData] = useState<IPublicaciones>({
     id_publi: 0,
@@ -440,4 +440,4 @@ function ContratoContext() {
   );
 }
 
-export default ContratoContext;
+export default PublicacionesContext;

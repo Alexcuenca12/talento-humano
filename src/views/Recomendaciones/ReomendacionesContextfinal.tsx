@@ -4,7 +4,7 @@ import { FileUpload } from "primereact/fileupload";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import "../../styles/Recomendaciones.css";
-import { IRecomendaciones } from "../../interfaces/Primary/Recomendaciones";
+import { IRecomendaciones } from "../../interfaces/Primary/IRecomendaciones";
 import { RecomendacionesService } from "../../services/RecomendacionesService";
 import { log } from "console";
 
@@ -17,7 +17,7 @@ function Recomendaciones() {
   const [sapellido, setsapellido] = useState("");
   const [correo, setcorreo] = useState("");
   const [idpersona, setpersona] = useState<number>(1);
-  const [docummetno, setdocumento] = useState<Uint8Array | null>(null);
+  const [docummetno, setdocumento] = useState("");
   const [formData, setFormData] = useState<IRecomendaciones>({
     id_recomendaciones: 0,
     primer_nombre: "",
@@ -25,7 +25,7 @@ function Recomendaciones() {
     primer_apellido: "",
     segundo_apellido: "",
     correo: "",
-    documentoRecomendacion: null,
+    documentoRecomendacion: "",
   });
   const interfar = useState<IRecomendaciones>;
   const [editMode, setEditMode] = useState(false);
@@ -46,21 +46,21 @@ function Recomendaciones() {
   const handlecorreoChange = (event: ChangeEvent<HTMLInputElement>) => {
     setcorreo(event.target.value);
   };
-  const handledocumentoChange = (event: ChangeEvent<HTMLInputElement>) => {
-    if (event.target.files && event.target.files.length > 0) {
-      const file = event.target.files[0];
-      console.log(file);
-      const reader = new FileReader();
+  // const handledocumentoChange = (event: ChangeEvent<HTMLInputElement>) => {
+  //   if (event.target.files && event.target.files.length > 0) {
+  //     const file = event.target.files[0];
+  //     console.log(file);
+  //     const reader = new FileReader();
 
-      reader.onload = () => {
-        const buffer = reader.result as ArrayBuffer;
-        const byteArray = new Uint8Array(buffer);
-        setdocumento(byteArray);
-      };
+  //     reader.onload = () => {
+  //       const buffer = reader.result as ArrayBuffer;
+  //       const byteArray = new Uint8Array(buffer);
+  //       setdocumento(byteArray);
+  //     };
 
-      reader.readAsArrayBuffer(file);
-    }
-  };
+  //     reader.readAsArrayBuffer(file);
+  //   }
+  // };
 
   const handleGuardarClick = async () => {
     const nuevaRecomendacion: IRecomendaciones = {
