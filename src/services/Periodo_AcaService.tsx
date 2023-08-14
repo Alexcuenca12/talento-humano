@@ -1,25 +1,23 @@
-import axios from "axios";
+import axios, {AxiosInstance} from "axios";
 
-export class PeriodoAcaService {
-    baseUrl = "http://localhost:8080/api/periodoacademico/";
+const API_BASE_URL = 'http://localhost:8080/api/periodoacademico';
 
-    //Metodo para listar todas los periodos
-    getAll() {
-        return axios.get(this.baseUrl + "read").then((res) => res.data);
-    }
-    //Crear
-    save(periodoacademico: any) {
-        return axios.post(this.baseUrl + "create", periodoacademico).then((res) => res.data);
+class Periodo_AcaService{
+    private api: AxiosInstance;
+
+    constructor() {
+        this.api = axios.create({
+            baseURL: API_BASE_URL
+        });
     }
 
-    //(Eliminado lógico)
-    delete(id: number) {
-        return axios.delete(`${this.baseUrl}delete/${id}`).then((res) => res.data);
-    }
-    //Metodo para actualizar un periodo basado en el id de la misma
-    update(id: number, user: any) {
-        return axios
-            .put(this.baseUrl + "update/" + id.toString(), user)
-            .then((res) => res.data);
+    getAllItems(){
+        return this.api.get('/read').then(response => response.data)
+            .catch(error=>{
+                throw error
+            })
     }
 }
+
+const academicPeriodService = new Periodo_AcaService();
+export default academicPeriodService;
