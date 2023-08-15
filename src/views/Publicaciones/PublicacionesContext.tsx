@@ -17,9 +17,17 @@ function PublicacionesContext() {
   const [formData, setFormData] = useState<IPublicaciones>({
     id_publi: 0,
     titulo_publi: "",
-    fecha_publi: null,
+    autores_publi: "",
+    filiacion_publi: "",
+    lugar_publi: "",
+    fecha_publi: "",
+    fecha_evento: "",
+    editorial_publi: "",
+    isbn_publi: "",
+    issn_publi: "",
+    doi_publi: "",
     publicacion: "",
-    persona: null,
+    persona: "",
   });
 
   const fileUploadRef = useRef<FileUpload>(null);
@@ -201,7 +209,15 @@ function PublicacionesContext() {
           });
           setFormData({
             titulo_publi: "",
+            autores_publi: "",
+            filiacion_publi: "",
+            lugar_publi: "",
             fecha_publi: "",
+            fecha_evento: "",
+            editorial_publi: "",
+            isbn_publi: "",
+            issn_publi: "",
+            doi_publi: "",
             publicacion: "",
             persona: "",
           });
@@ -222,7 +238,15 @@ function PublicacionesContext() {
   const resetForm = () => {
     setFormData({
       titulo_publi: "",
+      autores_publi: "",
+      filiacion_publi: "",
+      lugar_publi: "",
       fecha_publi: "",
+      fecha_evento: "",
+      editorial_publi: "",
+      isbn_publi: "",
+      issn_publi: "",
+      doi_publi: "",
       publicacion: "",
       persona: "",
     });
@@ -287,77 +311,314 @@ function PublicacionesContext() {
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
-                      Fecha Publicacion:
+                      Fecha de Publicación:
                     </label>
                     <Calendar
-                      className=" text-2xl"
+                      className="text-2xl"
                       id="inicio"
                       name="inicio"
                       required
-                      dateFormat="dd/mm/yy"
+                      dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
                       showIcon
-                      onChange={(e) =>
+                      maxDate={new Date()}
+                      onChange={(e) => {
+                        const selectedDate =
+                          e.value instanceof Date ? e.value : null;
+                        const formattedDate = selectedDate
+                          ? selectedDate.toISOString().split("T")[0] // Formatear a ISO 8601
+                          : "";
                         setFormData({
                           ...formData,
-                          fecha_publi:
-                            e.value instanceof Date
-                              ? e.value.toISOString()
-                              : "",
-                        })
+                          fecha_publi: formattedDate,
+                        });
+                      }}
+                      value={
+                        formData.fecha_publi
+                          ? new Date(formData.fecha_publi)
+                          : null
                       }
                     />
                   </div>
-                  <div className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
-                    <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                      <Button
-                        type="submit"
-                        label={editMode ? "Actualizar" : "Guardar"}
-                        className="w-full text-3xl min-w-min "
-                        rounded
-                        onClick={editMode ? handleUpdate : handleSubmit}
-                      />
-                    </div>
-                    <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                      <Button
-                        type="button"
-                        label="Cancel"
-                        className="w-full text-3xl min-w-min"
-                        rounded
-                        onClick={resetForm}
-                      />
-                    </div>
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="cargo"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Autores de la Publicacion:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese los Autores"
+                      id="cargo"
+                      name="cargo"
+                      style={{ width: "221px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          autores_publi: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.autores_publi}
+                    />
+                  </div>
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="doi"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      DOI de la Publicacion:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese el DOI"
+                      id="doi"
+                      name="doi"
+                      style={{ width: "221px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          doi_publi: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.doi_publi}
+                    />
+                  </div>
+                </div>
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginTop: "-52px", marginLeft: "25px" }}
+                >
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="filiacion"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Filiación de la Publicacion:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese la Filiación"
+                      id="filiacion"
+                      name="filiacion"
+                      style={{ width: "221px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          filiacion_publi: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.filiacion_publi}
+                    />
+                  </div>
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="lugar"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Lugar de la Publicacion:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese el Lugar de la Publicacion"
+                      id="lugar"
+                      name="lugar"
+                      style={{ width: "221px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          lugar_publi: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.lugar_publi}
+                    />
+                  </div>
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
+                    <label
+                      htmlFor="evento"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Fecha de Evento:
+                    </label>
+                    <Calendar
+                      className="text-2xl"
+                      id="inicio"
+                      name="inicio"
+                      required
+                      dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
+                      showIcon
+                      maxDate={new Date()}
+                      onChange={(e) => {
+                        const selectedDate =
+                          e.value instanceof Date ? e.value : null;
+                        const formattedDate = selectedDate
+                          ? selectedDate.toISOString().split("T")[0] // Formatear a ISO 8601
+                          : "";
+                        setFormData({
+                          ...formData,
+                          fecha_evento: formattedDate,
+                        });
+                      }}
+                      value={
+                        formData.fecha_evento
+                          ? new Date(formData.fecha_evento)
+                          : null
+                      }
+                    />
+                  </div>
+                </div>
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginTop: "-52px", marginLeft: "25px" }}
+                >
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="filiacion"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Editorial de la Publicacion:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese la Editorial"
+                      id="filiacion"
+                      name="filiacion"
+                      style={{ width: "221px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          editorial_publi: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.editorial_publi}
+                    />
+                  </div>
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="isbn"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      ISBN de la Publicacion:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese el ISBN"
+                      id="isbn"
+                      name="isbn"
+                      style={{ width: "221px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          isbn_publi: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.isbn_publi}
+                    />
+                  </div>
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="issn"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      ISSN de la Publicacion:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese el ISSN"
+                      id="issn"
+                      name="issn"
+                      style={{ width: "221px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          issn_publi: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.issn_publi}
+                    />
                   </div>
                 </div>
               </div>
-              <div className="flex flex-column align-items-center justify-content-center ml-4">
-                <FileUpload
-                  name="pdf"
-                  style={{ marginLeft: "480px" }}
-                  chooseLabel="Escoger"
-                  uploadLabel="Cargar"
-                  cancelLabel="Cancelar"
-                  emptyTemplate={
-                    <p className="m-0 p-button-rounded">
-                      Arrastre y suelte los archivos aquí para cargarlos.
-                    </p>
-                  }
-                  customUpload
-                  onSelect={customBytesUploader}
-                  accept="application/pdf"
-                />
+              <div
+                className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6"
+                style={{ marginLeft: "-45px" }}
+              >
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="submit"
+                    label={editMode ? "Actualizar" : "Guardar"}
+                    className="w-full text-3xl min-w-min "
+                    rounded
+                    onClick={editMode ? handleUpdate : handleSubmit}
+                  />
+                </div>
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="button"
+                    label="Cancelar"
+                    className="w-full text-3xl min-w-min"
+                    rounded
+                    onClick={resetForm}
+                  />
+                </div>
+              </div>
+              <div style={{ marginLeft: "556px", marginTop: "-103px" }}>
+                <div className="flex flex-column align-items-center justify-content-center ml-4">
+                  <label
+                    htmlFor="pdf"
+                    className="text-3xl font-medium w-auto min-w-min"
+                    style={{
+                      marginRight: "20px",
+                      marginLeft: "169px",
+                      marginTop: "-5px",
+                    }}
+                  >
+                    Subir Evidencia:
+                  </label>
+                  <FileUpload
+                    name="pdf"
+                    style={{ marginLeft: "380px", marginTop: "10px" }}
+                    chooseLabel="Escoger"
+                    uploadLabel="Cargar"
+                    cancelLabel="Cancelar"
+                    emptyTemplate={
+                      <p className="m-0 p-button-rounded">
+                        Arrastre y suelte los archivos aquí para cargarlos.
+                      </p>
+                    }
+                    customUpload
+                    onSelect={customBytesUploader}
+                    accept="application/pdf"
+                  />
+                </div>
               </div>
             </div>
           </form>
         </div>
         <table
-          style={{ minWidth: "50rem" }}
-          className="mt-5  w-full h-full text-3xl font-medium"
+          style={{ minWidth: "40rem" }}
+          className="mt-4  w-full h-full text-3xl font-large"
         >
           <thead>
             <tr style={{ backgroundColor: "#0C3255", color: "white" }}>
               <th>Nº de Publicacion</th>
               <th>Fecha de Publicación</th>
               <th>Titulo de Publicación </th>
+              <th>Autores de Publicación </th>
+              <th>Filiación de Publicación </th>
+              <th>Lugar de Publicación </th>
+              <th>Fecha de Evento</th>
+              <th>Editorial de Publicación </th>
+              <th>ISBN de Publicación </th>
+              <th>ISSN de Publicación </th>
+              <th>DOI de Publicación </th>
               <th>Operaciones</th>
               <th>Evidencia</th>
             </tr>
@@ -379,6 +640,25 @@ function PublicacionesContext() {
                     : ""}
                 </td>
                 <td>{contrato.titulo_publi}</td>
+                <td>{contrato.autores_publi}</td>
+                <td>{contrato.filiacion_publi}</td>
+                <td>{contrato.lugar_publi}</td>
+                <td>
+                  {contrato.fecha_evento
+                    ? new Date(contrato.fecha_evento).toLocaleDateString(
+                        "es-ES",
+                        {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                        }
+                      )
+                    : ""}
+                </td>
+                <td>{contrato.editorial_publi}</td>
+                <td>{contrato.isbn_publi}</td>
+                <td>{contrato.issn_publi}</td>
+                <td>{contrato.doi_publi}</td>
                 <td>
                   <Button
                     type="button"
@@ -391,7 +671,6 @@ function PublicacionesContext() {
                       width: "50px",
                       color: "black",
                       justifyContent: "center",
-                      marginRight: "8px", // Espacio entre los botones
                     }}
                     onClick={() => handleEdit(contrato.id_publi?.valueOf())}
                     // Agrega el evento onClick para la operación de editar

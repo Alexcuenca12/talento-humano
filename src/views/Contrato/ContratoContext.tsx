@@ -379,37 +379,31 @@ function ContratoContext() {
                     </label>
                     <Calendar
                       className="text-2xl"
-                      id="inicio" // Cambiar el id para diferenciar los elementos
+                      id="inicio"
                       name="inicio"
                       required
-                      dateFormat="dd/mm/yy"
+                      dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
                       showIcon
-                      maxDate={new Date()} // Establecer la fecha máxima permitida como la fecha actual
+                      maxDate={new Date()}
                       onChange={(e) => {
                         const selectedDate =
                           e.value instanceof Date ? e.value : null;
                         const formattedDate = selectedDate
-                          ? `${selectedDate.getDate()}/${
-                              selectedDate.getMonth() + 1
-                            }/${selectedDate.getFullYear()}`
+                          ? selectedDate.toISOString().split("T")[0] // Formatear a ISO 8601
                           : "";
                         setFormData({
                           ...formData,
-                          fecha_inicio: formattedDate, // Cambiar a fecha_inicio
+                          fecha_inicio: formattedDate,
                         });
                       }}
                       value={
-                        formData.fecha_inicio // Cambiar a fecha_inicio
-                          ? new Date(
-                              formData.fecha_inicio
-                                .split("/")
-                                .reverse()
-                                .join("-") // Cambiar a fecha_inicio
-                            )
+                        formData.fecha_inicio
+                          ? new Date(formData.fecha_inicio)
                           : null
                       }
                     />
                   </div>
+
                   <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
                       htmlFor="fin"
@@ -421,17 +415,15 @@ function ContratoContext() {
                       className="text-2xl"
                       id="fin"
                       name="fin"
-                      disabled={!formData.contrato_vigente} 
+                      disabled={formData.contrato_vigente}
                       required
-                      dateFormat="dd/mm/yy"
+                      dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
                       showIcon
                       onChange={(e) => {
                         const selectedDate =
                           e.value instanceof Date ? e.value : null;
                         const formattedDate = selectedDate
-                          ? `${selectedDate.getDate()}/${
-                              selectedDate.getMonth() + 1
-                            }/${selectedDate.getFullYear()}`
+                          ? selectedDate.toISOString().split("T")[0] // Formatear a ISO 8601
                           : "";
                         setFormData({
                           ...formData,
@@ -439,11 +431,7 @@ function ContratoContext() {
                         });
                       }}
                       value={
-                        formData.fecha_fin
-                          ? new Date(
-                              formData.fecha_fin.split("/").reverse().join("-")
-                            )
-                          : null
+                        formData.fecha_fin ? new Date(formData.fecha_fin) : null
                       }
                     />
                   </div>
@@ -602,7 +590,7 @@ function ContratoContext() {
                     <div className="flex align-items-center justify-content-center w-auto min-w-min">
                       <Button
                         type="button"
-                        label="Cancel"
+                        label="Cancelar"
                         className="w-full text-3xl min-w-min"
                         rounded
                         onClick={resetForm}
@@ -676,7 +664,7 @@ function ContratoContext() {
                       })
                     : ""}
                 </td>
-                <td>{contrato.anio_duracion}</td>
+                <td>{contrato.anio_duracion +" años"}</td>
                 <td>{contrato.horas_diarias}</td>
                 <td>{contrato.cargo}</td>
                 <td>{contrato.salario}</td>
