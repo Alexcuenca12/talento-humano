@@ -2,10 +2,10 @@ import React, { useEffect, useState, useRef } from "react";
 import { InputText } from "primereact/inputtext";
 import { FileUpload, FileUploadSelectEvent } from "primereact/fileupload";
 import { Button } from "primereact/button";
-import "../../styles/CargaFamiliar.css";
+import { Calendar } from "primereact/calendar";
+import "../../styles/Contrato.css";
 import { Fieldset } from "primereact/fieldset";
 import { Card } from "primereact/card";
-import { Calendar } from "primereact/calendar";
 import cardHeader from "../../shared/CardHeader";
 import { Divider } from "primereact/divider";
 import { ICargaFamiliar } from "../../interfaces/Primary/ICargaFamiliar";
@@ -13,7 +13,7 @@ import { CargaFamiliarService } from "../../services/CargaFamiliarService";
 import swal from "sweetalert";
 
 function CargaFamiliarContext() {
-  const [carga1, setcontra1] = useState<ICargaFamiliar[]>([]);
+  const [contra1, setcontra1] = useState<ICargaFamiliar[]>([]);
   const [formData, setFormData] = useState<ICargaFamiliar>({
     id_cargaFamiliar: 0,
     cedula: "",
@@ -84,7 +84,7 @@ function CargaFamiliarContext() {
 
       const link = document.createElement("a");
       link.href = fileUrl;
-      link.download = "archivoCon.pdf";
+      link.download = "Cédula.pdf";
       link.click();
       swal({
         title: "Publicación",
@@ -104,10 +104,11 @@ function CargaFamiliarContext() {
     e.preventDefault();
 
     if (
-      !formData.apellido_pariente ||
       !formData.cedula ||
+      !formData.nombre_pariente ||
+      !formData.apellido_pariente ||
       !formData.fecha_nacimiento ||
-      !formData.nombre_pariente
+      !formData.evidencia
     ) {
       swal("Advertencia", "Por favor, complete todos los campos", "warning");
       return;
@@ -117,7 +118,7 @@ function CargaFamiliarContext() {
       .saveCarga(formData)
       .then((response) => {
         resetForm();
-        swal("Carga Familiar", "Datos Guardados Correctamente", "success");
+        swal("Publicacion", "Datos Guardados Correctamente", "success");
 
         cargaService
           .getAll()
@@ -160,7 +161,7 @@ function CargaFamiliarContext() {
             .deleteCarga(id)
             .then(() => {
               setcontra1(
-                carga1.filter((carga) => carga.id_cargaFamiliar !== id)
+                contra1.filter((contra) => contra.id_cargaFamiliar !== id)
               );
               swal(
                 "Eliminado",
@@ -183,7 +184,7 @@ function CargaFamiliarContext() {
 
   const handleEdit = (id: number | undefined) => {
     if (id !== undefined) {
-      const editItem = carga1.find((carga) => carga.id_cargaFamiliar === id);
+      const editItem = contra1.find((contra) => contra.id_cargaFamiliar === id);
       if (editItem) {
         setFormData(editItem);
 
@@ -213,8 +214,8 @@ function CargaFamiliarContext() {
             persona: null,
           });
           setcontra1(
-            carga1.map((carga) =>
-              carga.id_cargaFamiliar === editItemId ? response : carga
+            contra1.map((contra) =>
+              contra.id_cargaFamiliar === editItemId ? response : contra
             )
           );
           setEditMode(false);
@@ -266,20 +267,46 @@ function CargaFamiliarContext() {
           >
             <div className="flex flex-wrap flex-row">
               <div className="flex align-items-center justify-content-center">
-                <div className="flex flex-column flex-wrap gap-4">
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginLeft: "20px" }}
+                >
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
-                      htmlFor="nombre"
+                      htmlFor="cargo"
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
-                      Nombres:
+                      Cédula:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese la Cédula"
+                      id="cargo"
+                      name="cargo"
+                      style={{ width: "221px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          cedula: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.cedula}
+                    />
+                  </div>
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="nombresP"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Nombre Completo:
                     </label>
                     <InputText
                       className="text-2xl"
                       placeholder="Ingrese los Nombres"
-                      id="nombre"
-                      name="nombre"
+                      id="nombresP"
+                      name="nombresP"
                       style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
@@ -292,17 +319,17 @@ function CargaFamiliarContext() {
                   </div>
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
-                      htmlFor="segundo"
+                      htmlFor="apellidoP"
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
-                      Apellidos:
+                      Apellido Completo:
                     </label>
                     <InputText
                       className="text-2xl"
                       placeholder="Ingrese los Apellidos"
-                      id="segundo"
-                      name="segundo"
+                      id="apellidoP"
+                      name="apellidoP"
                       style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
@@ -313,128 +340,112 @@ function CargaFamiliarContext() {
                       value={formData.apellido_pariente}
                     />
                   </div>
-                  <div className="flex flex-wrap w-full h-full  justify-content-between">
-                    <label
-                      htmlFor="cedula"
-                      className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
-                    >
-                      Cédula:
-                    </label>
-                    <InputText
-                      className="text-2xl"
-                      placeholder="Ingrese la Cédula"
-                      id="cedula"
-                      name="cedula"
-                      style={{ width: "221px" }}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          cedula: e.currentTarget.value,
-                        })
-                      }
-                      value={formData.cedula}
-                    />
-                  </div>
+                </div>
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginTop: "-105px", marginLeft: "25px" }}
+                >
                   <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
-                      htmlFor="fin"
+                      htmlFor="nacimiento"
                       className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
                     >
                       Fecha de Nacimiento:
                     </label>
                     <Calendar
                       className="text-2xl"
-                      id="fin"
-                      name="fin"
+                      id="inicio"
+                      name="inicio"
                       required
-                      dateFormat="dd/mm/yy"
+                      dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
                       showIcon
-                      yearNavigator={true}
-                      maxDate={new Date()} // Establecer la fecha máxima permitida como la fecha actual
+                      maxDate={new Date()}
                       onChange={(e) => {
                         const selectedDate =
                           e.value instanceof Date ? e.value : null;
-                        if (selectedDate && selectedDate > new Date()) {
-                          swal(
-                            "Advertencia",
-                            "No se permiten fechas futuras",
-                            "warning"
-                          );
-                        } else {
-                          const formattedDate = selectedDate
-                            ? `${selectedDate.getDate()}/${
-                                selectedDate.getMonth() + 1
-                              }/${selectedDate.getFullYear()}`
-                            : "";
-                          setFormData({
-                            ...formData,
-                            fecha_nacimiento: formattedDate,
-                          });
-                        }
+                        const formattedDate = selectedDate
+                          ? selectedDate.toISOString().split("T")[0] // Formatear a ISO 8601
+                          : "";
+                        setFormData({
+                          ...formData,
+                          fecha_nacimiento: formattedDate,
+                        });
                       }}
                       value={
                         formData.fecha_nacimiento
-                          ? new Date(
-                              formData.fecha_nacimiento
-                                .split("/")
-                                .reverse()
-                                .join("-")
-                            )
+                          ? new Date(formData.fecha_nacimiento)
                           : null
                       }
-                      yearRange="1900:2030" // Agregamos un rango personalizado de años
                     />
-                  </div>
-                  <div className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
-                    <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                      <Button
-                        type="submit"
-                        label={editMode ? "Actualizar" : "Guardar"}
-                        className="w-full text-3xl min-w-min "
-                        rounded
-                        onClick={editMode ? handleUpdate : handleSubmit}
-                      />
-                    </div>
-                    <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                      <Button
-                        type="button"
-                        label="Cancel"
-                        className="w-full text-3xl min-w-min"
-                        rounded
-                        onClick={resetForm}
-                      />
-                    </div>
                   </div>
                 </div>
               </div>
-              <div className="flex flex-column align-items-center justify-content-center ml-4">
-                <FileUpload
-                  name="pdf"
-                  style={{ marginLeft: "480px" }}
-                  chooseLabel="Escoger"
-                  uploadLabel="Cargar"
-                  cancelLabel="Cancelar"
-                  emptyTemplate={
-                    <p className="m-0 p-button-rounded">
-                      Arrastre y suelte los archivos aquí para cargarlos.
-                    </p>
-                  }
-                  customUpload
-                  onSelect={customBytesUploader}
-                  accept="application/pdf"
-                />
+              <div
+                className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6"
+                style={{ marginLeft: "-45px" }}
+              >
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="submit"
+                    style={{ marginTop: "25px" }}
+                    label={editMode ? "Actualizar" : "Guardar"}
+                    className="w-full text-3xl min-w-min "
+                    rounded
+                    onClick={editMode ? handleUpdate : handleSubmit}
+                  />
+                </div>
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="button"
+                    label="Cancelar"
+                    style={{ marginTop: "25px" }}
+                    className="w-full text-3xl min-w-min"
+                    rounded
+                    onClick={resetForm}
+                  />
+                </div>
+              </div>
+              <div style={{ marginLeft: "600px", marginTop: "-285px" }}>
+                <div className="flex flex-column align-items-center justify-content-center ml-4">
+                  <label
+                    htmlFor="pdf"
+                    className="text-3xl font-medium w-auto min-w-min"
+                    style={{
+                      marginRight: "20px",
+                      marginLeft: "169px",
+                      marginTop: "-5px",
+                    }}
+                  >
+                    Subir Cédula de Identidad:
+                  </label>
+                  <FileUpload
+                    name="pdf"
+                    style={{ marginLeft: "285px", marginTop: "10px" }}
+                    chooseLabel="Escoger"
+                    uploadLabel="Cargar"
+                    cancelLabel="Cancelar"
+                    emptyTemplate={
+                      <p className="m-0 p-button-rounded">
+                        Arrastre y suelte los archivos aquí para cargarlos.
+                      </p>
+                    }
+                    customUpload
+                    onSelect={customBytesUploader}
+                    accept="application/pdf"
+                  />
+                </div>
               </div>
             </div>
           </form>
         </div>
         <table
-          style={{ minWidth: "50rem" }}
-          className="mt-5  w-full h-full text-3xl font-medium"
+          style={{ minWidth: "40rem" }}
+          className="mt-4  w-full h-full text-3xl font-large"
         >
           <thead>
             <tr style={{ backgroundColor: "#0C3255", color: "white" }}>
-              <th>Cédula</th>
+              <th>Cédula </th>
               <th>Nombre</th>
               <th>Fecha de Nacimiento</th>
               <th>Operaciones</th>
@@ -442,16 +453,18 @@ function CargaFamiliarContext() {
             </tr>
           </thead>
           <tbody>
-            {carga1.map((carga) => (
+            {contra1.map((cargaF) => (
               <tr
                 className="text-center"
-                key={carga.id_cargaFamiliar?.toString()}
+                key={cargaF.id_cargaFamiliar?.toString()}
               >
-                <td>{carga.cedula}</td>
-                <td>{carga.nombre_pariente + " " + carga.apellido_pariente}</td>
+                <td>{cargaF.cedula}</td>
                 <td>
-                  {carga.fecha_nacimiento
-                    ? new Date(carga.fecha_nacimiento).toLocaleDateString(
+                  {cargaF.nombre_pariente + " " + cargaF.apellido_pariente}
+                </td>
+                <td>
+                  {cargaF.fecha_nacimiento
+                    ? new Date(cargaF.fecha_nacimiento).toLocaleDateString(
                         "es-ES",
                         {
                           year: "numeric",
@@ -473,10 +486,9 @@ function CargaFamiliarContext() {
                       width: "50px",
                       color: "black",
                       justifyContent: "center",
-                      marginRight: "8px", // Espacio entre los botones
                     }}
                     onClick={() =>
-                      handleEdit(carga.id_cargaFamiliar?.valueOf())
+                      handleEdit(cargaF.id_cargaFamiliar?.valueOf())
                     }
                     // Agrega el evento onClick para la operación de editar
                   />
@@ -493,13 +505,13 @@ function CargaFamiliarContext() {
                       justifyContent: "center",
                     }}
                     onClick={() =>
-                      handleDelete(carga.id_cargaFamiliar?.valueOf())
+                      handleDelete(cargaF.id_cargaFamiliar?.valueOf())
                     }
                     // Agrega el evento onClick para la operación de eliminar
                   />
                 </td>
                 <td>
-                  {carga.evidencia ? (
+                  {cargaF.evidencia ? (
                     <Button
                       type="button"
                       className=""
@@ -511,7 +523,7 @@ function CargaFamiliarContext() {
                         color: "black",
                         justifyContent: "center",
                       }}
-                      onClick={() => decodeBase64(carga.evidencia!)}
+                      onClick={() => decodeBase64(cargaF.evidencia!)}
                     />
                   ) : (
                     <span>Sin evidencia</span>

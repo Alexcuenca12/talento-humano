@@ -664,7 +664,7 @@ function ContratoContext() {
                       })
                     : ""}
                 </td>
-                <td>{contrato.anio_duracion +" años"}</td>
+                <td>{contrato.anio_duracion + " años"}</td>
                 <td>{contrato.horas_diarias}</td>
                 <td>{contrato.cargo}</td>
                 <td>{contrato.salario}</td>
