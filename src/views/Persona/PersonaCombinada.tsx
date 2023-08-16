@@ -8,69 +8,77 @@ import cardHeader from "../../shared/CardHeader";
 import { InputTextarea } from "primereact/inputtextarea";
 import React, { useEffect, useState } from "react";
 import { Divider } from "primereact/divider";
-import { Ivficahapersona } from '../../interfaces/Primary/Ivfichapersona';
-import { VfichapersonaService } from '../../services/VfichapersonaService'
+import { FichaCombinada } from '../../interfaces/Primary/IFichaCombinada';
+import { PersonaService } from '../../services/PersonaService'
 import swal from 'sweetalert';
 import { PDFDownloadLink, Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 
-function VfichaPDF() {
-    const [habi1, sethabi1] = useState<Ivficahapersona[]>([]);
-    const vfichapersonaService = new VfichapersonaService();
+function PersonaCombinada({ personaId }: { personaId: number }) {
+
+    const [pers1, setpers1] = useState<FichaCombinada | null>(null);
+    const personaService = new PersonaService();
     const [pdfContent, setPdfContent] = useState<React.ReactNode | null>(null);
 
     type PdfData = {
-        cedula: String[]
-        cargo: String[]
-        periodo: String[]
-        nombres: String[]
-        apellidos: String[]
-        correo: String[]
-        area_estudios: String[]
-        celular: String[]
-        telefono: String[]
-        paisnacimiento: String[]
-        paisresidencia: String[]
-        edad: String[]
-        estadocivil: String[]
+        cedula: String
+        nombres: String
+        apellidos: String
+        correo: String
+        area_estudioCapacitacion: String
+        celular: String
+        telefono: String
+        paisnacimiento: String
+        paisresidencia: String
+        edad: String
+        estadocivil: String
+        descripcionHabilidad: String
+        actividadExperiencia: String
     };
 
+
     useEffect(() => {
-        vfichapersonaService.getAll()
+        personaService.getById(personaId)
 
             .then((data) => {
                 console.log("Data fetched from API:", data);
-                console.log("Datos obtenidos: ", vfichapersonaService.getAll());
-                sethabi1(data);
+                console.log("datos de personacombianda", personaService.getById(personaId))
+                setpers1(data);
             })
             .catch((error) => {
                 console.error("Error al obtener los datos:", error);
             });
 
-    }, []);
+    }, [personaId]);
 
 
-
-    const generatePdfContent = () => {
-
-        const filteredData = habi1.filter((ficha) => ficha.id_persona === 1);
-
-        const ficedula = habi1.map((ficha) => ficha.persona_cedula);
-        const ficargo = habi1.map((ficha) => ficha.con_cargo);
-        const fiperidodo = habi1.map((ficha) => ficha.ho_periodo);
-        const nombres = habi1.map((ficha) => ficha.persona_nombres);
-        const apellidos = habi1.map((ficha) => ficha.persona_apellidos);
-        const correo = habi1.map((ficha) => ficha.persona_correo);
-        const area_estudios = habi1.map((ficha) => ficha.capa_area_estudios);
-        const pcelular = habi1.map((ficha) => ficha.persona_celular);
-        const ptelefono = habi1.map((ficha) => ficha.persona_telefono);
-        const ppaisnaciomiento = habi1.map((ficha) => ficha.persona_paisnacimiento);
-        const ppaisresidencia = habi1.map((ficha) => ficha.persona_paisresidencia);
-        const pedad = habi1.map((ficha) => ficha.persona_edad);
-        const pestadocivil = habi1.map((ficha) => ficha.persona_estadocivil);
-
-        return { cedula: ficedula, cargo: ficargo, periodo: fiperidodo, nombres: nombres, apellidos: apellidos, correo: correo, area_estudios: area_estudios, celular:pcelular, telefono: ptelefono, paisnacimiento: ppaisnaciomiento , paisresidencia: ppaisresidencia, edad: pedad, estadocivil: pestadocivil };
-
+    if (!pers1) {
+        return <div>Cargando...</div>;
     }
+
+    const generatePdfContent = (): PdfData => {
+        const data = pers1; // Obtén el primer objeto de la matriz
+
+        const areaEstudios = data.capacitaciones.map((capacitacion) => capacitacion.area_estudios).join('\n');
+        const descriHabi = data.habilidades.map((habilidad) => habilidad.descripcion).join('\n');
+        const actiExper = data.experiencias.map((experiencia) => experiencia.actividades).join('\n');
+
+        return {
+            cedula: data.persona.ci_pasaporte,
+            nombres: data.persona.nombres,
+            apellidos: data.persona.apellidos,
+            correo: data.persona.correo,
+            area_estudioCapacitacion: areaEstudios,
+            celular: data.persona.celular,
+            telefono: data.persona.telefono,
+            paisnacimiento: data.persona.pais_nacimiento,
+            paisresidencia: data.persona.pais_residencia,
+            edad: data.persona.edad,
+            estadocivil: data.persona.estado_civil,
+            descripcionHabilidad: descriHabi,
+            actividadExperiencia: actiExper,
+
+        };
+    };
 
     const handleGeneratePDF = () => {
         const pdfData = generatePdfContent();
@@ -155,6 +163,13 @@ function VfichaPDF() {
                 borderLeftColor: 'black',
                 marginHorizontal: 10,  // Ajusta este valor para controlar el espacio a ambos lados de la línea
             },
+            listContainer: {
+                marginTop: 10,
+            },
+            listItem: {
+                fontSize: 12,
+                marginBottom: 5,
+            },
         });
 
         const MyDocument = ({ data }: { data: PdfData }) => (
@@ -167,18 +182,18 @@ function VfichaPDF() {
 
                                 <View>
                                     <Text style={styles.title}>FOTO</Text>
-                                    <Text style={styles.description}>{data.nombres[0]} {data.apellidos[0]}</Text>
-                                    <Text style={styles.description}>{data.correo[0]}</Text>
-                                    <Text style={styles.description}>{data.celular[0]},{data.telefono[0]}</Text>
-                                    <Text style={styles.description}>{data.paisresidencia[0]}</Text>
+                                    <Text style={styles.description}>{data.nombres} {data.apellidos}</Text>
+                                    <Text style={styles.description}>{data.correo}</Text>
+                                    <Text style={styles.description}>{data.celular},{data.telefono}</Text>
+                                    <Text style={styles.description}>{data.paisresidencia}</Text>
                                 </View>
 
                                 <View style={styles.section}>
                                     <Text style={styles.sectionTitle}>Datos Personales</Text>
-                                    <Text style={styles.sectionContent}>Cédula: {data.cedula[0]}</Text>
-                                    <Text style={styles.sectionContent}>Fecha de Nacimiento: {data.edad[0]}</Text>
-                                    <Text style={styles.sectionContent}>Nacionalidad: {data.paisnacimiento[0]}</Text>
-                                    <Text style={styles.sectionContent}>Estado Civil: {data.estadocivil[0]}</Text>
+                                    <Text style={styles.sectionContent}>Cédula: {data.cedula}</Text>
+                                    <Text style={styles.sectionContent}>Fecha de Nacimiento: {data.edad}</Text>
+                                    <Text style={styles.sectionContent}>Nacionalidad: {data.paisnacimiento}</Text>
+                                    <Text style={styles.sectionContent}>Estado Civil: {data.estadocivil}</Text>
                                     <Text style={styles.sectionContent}>Nivel de Inglés: *****</Text>
                                 </View>
                             </View>
@@ -186,11 +201,7 @@ function VfichaPDF() {
                             <View style={styles.column}>
                                 <View style={styles.section}>
                                     <Text style={styles.sectionTitle}>Perfil</Text>
-                                    {data.area_estudios.map((areas, index) => (
-                                        <Text key={index} style={styles.sectionContent}>
-                                            {areas}
-                                        </Text>
-                                    ))}
+                                    <Text style={styles.sectionContent}>{data.area_estudioCapacitacion}</Text>
                                 </View>
 
                                 <View style={styles.section}>
@@ -200,12 +211,12 @@ function VfichaPDF() {
 
                                 <View style={styles.section}>
                                     <Text style={styles.sectionTitle}>Habilidades</Text>
-                                    {/* Map through skills data and display here */}
+                                    <Text style={styles.sectionContent}>{data.descripcionHabilidad}</Text>
                                 </View>
 
                                 <View style={styles.section}>
                                     <Text style={styles.sectionTitle}>Experiencias</Text>
-                                    {/* Map through experiences data and display here */}
+                                    <Text style={styles.sectionContent}>{data.actividadExperiencia}</Text>
                                 </View>
                             </View>
 
@@ -224,7 +235,7 @@ function VfichaPDF() {
         const pdfBlob = (
             <PDFDownloadLink document={<MyDocument data={pdfData} />} fileName="habilidades.pdf">
                 {({ blob, url, loading, error }) =>
-                    loading ? 'Generando PDF...' : 'Descargar PDF'
+                    loading ? 'Generando PDF...' : ' Descargar PDF'
                 }
             </PDFDownloadLink>
         );
@@ -240,13 +251,13 @@ function VfichaPDF() {
             <Button
                 type="button"
                 className="w-30 text-3xl min-w-min"
-                label="Generar pdf"
+                label="Generar HOJA DE VIDA"
                 style={{
                     background: '#ff0000',
                     borderRadius: '20%',
-                    fontSize: '30px',
-                    width: '70px',
-                    height: '50px',
+                    fontSize: '50px',
+                    width: '100px',
+                    height: '80px',
                     color: "black",
                     justifyContent: 'center'
                 }}
@@ -260,4 +271,4 @@ function VfichaPDF() {
 
 
 }
-export default VfichaPDF;
+export default PersonaCombinada;

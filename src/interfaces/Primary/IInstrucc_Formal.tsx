@@ -1,4 +1,4 @@
-export interface IHorario{
+export interface IInstrucc_Formal{
     id_instruccion?: Number;
     nivel_instruccion: String;
     institucion_educativa: String;
