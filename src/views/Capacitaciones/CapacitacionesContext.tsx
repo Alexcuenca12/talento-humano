@@ -131,6 +131,10 @@ export default function CapacitacionesContext() {
                 });
             });
     };
+
+    const user = JSON.parse(sessionStorage!.getItem('user') || '{}');
+    const userId = user.id;
+
     const formik = useFormik<ICapacitaciones>({
         initialValues: {
             institucion: '',
@@ -143,7 +147,7 @@ export default function CapacitacionesContext() {
             numero_dias: 0,
             cantidad_horas: 0,
             evidencia: null,
-            persona: null,
+            persona: userId,
         },
         onSubmit: values => {
             console.log(values);

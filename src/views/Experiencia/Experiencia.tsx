@@ -21,7 +21,7 @@ const Experiencia = () => {
                     <h1 className="text-7xl font-smibold lg:md-2">Experiencia</h1>
                 </Divider>
 
-                <div className="flex justify-content-between flex-wrap">
+                <div className="flex justify-content-center flex-wrap">
                     <form>
                         <div className="flex flex-wrap flex-row">
 

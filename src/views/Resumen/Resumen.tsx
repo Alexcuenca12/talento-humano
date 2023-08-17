@@ -10,9 +10,236 @@ import {Column} from "primereact/column";
 import {Calendar} from "primereact/calendar";
 import {Dropdown} from "primereact/dropdown";
 import {FileUpload} from "primereact/fileupload";
+import {ICapacitaciones} from "../../interfaces/Primary/ICapacitaciones";
 
 const Resumen = () => {
 
+    const fichaBody = () => {
+        return (
+            <div className="flex">
+                <div className="mr-4">
+                    <h2 className="text-3xl">Cedula: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4">
+                    <h2 className="text-3xl">Apellido Paterno: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4 ">
+                    <h2 className="text-3xl">Primer Nombre: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className=" ">
+                    <h2 className="text-3xl">Fecha de Nacimiento: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className=" ">
+                    <h2 className="text-3xl">Provincia: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className=" ">
+                    <h2 className="text-3xl">Canton: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className=" ">
+                    <h2 className="text-3xl">Parroquia: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className=" ">
+                    <h2 className="text-3xl">Telefono Personal: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className=" ">
+                    <h2 className="text-3xl">Discapacidad: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+            </div>
+        );
+    };
+
+    const contratoBody = () => {
+        return (
+            <div className="flex">
+                <div className="mr-4">
+                    <h2 className="text-3xl">Fecha Inicio: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4">
+                    <h2 className="text-3xl">Fecha Fin: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4 ">
+                    <h2 className="text-3xl">Cargo: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className=" ">
+                    <h2 className="text-3xl">Salario: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+            </div>
+        );
+    };
+
+    const horarioBody = () => {
+        return (
+            <div className="flex">
+                <div className="mr-4">
+                    <h2 className="text-3xl">Materia: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4">
+                    <h2 className="text-3xl">Curso: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4 ">
+                    <h2 className="text-3xl">Carrera: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className=" ">
+                    <h2 className="text-3xl">Periodo: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+            </div>
+        );
+    };
+
+    const capacitacionesBody = () => {
+        return (
+            <div className="flex">
+                <div className="mr-4">
+                    <h2 className="text-3xl">Instruccion: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4">
+                    <h2 className="text-3xl">Tipo Evento: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4 ">
+                    <h2 className="text-3xl">Area de Estudio: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className=" ">
+                    <h2 className="text-3xl">Nombre de Evento: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className=" ">
+                    <h2 className="text-3xl">Tipo certificado: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+            </div>
+        );
+    };
+
+    const evaluacionBody = () => {
+        return (
+            <div className="flex">
+                <div className="mr-4">
+                    <h2 className="text-3xl">Carrera: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4">
+                    <h2 className="text-3xl">Periodo Academico: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+            </div>
+        );
+    };
+
+    const recomendacionesBody = () => {
+        return (
+            <div className="flex">
+                <div className="mr-4">
+                    <h2 className="text-3xl">Nombres: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4">
+                    <h2 className="text-3xl">Email: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4">
+                    <h2 className="text-3xl">Telefono: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+            </div>
+        );
+    };
+
+    const instruccionFBody = () => {
+        return (
+            <div className="flex">
+                <div className="mr-4">
+                    <h2 className="text-3xl">Nivel de institucion: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4">
+                    <h2 className="text-3xl">Titulo Obtenido: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4 ">
+                    <h2 className="text-3xl">Institucion Educativa: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className=" ">
+                    <h2 className="text-3xl">Registro Senecyt: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className=" ">
+                    <h2 className="text-3xl">Año de Ingreso: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+            </div>
+        );
+    };
+
+    const cargaFBody = () => {
+        return (
+            <div className="flex">
+                <div className="mr-4">
+                    <h2 className="text-3xl">Cedula: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4">
+                    <h2 className="text-3xl">Nombres: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4">
+                    <h2 className="text-3xl">Fecha de nacimiento: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+            </div>
+        );
+    };
+
+    const experienciaBody = () => {
+        return (
+            <div className="flex">
+                <div className="mr-4">
+                    <h2 className="text-3xl">Institucion: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4">
+                    <h2 className="text-3xl">Area de trabajo: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+                <div className="mr-4">
+                    <h2 className="text-3xl">Puesto: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+            </div>
+        );
+    };
+
+    const habilidadesBody = () => {
+        return (
+            <div className="flex">
+                <div className="mr-4">
+                    <h2 className="text-3xl">Descripcion: </h2>
+                    <p className="text-2xl">{}</p>
+                </div>
+
+            </div>
+        );
+    };
 
     return (
         <Card className="fgrid col-fixed">
@@ -29,8 +256,8 @@ const Resumen = () => {
                             className="flex flex-row flex-wrap w-full h-full  justify-content-center ">
                             <DataTable tableStyle={{minWidth: '50rem'}}
                                        className="mt-5  w-full h-full text-3xl font-medium">
-                                <Column field='Experiencia Agregada' header="Ficha Personal"
-                                        headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                                <Column field='Ficha Personal' header="Ficha Personal"
+                                        headerStyle={{backgroundColor: '#0C3255', color: 'white'}} body={fichaBody}></Column>
                                 <Column field='Acciones' header="Acciones"
                                         headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                             </DataTable>
@@ -45,8 +272,8 @@ const Resumen = () => {
                                     className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1 row-gap-8 gap-8  mt-6">
                                     <DataTable tableStyle={{minWidth: '50rem'}}
                                                className="mt-5  w-full h-full text-3xl font-medium">
-                                        <Column field='Experiencia Agregada' header="Contrato"
-                                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                                        <Column field='Contrato' header="Contrato"
+                                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}} body={contratoBody}></Column>
                                         <Column field='Acciones' header="Acciones"
                                                 headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                     </DataTable>
@@ -57,7 +284,7 @@ const Resumen = () => {
                                     className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1 row-gap-8 gap-8  mt-6">
                                     <DataTable tableStyle={{minWidth: '50rem'}}
                                                className="mt-5  w-full h-full text-3xl font-medium">
-                                        <Column field='Experiencia Agregada' header="Horario"
+                                        <Column field='Horario' header="Horario" body={horarioBody}
                                                 headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                         <Column field='Acciones' header="Acciones"
                                                 headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
@@ -69,8 +296,8 @@ const Resumen = () => {
                                     className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1 row-gap-8 gap-8  mt-6">
                                     <DataTable tableStyle={{minWidth: '50rem'}}
                                                className="mt-5  w-full h-full text-3xl font-medium">
-                                        <Column field='Experiencia Agregada' header="Capacitaciones"
-                                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                                        <Column field='Capacitaciones' header="Capacitaciones"
+                                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}} body={capacitacionesBody}></Column>
                                         <Column field='Acciones' header="Acciones"
                                                 headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                     </DataTable>
@@ -79,7 +306,7 @@ const Resumen = () => {
                                     className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1 row-gap-8 gap-8  mt-6">
                                     <DataTable tableStyle={{minWidth: '50rem'}}
                                                className="mt-5  w-full h-full text-3xl font-medium">
-                                        <Column field='Experiencia Agregada' header="Evaluacion"
+                                        <Column field='Evaluacion' header="Evaluacion" body={evaluacionBody}
                                                 headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                         <Column field='Acciones' header="Acciones"
                                                 headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
@@ -89,7 +316,7 @@ const Resumen = () => {
                                     className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
                                     <DataTable tableStyle={{minWidth: '50rem'}}
                                                className="mt-5  w-full h-full text-3xl font-medium">
-                                        <Column field='Experiencia Agregada' header="Recomendaciones"
+                                        <Column field='Recomendaciones' header="Recomendaciones" body={recomendacionesBody}
                                                 headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                         <Column field='Acciones' header="Acciones"
                                                 headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
@@ -104,7 +331,17 @@ const Resumen = () => {
                                 className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
                                 <DataTable tableStyle={{minWidth: '50rem'}}
                                            className="mt-5  w-full h-full text-3xl font-medium">
-                                    <Column field='Experiencia Agregada' header="Instruccion Formal"
+                                    <Column field='Instruccion Formal' header="Instruccion Formal"
+                                            headerStyle={{backgroundColor: '#0C3255', color: 'white'}} body={instruccionFBody}></Column>
+                                    <Column field='Acciones' header="Acciones"
+                                            headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                                </DataTable>
+                            </Card>
+                            <Card
+                                className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
+                                <DataTable tableStyle={{minWidth: '50rem'}}
+                                           className="mt-5  w-full h-full text-3xl font-medium">
+                                    <Column field='Carga Familiar' header="Carga Familiar" body={cargaFBody}
                                             headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                     <Column field='Acciones' header="Acciones"
                                             headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
@@ -114,7 +351,7 @@ const Resumen = () => {
                                 className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
                                 <DataTable tableStyle={{minWidth: '50rem'}}
                                            className="mt-5  w-full h-full text-3xl font-medium">
-                                    <Column field='Experiencia Agregada' header="Carga Familiar"
+                                    <Column field='Experiencia' header="Experiencia" body={experienciaBody}
                                             headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                     <Column field='Acciones' header="Acciones"
                                             headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
@@ -124,17 +361,7 @@ const Resumen = () => {
                                 className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
                                 <DataTable tableStyle={{minWidth: '50rem'}}
                                            className="mt-5  w-full h-full text-3xl font-medium">
-                                    <Column field='Experiencia Agregada' header="Experiencia "
-                                            headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
-                                    <Column field='Acciones' header="Acciones"
-                                            headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
-                                </DataTable>
-                            </Card>
-                            <Card
-                                className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
-                                <DataTable tableStyle={{minWidth: '50rem'}}
-                                           className="mt-5  w-full h-full text-3xl font-medium">
-                                    <Column field='Experiencia Agregada' header="Habilidades"
+                                    <Column field='Habilidades' header="Habilidades" body={habilidadesBody}
                                             headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                     <Column field='Acciones' header="Acciones"
                                             headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
