@@ -1,591 +1,770 @@
-import React, {useEffect, useRef, useState} from "react";
-import {InputText} from "primereact/inputtext";
-import {Button} from "primereact/button";
-import {Dropdown} from "primereact/dropdown";
-import {Calendar} from "primereact/calendar";
-import {FileUpload, FileUploadHandlerEvent} from "primereact/fileupload";
-import {DataTable} from "primereact/datatable";
-import {Column} from "primereact/column";
-import "../../styles/Capacitacitaciones.css";
+import React, { useEffect, useState, useRef } from "react";
+import { InputText } from "primereact/inputtext";
+import { FileUpload, FileUploadSelectEvent } from "primereact/fileupload";
+import { Button } from "primereact/button";
+import { Calendar } from "primereact/calendar";
+import "../../styles/Contrato.css";
+import { Fieldset } from "primereact/fieldset";
+import { Dropdown } from "primereact/dropdown";
+import { Card } from "primereact/card";
 import cardHeader from "../../shared/CardHeader";
-import {Fieldset} from "primereact/fieldset";
-import {Card} from "primereact/card";
-import {Divider} from "primereact/divider";
-import {ICapacitaciones} from "../../interfaces/Primary/ICapacitaciones";
-import {CapacitacionesService} from "../../services/CapacitacionesService";
-import {fileConverter} from "../../services/functions/fileConverter";
-import ToastMessage from "../../shared/ToastMessage";
-import {useFormik} from "formik";
+import { Divider } from "primereact/divider";
+import { ICapacitaciones } from "../../interfaces/Primary/ICapacitaciones";
+import { CapacitacionesService } from "../../services/CapacitacionesService";
+import swal from "sweetalert";
 
-import {
-    InputNumber,
+function PublicacionesContext() {
+  const [contra1, setcontra1] = useState<ICapacitaciones[]>([]);
+  const [formData, setFormData] = useState<ICapacitaciones>({
+    id_capacitaciones: 0,
+    institucion: "",
+    tipo_evento: "",
+    nombre_evento: "",
+    area_estudios: "",
+    tipo_certificado: "",
+    fecha_inicio: "",
+    fecha_fin: "",
+    numero_dias: 0,
+    cantidad_horas: 0,
+    evidencia: "",
+    persona: null,
+  });
+  const tipoCertificadoOptions = [
+    { label: "Aprobación", value: "Aprobación" },
+    { label: "Asistencia", value: "Asistencia" },
+  ];
+  const areaEstudioOptions = [
+    { label: "Administración/oficina", value: "Administración/oficina" },
+    {
+      label: "Agricultura/Pesca/Ganadería",
+      value: "Agricultura/Pesca/Ganadería",
+    },
+    { label: "Arte/Diseño/Medios", value: "Arte/Diseño/Medios" },
+    { label: "Científico/Investigación", value: "Científico/Investigación" },
+    { label: "Dirección/ Gerencia", value: "Dirección/ Gerencia" },
+    { label: "Economía/Contabilidad", value: "Economía/Contabilidad" },
+    { label: "Educación Básica/Cursos", value: "Educación Básica/Cursos" },
+    { label: "Educación/Universidad", value: "Educación/Universidad" },
+    { label: "Entretenimiento/Deportes", value: "Entretenimiento/Deportes" },
+    { label: "Fabricación", value: "Fabricación" },
+    { label: "Finanzas/ Banca", value: "Finanzas/ Banca" },
+    { label: "Gobierno", value: "Gobierno" },
+    { label: "Hotelería/Turismo", value: "Hotelería/Turismo" },
+    { label: "Informática hardware", value: "Informática hardware" },
+    { label: "Informática software", value: "Informática software" },
+    {
+      label: "Informática/Telecomunicaciones",
+      value: "Informática/Telecomunicaciones",
+    },
+    { label: "Ingeniería/Técnico", value: "Ingeniería/Técnico" },
+    { label: "Internet", value: "Internet" },
+    { label: "Legal/ Asesoría", value: "Legal/ Asesoría" },
+    { label: "Marketing/Ventas", value: "Marketing/Ventas" },
+    { label: "Materia prima", value: "Materia prima" },
+    { label: "Medicina/Salud", value: "Medicina/Salud" },
+    { label: "Recursos Humanos/Personal", value: "Recursos Humanos/Personal" },
+    { label: "Sin Área de Estudio", value: "Sin Área de Estudio" },
+    { label: "Ventas al consumidor", value: "Ventas al consumidor" },
+  ];
 
-} from "primereact/inputnumber";
-import {IMessage} from "../../interfaces/Secondary/IMessage";
+  const tipoEventoOptions = [
+    { label: "CONFERENCIA", value: "CONFERENCIA" },
+    { label: "CONGRESO", value: "CONGRESO" },
+    { label: "DIPLOMADO", value: "DIPLOMADO" },
+    { label: "JORNADA", value: "JORNADA" },
+    { label: "PANEL", value: "PANEL" },
+    { label: "PASANTIA", value: "PASANTIA" },
+    { label: "SEMINARIO", value: "SEMINARIO" },
+    { label: "TALLER", value: "TALLER" },
+    { label: "VISITA DE OBSERVACION", value: "VISITA DE OBSERVACION" },
+  ];
+  const fileUploadRef = useRef<FileUpload>(null);
+  const [dataLoaded, setDataLoaded] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
+  const capaService = new CapacitacionesService();
 
-import Swal from 'sweetalert2';
-import withReactContent from 'sweetalert2-react-content';
+  const loadData = () => {
+    capaService
+      .getAllCap()
+      .then((data) => {
+        setcontra1(data);
+        setDataLoaded(true); // Marcar los datos como cargados
+      })
+      .catch((error) => {
+        console.error("Error al obtener los datos:", error);
+      });
+  };
+  useEffect(() => {
+    loadData();
+  }, []);
 
-const MySwal = withReactContent(Swal);
+  const customBytesUploader = (event: FileUploadSelectEvent) => {
+    if (event.files && event.files.length > 0) {
+      const file = event.files[0];
+      const reader = new FileReader();
 
-const apiService = new CapacitacionesService();
-export default function CapacitacionesContext() {
+      reader.onloadend = function () {
+        const base64data = reader.result as string;
+        setFormData({ ...formData, evidencia: base64data });
+      };
 
-    const comboEvento = [
-        {label: "CONFERENCIA", value: "CONFERENCIA"},
-        {label: "CONGRESO", value: "CONGRESO"},
-        {label: "DIPLOMADO", value: "DIPLOMADO"},
-        {label: "JORNADA", value: "JORNADA"},
-        {label: "PANEL", value: "PANEL"},
-        {label: "PASANTIA", value: "PASANTIA"},
-        {label: "SEMINARIO", value: "SEMINARIO"},
-        {label: "TALLER", value: "TALLER"},
-        {label: "VISITA DE OBSERVACION", value: "VISITA DE OBSERVACION"},
-    ];
+      reader.onerror = (error) => {
+        console.error("Error al leer el archivo:", error);
+      };
 
+      reader.readAsDataURL(file);
 
-    const comboArea = [
-        {label: "ADMINISTRACIÓN/OFICINA", value: "ADMINISTRACIÓN/OFICINA"},
-        {
-            label: "AGRICULTURA/PESCA/GANADERÍA",
-            value: "AGRICULTURA/PESCA/GANADERÍA",
+      if (fileUploadRef.current) {
+        fileUploadRef.current.clear();
+      }
+    }
+  };
+
+  const decodeBase64 = (base64Data: string) => {
+    try {
+      // Eliminar encabezados o metadatos de la cadena base64
+      const base64WithoutHeader = base64Data.replace(/^data:.*,/, "");
+
+      const decodedData = atob(base64WithoutHeader); // Decodificar la cadena base64
+      const byteCharacters = new Uint8Array(decodedData.length);
+
+      for (let i = 0; i < decodedData.length; i++) {
+        byteCharacters[i] = decodedData.charCodeAt(i);
+      }
+
+      const byteArray = new Blob([byteCharacters], { type: "application/pdf" });
+      const fileUrl = URL.createObjectURL(byteArray);
+
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.download = "Evidencias Capacitaciones.pdf";
+      link.click();
+      swal({
+        title: "Publicación",
+        text: "Descargando pdf....",
+        icon: "success",
+        timer: 1000,
+      });
+      console.log("pdf descargado...");
+
+      URL.revokeObjectURL(fileUrl);
+    } catch (error) {
+      console.error("Error al decodificar la cadena base64:", error);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (
+      !formData.institucion ||
+      !formData.tipo_evento ||
+      !formData.nombre_evento ||
+      !formData.area_estudios ||
+      !formData.tipo_certificado ||
+      !formData.fecha_inicio ||
+      !formData.fecha_fin ||
+      !formData.numero_dias ||
+      !formData.cantidad_horas ||
+      !formData.evidencia
+    ) {
+      swal("Advertencia", "Por favor, complete todos los campos", "warning");
+      return;
+    }
+
+    capaService
+      .guardarCapacitaciones(formData)
+      .then((response) => {
+        resetForm();
+        swal("Publicacion", "Datos Guardados Correctamente", "success");
+
+        capaService
+          .getAllCap()
+          .then((data) => {
+            setcontra1(data);
+            resetForm();
+            if (fileUploadRef.current) {
+              fileUploadRef.current.clear();
+            }
+          })
+          .catch((error) => {
+            console.error("Error al obtener los datos:", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error al enviar el formulario:", error);
+      });
+  };
+
+  const handleDelete = (id: number | undefined) => {
+    if (id !== undefined) {
+      swal({
+        title: "Confirmar Eliminación",
+        text: "¿Estás seguro de eliminar este registro?",
+        icon: "warning",
+        buttons: {
+          cancel: {
+            text: "Cancelar",
+            visible: true,
+            className: "cancel-button",
+          },
+          confirm: {
+            text: "Sí, eliminar",
+            className: "confirm-button",
+          },
         },
-        {label: "ARTE/DISEÑO/MEDIOS", value: "ARTE/DISEÑO/MEDIOS"},
-        {label: "CIENTIFÍCO/INVESTIGACIÓN", value: "CIENTIFÍCO/INVESTIGACIÓN"},
-        {label: "DIRECCIÓN/GERENCIA", value: "DIRECCIÓN/GERENCIA"},
-        {label: "ECONOMÍA/CONTABILIDAD", value: "ECONOMÍA/CONTABILIDAD"},
-        {label: "EDUCACIÓN BÁSICA/CURSOS", value: "EDUCACIÓN BÁSICA/CURSOS"},
-        {label: "ENTRETENIMIENTO/DEPORTES", value: "ENTRETENIMIENTO/DEPORTES"},
-        {label: "FABRICACIÓN", value: "FABRICACIÓN"},
-        {label: "FINANZAS/BANCA", value: "FINANZAS/BANCA"},
-        {label: "GOBIERNO", value: "GOBIERNO"},
-        {label: "HOTELERÍA/TURISMO", value: "HOTELERÍA/TURISMO"},
-        {label: "INFORMÁTICA HARDWARE", value: "INFORMÁTICA HARDWARE"},
-        {label: "INFORMÁTICA SOFTWARE", value: "INFORMÁTICA SOFTWARE"},
-        {
-            label: "INFORMÁTICA/TELECOMUNICACIONES",
-            value: "INFORMÁTICA/TELECOMUNICACIONES",
-        },
-        {label: "INGENERÍA/TÉCNICO", value: "INGENERÍA/TÉCNICO"},
-        {label: "INTERNET", value: "INTERNET"},
-        {label: "LEGAL/ASESORÍA", value: "LEGAL/ASESORÍA"},
-        {label: "MARKETING/VENTAS", value: "MARKETING/VENTAS"},
-        {label: "MATERIA PRIMA", value: "MATERIA PRIMA"},
-        {label: "MEDICINA/SALUD", value: "MEDICINA/SALUD"},
-        {label: "RECURSOS HUMANOS/PERSONAL", value: "RECURSOS HUMANOS/PERSONAL"},
-        {label: "SIN ÁREA DE ESTUDIO", value: "SIN ÁREA DE ESTUDIO"},
-        {label: "VENTAS AL CONSUMIDOR", value: "VENTAS AL CONSUMIDOR"},
-    ];
-
-
-    const comboCertificado = [
-        {label: "APROBACIÓN", value: "APROBACIÓN"},
-        {label: "ASISTENCIA", value: "ASISTENCIA"},
-    ];
-
-    const cargaBodyTemplate = (capacitacionesObj: ICapacitaciones) => {
-        return (
-            <div className="flex">
-                <div className="mr-4">
-                    <h2 className="text-3xl">Institucion: </h2>
-                    <p className="text-2xl">{capacitacionesObj.institucion}</p>
-                </div>
-                <div className="mr-4">
-                    <h2 className="text-3xl">Tipo de evento: </h2>
-                    <p className="text-2xl">{capacitacionesObj.tipo_evento}</p>
-                </div>
-                <div className="mr-4 ">
-                    <h2 className="text-3xl">Area de estudio: </h2>
-                    <p className="text-2xl">{capacitacionesObj.area_estudios}</p>
-                </div>
-                <div className=" ">
-                    <h2 className="text-3xl">Desde: </h2>
-                    <p className="text-2xl">{String(capacitacionesObj.fecha_inicio)}</p>
-                </div>
-            </div>
-        );
-    };
-
-    const [items, setItems] = useState<ICapacitaciones[]>([]);
-    const [selectItem, setSelectItem] = useState<ICapacitaciones | null>(null);
-    const [message, setMessage] = useState<IMessage | null>(null);
-
-    const fileUploadRef = useRef<FileUpload>(null);
-
-    useEffect(() => {
-        fecthCapacitaciones();
-    }, []);
-
-    const fecthCapacitaciones = () => {
-        new CapacitacionesService()
-            .getAllCap()
-            .then((data) => {
-                setItems(data);
+      }).then((confirmed) => {
+        if (confirmed) {
+          capaService
+            .deleteCapacitaciones(id)
+            .then(() => {
+              setcontra1(
+                contra1.filter((contra) => contra.id_capacitaciones !== id)
+              );
+              swal(
+                "Eliminado",
+                "El registro ha sido eliminado correctamente",
+                "error"
+              );
             })
             .catch((error) => {
-                console.error(error);
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: error.message,
-                });
+              console.error("Error al eliminar el registro:", error);
+              swal(
+                "Error",
+                "Ha ocurrido un error al eliminar el registro",
+                "error"
+              );
             });
-    };
-    const formik = useFormik<ICapacitaciones>({
-        initialValues: {
-            institucion: '',
-            tipo_evento: '',
-            nombre_evento: '',
-            area_estudios: '',
-            tipo_certificado: '',
-            fecha_inicio: null,
-            fecha_fin: null,
+        }
+      });
+    }
+  };
+
+  const handleEdit = (id: number | undefined) => {
+    if (id !== undefined) {
+      const editItem = contra1.find(
+        (contra) => contra.id_capacitaciones === id
+      );
+      if (editItem) {
+        setFormData(editItem);
+
+        setEditMode(true);
+        setEditItemId(id);
+      }
+    }
+  };
+
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editItemId !== undefined) {
+      capaService
+        .updateCapacitaciones(Number(editItemId), formData as ICapacitaciones)
+        .then((response) => {
+          swal({
+            title: "Publicaciones",
+            text: "Datos actualizados correctamente",
+            icon: "success",
+          });
+          setFormData({
+            institucion: "",
+            tipo_evento: "",
+            nombre_evento: "",
+            area_estudios: "",
+            tipo_certificado: "",
+            fecha_inicio: "",
+            fecha_fin: "",
             numero_dias: 0,
             cantidad_horas: 0,
-            evidencia: null,
+            evidencia: "",
             persona: null,
-        },
-        onSubmit: values => {
-            console.log(values);
-            handleSubmit(values);
-            formik.resetForm();
-        },
-        validate: (values) => {
-            let errors: any = {};
-
-            if (!values.institucion) {
-                errors.institucion = 'Nombre de Institucion es requerida';
-            }
-            if (!values.tipo_evento) {
-                errors.tipo_evento = 'Tipo de evento es requerido';
-            }
-            if (!values.nombre_evento) {
-                errors.nombre_evento = 'Nombre del evento es requerido';
-            }
-            if (!values.area_estudios) {
-                errors.area_estudios = 'Area de estudios es requerida';
-            }
-            if (!values.tipo_certificado) {
-                errors.tipo_certificado = 'Tipo de certificado es requerido';
-            }
-            if (!values.fecha_inicio) {
-                errors.fecha_inicio = 'Fecha de inicio es requerida';
-            }
-            if (!values.fecha_fin) {
-                errors.fecha_fin = 'Fecha de fin es requerida';
-            }
-            if (!values.numero_dias) {
-                errors.numero_dias = 'Numero de dias es requerido';
-            }
-            if (!values.cantidad_horas) {
-                errors.cantidad_horas = 'Cantidad de horas es requerida';
-            }
-            if (!values.evidencia) {
-                errors.evidencia = 'Evidencia es requerida';
-            }
-
-            return errors;
-
-        }
-
-    });
-
-    const handleSelectedRow = (rowData: ICapacitaciones | null) => {
-        setSelectItem(rowData);
-        if (rowData) {
-            const fechaInicio = rowData.fecha_inicio ? new Date(rowData.fecha_inicio) : null;
-            const fechaFin = rowData.fecha_fin ? new Date(rowData.fecha_fin) : null;
-            formik.setValues({
-                ...rowData,
-                fecha_inicio: fechaInicio,
-                fecha_fin: fechaFin
-            });
-        } else {
-            formik.resetForm(); // Restablecer el formulario cuando no hay una fila seleccionada
-        }
-    };
-
-
-    const handleSubmit = async (data: ICapacitaciones) => {
-        try {
-            if (selectItem) {
-                // update an existing item
-                const response = await apiService.updateCapacitaciones(selectItem.id_capacitaciones!, data);
-                console.log(response);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Registro actualizado',
-                });
-            } else {
-                // create new item
-                const response = await apiService.guardarCapacitaciones(data);
-                console.log(response);
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Registro creado',
-                });
-            }
-            fecthCapacitaciones();
-        } catch (error:any) {
-            console.error(error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error.message,
-            });
-        }
-        setSelectItem(null);
-    };
-
-    const handleDeleteItem = (rowData: ICapacitaciones) => {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: 'Esta acción no se puede deshacer',
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar',
-        }).then((result) => {
-            if (result.isConfirmed) {
-                apiService
-                    .deleteCapacitaciones(rowData.id_capacitaciones!)
-                    .then(() => {
-                        console.log('Eliminado');
-                        Swal.fire({
-                            icon: 'success',
-                            title: 'Registro eliminado',
-                        });
-                        fecthCapacitaciones();
-                    })
-                    .catch((error) => {
-                        console.error(error);
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error',
-                            text: error.message,
-                        });
-                    });
-            }
+          });
+          setcontra1(
+            contra1.map((contra) =>
+              contra.id_capacitaciones === editItemId ? response : contra
+            )
+          );
+          setEditMode(false);
+          setEditItemId(undefined);
+        })
+        .catch((error) => {
+          console.error("Error al actualizar el formulario:", error);
         });
-    };
+    }
+  };
 
-//Carga PDF
-    const customBytesUploader = async (event: FileUploadHandlerEvent) => {
-        try {
-            // convert file to base64 encoded
-            const data = await fileConverter(event.files[0]);
-            formik.setFieldValue('evidencia', data);
-            Swal.fire({
-                icon: 'info',
-                title: 'Archivo Cargado',
-            });
-        } catch (error:any) {
-            console.error(error);
-            Swal.fire({
-                icon: 'error',
-                title: 'Error',
-                text: error.message,
-            });
-        }
+  const resetForm = () => {
+    setFormData({
+      institucion: "",
+      tipo_evento: "",
+      nombre_evento: "",
+      area_estudios: "",
+      tipo_certificado: "",
+      fecha_inicio: "",
+      fecha_fin: "",
+      numero_dias: 0,
+      cantidad_horas: 0,
+      evidencia: "",
+      persona: null,
+    });
+    setEditMode(false);
+    setEditItemId(undefined);
+    if (fileUploadRef.current) {
+      fileUploadRef.current.clear(); // Limpiar el campo FileUpload
+    }
+  };
+  if (!dataLoaded) {
+    return <div>Cargando datos...</div>;
+  }
 
-        if (fileUploadRef.current) {
-            // clean the file uploaded
-            fileUploadRef.current.clear();
-        }
-    };
+  return (
+    <Fieldset className="fgrid col-fixed ">
+      <Card
+        header={cardHeader}
+        className="border-solid border-blue-800 border-3 flex-1 w-full h-full flex-wrap"
+      >
+        <div className="h1-rem">
+          <Divider align="center">
+            <h1 className="text-7xl font-smibold lg:md-2  w-full h-full max-w-full max-h-full min-w-min">
+              Capacitaciones
+            </h1>
+          </Divider>
+        </div>
 
-    const handleDownloadPDF = (rowData: ICapacitaciones) => {
-        // Obtiene la URL del PDF asociado a la fila actual
-        const pdfURL = rowData.evidencia ?? '';
-
-
-        const downloadLink = document.createElement('a');
-        downloadLink.href = pdfURL;
-        downloadLink.target = '_blank'; // Abre el enlace en una nueva pestaña
-        downloadLink.download = 'evidencia.pdf';
-
-        // Simula un clic en el enlace para descargar el archivo
-        document.body.appendChild(downloadLink);
-        downloadLink.click();
-        document.body.removeChild(downloadLink);
-    };
-
-    return (
-        <Fieldset className="fgrid col-fixed">
-            <Card
-                header={cardHeader}
-                className="border-solid border-blue-800 border-y-1"
-            >
-                <Card className="text-center ">
-                    <div className="h1-rem">
-                        <Divider align="center">
-                            <h1 className="text-7xl font-smibold lg:md-2">Capacitaciones</h1>
-                        </Divider>
-                    </div>
-                    <div className="flex justify-content-between flex-wrap">
-                        <form onSubmit={formik.handleSubmit}>
-                            <div className="flex flex-wrap flex-row">
-                                <div className="flex align-items-center justify-content-center">
-                                    <div className="flex flex-column">
-                                        <div
-                                            className="flex flex-row flex-wrap w-full h-full  justify-content-between  flex-grow-1 ">
-                                            <div className="flex align-items-center justify-content-center w-auto pr-2">
-                                                <label className="text-3xl font-medium w-auto min-w-min"
-                                                       htmlFor="institucion">
-                                                    Institucion:
-                                                </label>
-                                                <InputText id="institucion" name="institucion"
-                                                           type="text"
-                                                           placeholder="Ingrese la Institucion"
-                                                           className="w-auto min-w-min text-2xl"
-                                                           value={formik.values.institucion}
-                                                           onChange={formik.handleChange}
-                                                           onBlur={formik.handleBlur}
-                                                />
-                                                <small
-                                                    className="p-error"> {formik.touched.institucion && formik.errors.institucion} </small>
-                                            </div>
-                                            <div className="flex align-items-center justify-content-center w-auto pr-2">
-                                                <label className="text-3xl font-medium w-auto min-w-min"
-                                                       htmlFor="tipo_evento">
-                                                    Tipo de evento:
-                                                </label>
-                                                <Dropdown id="tipo_evento" name="tipo_evento"
-                                                          options={comboEvento}
-                                                          value={formik.values.tipo_evento}
-                                                          onChange={formik.handleChange}
-                                                          onBlur={formik.handleBlur}
-                                                          placeholder="Seleccione"
-                                                          className="border-round w-full min-w-min text-2xl"
-                                                />
-                                                <small
-                                                    className="p-error"> {formik.touched.tipo_evento && formik.errors.tipo_evento} </small>
-                                            </div>
-
-                                            <div
-                                                className="flex align-items-center justify-content-center w-auto pr-2 ">
-                                                <label className="text-3xl font-medium w-auto min-w-min"
-                                                       htmlFor="area_estudios">
-                                                    Area de estudio:
-                                                </label>
-                                                <Dropdown id="area_estudios" name="area_estudios"
-                                                          options={comboArea}
-                                                          value={formik.values.area_estudios}
-                                                          onChange={formik.handleChange}
-                                                          onBlur={formik.handleBlur}
-                                                          placeholder="Seleccione"
-                                                          className="border-round w-full min-w-min text-2xl"
-                                                />
-                                                <small
-                                                    className="p-error"> {formik.touched.area_estudios && formik.errors.area_estudios} </small>
-                                            </div>
-                                        </div>
-
-                                        <div
-                                            className="flex flex-row flex-wrap w-full h-full  justify-content-between  flex-grow-1 ">
-                                            <div
-                                                className="flex align-items-center justify-content-center w-auto pr-2 h-7rem">
-                                                <label className="text-3xl font-medium w-auto min-w-min"
-                                                       htmlFor="fecha_inicio">
-                                                    Desde:
-                                                </label>
-                                                <Calendar id="fecha_inicio" name="fecha_inicio"
-                                                          className=" w-full min-w-min "
-                                                          placeholder="Fecha de inicio"
-                                                          dateFormat="dd/mm/yy"
-                                                          value={formik.values.fecha_inicio}
-                                                          onChange={formik.handleChange}
-                                                          onBlur={formik.handleBlur}
-                                                          showIcon
-                                                />
-                                                <small
-                                                    className="p-error"> {formik.touched.fecha_inicio && formik.errors.fecha_inicio} </small>
-                                            </div>
-                                            <div className="flex align-items-center justify-content-center w-auto pr-2">
-                                                <label className="text-3xl font-medium w-auto min-w-min"
-                                                       htmlFor="fecha_fin">
-                                                    Hasta:
-                                                </label>
-                                                <Calendar
-                                                    className=" w-full min-w-min "
-                                                    id="fecha_fin"
-                                                    name="fecha_fin"
-                                                    placeholder="Fecha de fin"
-                                                    dateFormat="dd/mm/yy"
-                                                    value={formik.values.fecha_fin}
-                                                    onChange={formik.handleChange}
-                                                    onBlur={formik.handleBlur} showIcon
-                                                />
-                                                <small
-                                                    className="p-error"> {formik.touched.fecha_fin && formik.errors.fecha_fin} </small>
-                                            </div>
-
-                                            <div
-                                                className="flex align-items-center justify-content-center w-auto pr-2 ">
-                                                <label className="text-3xl font-medium w-full  min-w-min"
-                                                       htmlFor="numero_dias">
-                                                    Numero de dias:{" "}
-                                                </label>
-                                                <InputNumber id="numero_dias" name="numero_dias"
-                                                             placeholder="Ingrese los dias"
-                                                             className="w-auto min-w-min text-2xl"
-                                                             value={formik.values.numero_dias}
-                                                             onValueChange={(e) => {
-                                                                 formik.setFieldValue('numero_dias', e.value);
-                                                             }}
-
-                                                             onBlur={formik.handleBlur}
-                                                />
-                                                <small
-                                                    className="p-error"> {formik.touched.numero_dias && formik.errors.numero_dias} </small>
-                                            </div>
-                                        </div>
-
-                                        <div
-                                            className="flex flex-row flex-wrap w-full h-full  justify-content-between  flex-grow-1 ">
-                                            <div
-                                                className="flex align-items-center justify-content-center w-auto pr-2 h-7rem">
-                                                <label className="text-3xl font-medium w-full  min-w-min" htmlFor="nombre_evento">
-                                                    Nombre de evento:
-                                                </label>
-                                                <InputText id="nombre_evento" name="nombre_evento"
-                                                    type="text"
-                                                    placeholder="Ingrese el nombre"
-                                                    className="w-auto min-w-min text-2xl"
-                                                    value={formik.values.nombre_evento}
-                                                           onChange={formik.handleChange}
-                                                           onBlur={formik.handleBlur}
-                                                />
-                                            </div>
-                                            <div className="flex align-items-center justify-content-center w-auto pr-2">
-                                                <label className="text-3xl font-medium w-full  min-w-min" htmlFor="tipo_certificado">
-                                                    Tipo de certificado:
-                                                </label>
-                                                <Dropdown
-                                                    id="tipo_certificado"
-                                                    name="tipo_certificado"
-                                                    options={comboCertificado}
-                                                    value={formik.values.tipo_certificado}
-                                                    onChange={formik.handleChange}
-                                                    onBlur={formik.handleBlur}
-                                                    placeholder="Seleccione"
-                                                />
-                                                <small
-                                                    className="p-error"> {formik.touched.tipo_certificado && formik.errors.tipo_certificado} </small>
-                                            </div>
-
-                                            <div
-                                                className="flex align-items-center justify-content-center w-auto pr-2 ">
-                                                <label className="text-3xl font-medium w-full  min-w-min" htmlFor="cantidad_horas">
-                                                    N° de horas totales:{" "}
-                                                </label>
-                                                <InputNumber
-                                                    id="cantidad_horas"
-                                                    name="cantidad_horas"
-                                                    placeholder="Ingrese los dias"
-                                                    className="w-auto min-w-min text-2xl"
-                                                    value={formik.values.cantidad_horas}
-                                                             onValueChange={(e) => {
-                                                                 formik.setFieldValue('cantidad_horas', e.value);
-                                                             }}
-                                                    onBlur={formik.handleBlur}
-                                                />
-                                                <small
-                                                    className="p-error"> {formik.touched.cantidad_horas && formik.errors.cantidad_horas} </small>
-                                            </div>
-                                        </div>
-                                        <div
-                                            className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
-                                            <div
-                                                className="flex align-items-center justify-content-center w-auto min-w-min">
-                                                <Button
-                                                    type="submit"
-                                                    className="w-full text-3xl min-w-min "
-                                                    rounded label={selectItem ? 'Actualizar' : 'Guardar'}
-                                                    severity={selectItem ? 'warning' : 'success'}>
-
-                                                </Button>
-                                            </div>
-                                            <div
-                                                className="flex align-items-center justify-content-center w-auto min-w-min">
-                                                <Button
-                                                    type="button"
-                                                    label="Cancel"
-                                                    className="w-full text-3xl min-w-min"
-                                                    rounded
-                                                    onClick={() => {
-                                                        formik.resetForm();
-                                                        setSelectItem(null); }}
-                                                />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex flex-column align-items-center justify-content-center ml-4">
-                                    <label className="flex text-3xl font-medium" htmlFor="evidencia">
-                                        Subir PDF:
-                                    </label>
-                                    <ToastMessage message={message}/>
-                                    <FileUpload
-                                        name="evidencia" id="evidencia"
-                                        ref={fileUploadRef}
-                                        chooseLabel="Escoger"
-                                        uploadLabel="Cargar"
-                                        cancelLabel="Cancelar"
-                                        accept=".pdf"
-                                        customUpload
-                                           uploadHandler={customBytesUploader}
-                                        emptyTemplate={
-                                            <p className="m-0 p-button-rounded">
-                                                Arrastre y suelte los archivos aquí para cargarlos.
-                                            </p>
-                                        }
-                                    />
-                                    <small
-                                        className="p-error w-full text-center">{formik.touched.evidencia && formik.errors.evidencia}</small>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
-                    <DataTable
-                        tableStyle={{minWidth: "50rem"}}
-                        className="mt-5  w-full h-full text-3xl font-medium"
-                        value={items}
+        <div className="flex justify-content-center flex-wrap">
+          <form
+            onSubmit={editMode ? handleUpdate : handleSubmit}
+            encType="multipart/form-data"
+          >
+            <div className="flex flex-wrap flex-row">
+              <div className="flex align-items-center justify-content-center">
+                <div className="flex flex-column flex-wrap gap-4" style={{ marginLeft: "20px" }}>
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="institucion"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
                     >
-                        <Column
-                            field="Capacitaciones"
-                            header="Capacitaciones"
-                            headerStyle={{backgroundColor: "#0C3255", color: "white"}}
-                            body={cargaBodyTemplate}
-                        ></Column>
-                        <Column
-                            field="PDF"
-                            header="PDF"
-                            headerStyle={{backgroundColor: "#0C3255", color: "white"}}
-                            body={(rowData: ICapacitaciones) => (
-                                <>
-                                    <Button icon="pi pi-download p-clickable" className="p-button-rounded p-button-text mr-4"
-                                            onClick={() => handleDownloadPDF(rowData)}></Button>
-                                </>
-                            )}
-                        ></Column>
-                        <Column
-                            field="Acciones"
-                            header="Acciones"
-                            headerStyle={{backgroundColor: "#0C3255", color: "white"}}
-                            body={(rowData: ICapacitaciones) => (
-                                <>
-                                    <Button icon="pi pi-pencil" className="p-button-rounded p-button-text mr-4"
-                                            onClick={() => handleSelectedRow(rowData)}/>
-                                    <Button icon="pi pi-trash" className="p-button-rounded p-button-danger"
-                                            onClick={() => handleDeleteItem(rowData)}/>
-                                </>
-                            )}
-                        />
-                    </DataTable>
-                </Card>
-            </Card>
-        </Fieldset>
-    );
+                      Institución:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese la Institución"
+                      id="institucion"
+                      name="institucion"
+                      style={{ width: "250px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          institucion: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.institucion}
+                    />
+                  </div>
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="tipo_evento"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Tipo de Evento:
+                    </label>
+                    <Dropdown
+                      id="tipo_evento"
+                      name="tipo_evento"
+                      options={tipoEventoOptions}
+                      onChange={(e) =>
+                        setFormData({ ...formData, tipo_evento: e.value })
+                      }
+                      value={formData.tipo_evento}
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Seleccione el Tipo de Evento"
+                      style={{ width: "250px" }} // Ajusta el ancho del Dropdown
+                    />
+                  </div>
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="nombre_evento"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Nombre del Evento:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese el Nombre del Evento"
+                      id="nombre_evento"
+                      name="nombre_evento"
+                      style={{ width: "250px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          nombre_evento: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.nombre_evento}
+                    />
+                  </div>
+                </div>
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginTop: "-2px", marginLeft: "25px" }}
+                >
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
+                    <label
+                      htmlFor="area_estudios"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Área de Estudios:
+                    </label>
+                    <Dropdown
+                      id="area_estudios"
+                      name="area_estudios"
+                      options={areaEstudioOptions}
+                      onChange={(e) =>
+                        setFormData({ ...formData, area_estudios: e.value })
+                      }
+                      value={formData.area_estudios}
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Seleccione el Área de Estudio"
+                      style={{ width: "250px" }} // Ajusta el ancho del Dropdown
+                    />
+                  </div>
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
+                    <label
+                      htmlFor="tiempo_dedicacion"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Tipo de Certificado:
+                    </label>
+                    <Dropdown
+                      id="tiempo_dedicacion"
+                      name="tiempo_dedicacion"
+                      options={tipoCertificadoOptions}
+                      onChange={(e) =>
+                        setFormData({ ...formData, tipo_certificado: e.value })
+                      }
+                      value={formData.tipo_certificado}
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Seleccione el Tipo de Certificado"
+                      style={{ width: "250px" }} // Ajusta el ancho del Dropdown
+                    />
+                  </div>
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
+                    <label
+                      htmlFor="fecha_inicio"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Fecha de Inicio:
+                    </label>
+                    <Calendar
+                      className="text-2xl"
+                      id="fecha_inicio"
+                      name="fecha_inicio"
+                      required
+                      dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
+                      showIcon
+                      style={{ width: "250px" }}
+                      maxDate={new Date()}
+                      onChange={(e) => {
+                        const selectedDate =
+                          e.value instanceof Date ? e.value : null;
+                        const formattedDate = selectedDate
+                          ? selectedDate.toISOString().split("T")[0] // Formatear a ISO 8601
+                          : "";
+                        setFormData({
+                          ...formData,
+                          fecha_inicio: formattedDate,
+                        });
+                      }}
+                      value={
+                        formData.fecha_inicio
+                          ? new Date(formData.fecha_inicio)
+                          : null
+                      }
+                    />
+                  </div>
+                </div>
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginTop: "-2px", marginLeft: "25px" }}
+                >
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
+                    <label
+                      htmlFor="fecha_fin"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Fecha de Fin:
+                    </label>
+                    <Calendar
+                      className="text-2xl"
+                      id="fecha_fin"
+                      name="fecha_fin"
+                      required
+                      dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
+                      showIcon
+                      style={{ width: "250px" }}
+                      maxDate={new Date()}
+                      onChange={(e) => {
+                        const selectedDate =
+                          e.value instanceof Date ? e.value : null;
+                        const formattedDate = selectedDate
+                          ? selectedDate.toISOString().split("T")[0] // Formatear a ISO 8601
+                          : "";
+                        setFormData({
+                          ...formData,
+                          fecha_fin: formattedDate,
+                        });
+                      }}
+                      value={
+                        formData.fecha_fin ? new Date(formData.fecha_fin) : null
+                      }
+                    />
+                  </div>
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
+                    <label
+                      htmlFor="numero_dias"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Número de Días:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese el Número de Días"
+                      id="numero_dias"
+                      name="numero_dias"
+                      style={{ width: "250px" }}
+                      onChange={(e) => {
+                        const numero_dias = parseFloat(e.currentTarget.value); // Convertir a número
+                        setFormData({
+                          ...formData,
+                          numero_dias: isNaN(numero_dias) ? null : numero_dias,
+                        });
+                      }}
+                      value={
+                        formData.numero_dias !== null
+                          ? formData.numero_dias.toString()
+                          : ""
+                      }
+                    />
+                  </div>
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
+                    <label
+                      htmlFor="cantidad_horas"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Cantidad de Horas:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese la Cantidad de Horas"
+                      id="cantidad_horas"
+                      name="cantidad_horas"
+                      style={{ width: "250px" }}
+                      onChange={(e) => {
+                        const cantidad_horas = parseFloat(
+                          e.currentTarget.value
+                        ); // Convertir a número
+                        setFormData({
+                          ...formData,
+                          cantidad_horas: isNaN(cantidad_horas)
+                            ? null
+                            : cantidad_horas,
+                        });
+                      }}
+                      value={
+                        formData.cantidad_horas !== null
+                          ? formData.cantidad_horas.toString()
+                          : ""
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6"
+                style={{ marginLeft: "-45px" }}
+              >
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="submit"
+                    style={{ marginTop: "55px" }}
+                    label={editMode ? "Actualizar" : "Guardar"}
+                    className="w-full text-3xl min-w-min "
+                    rounded
+                    onClick={editMode ? handleUpdate : handleSubmit}
+                  />
+                </div>
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="button"
+                    label="Cancelar"
+                    style={{ marginTop: "55px" }}
+                    className="w-full text-3xl min-w-min"
+                    rounded
+                    onClick={resetForm}
+                  />
+                </div>
+              </div>
+              <div style={{ marginLeft: "466px", marginTop: "-93px" }}>
+                <div className="flex flex-column align-items-center justify-content-center ml-4">
+                  <label
+                    htmlFor="pdf"
+                    className="text-3xl font-medium w-auto min-w-min"
+                    style={{
+                      marginRight: "20px",
+                      marginLeft: "169px",
+                      marginTop: "-5px",
+                    }}
+                  >
+                    Subir Certificado:
+                  </label>
+                  <FileUpload
+                    name="pdf"
+                    style={{ marginLeft: "380px", marginTop: "10px" }}
+                    chooseLabel="Escoger"
+                    uploadLabel="Cargar"
+                    cancelLabel="Cancelar"
+                    emptyTemplate={
+                      <p className="m-0 p-button-rounded">
+                        Arrastre y suelte los archivos aquí para cargarlos.
+                      </p>
+                    }
+                    customUpload
+                    onSelect={customBytesUploader}
+                    accept="application/pdf"
+                  />
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <table
+          style={{ minWidth: "40rem" }}
+          className="mt-4  w-full h-full text-3xl font-large"
+        >
+          <thead>
+            <tr style={{ backgroundColor: "#0C3255", color: "white" }}>
+              <th>Institución</th>
+              <th>Tipo de Evento</th>
+              <th>Nombre del Evento </th>
+              <th>Área de Estudios</th>
+              <th>Tipo de Certificado</th>
+              <th>Fecha de Inicio</th>
+              <th>Fecha de Fin</th>
+              <th>Número de Días</th>
+              <th>Cantidad de Horas</th>
+              <th>Operaciones</th>
+              <th>Evidencia</th>
+            </tr>
+          </thead>
+          <tbody>
+            {contra1.map((contrato) => (
+              <tr
+                className="text-center"
+                key={contrato.id_capacitaciones?.toString()}
+              >
+                <td>{contrato.institucion}</td>
+                <td>{contrato.tipo_evento}</td>
+                <td>{contrato.nombre_evento}</td>
+                <td>{contrato.area_estudios}</td>
+                <td>{contrato.tipo_certificado}</td>
+                <td>
+                  {contrato.fecha_inicio
+                    ? new Date(contrato.fecha_inicio).toLocaleDateString(
+                        "es-ES",
+                        {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                        }
+                      )
+                    : ""}
+                </td>
+
+                <td>
+                  {contrato.fecha_fin
+                    ? new Date(contrato.fecha_fin).toLocaleDateString("es-ES", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })
+                    : ""}
+                </td>
+                <td>{contrato.numero_dias + " días"}</td>
+                <td>{contrato.cantidad_horas + " horas"}</td>
+                <td>
+                  <Button
+                    type="button"
+                    className=""
+                    label="✎"
+                    style={{
+                      background: "#ff9800",
+                      borderRadius: "5%",
+                      fontSize: "25px",
+                      width: "50px",
+                      color: "black",
+                      justifyContent: "center",
+                    }}
+                    onClick={() =>
+                      handleEdit(contrato.id_capacitaciones?.valueOf())
+                    }
+                    // Agrega el evento onClick para la operación de editar
+                  />
+                  <Button
+                    type="button"
+                    className=""
+                    label="✘"
+                    style={{
+                      background: "#ff0000",
+                      borderRadius: "10%",
+                      fontSize: "25px",
+                      width: "50px",
+                      color: "black",
+                      justifyContent: "center",
+                    }}
+                    onClick={() =>
+                      handleDelete(contrato.id_capacitaciones?.valueOf())
+                    }
+                    // Agrega el evento onClick para la operación de eliminar
+                  />
+                </td>
+                <td>
+                  {contrato.evidencia ? (
+                    <Button
+                      type="button"
+                      className=""
+                      label="Descargar PDF"
+                      style={{
+                        background: "#009688",
+                        borderRadius: "10%",
+                        fontSize: "12px",
+                        color: "black",
+                        justifyContent: "center",
+                      }}
+                      onClick={() => decodeBase64(contrato.evidencia!)}
+                    />
+                  ) : (
+                    <span>Sin evidencia</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+    </Fieldset>
+  );
 }
+
+export default PublicacionesContext;

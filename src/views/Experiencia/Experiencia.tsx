@@ -1,370 +1,626 @@
-import {Divider} from "primereact/divider";
-import {Card} from "primereact/card";
-import {InputText} from "primereact/inputtext";
-import {Calendar} from "primereact/calendar";
-import {Dropdown} from "primereact/dropdown";
-import {FileUpload, FileUploadHandlerEvent} from "primereact/fileupload";
-import {Button} from "primereact/button";
-import {DataTable} from "primereact/datatable";
-import {Column} from "primereact/column";
-import {useEffect, useRef, useState} from "react";
-import {useFormik} from "formik";
-import {IExperiencia} from "../../interfaces/Primary/IExperiencia";
-import {ExperienciaService} from "../../services/ExperienciaService";
-import ToastMessage from "../../shared/ToastMessage";
-import {IMessage} from "../../interfaces/Secondary/IMessage";
-import {fileConverter} from "../../services/functions/fileConverter";
-import React from "react";
-import {ConfirmDialog, confirmDialog} from "primereact/confirmdialog";
-import {decoder} from "../../services/functions/decoder";
-import {formatDate} from "../../services/functions/formatter";
+import React, { useEffect, useState, useRef } from "react";
+import { InputText } from "primereact/inputtext";
+import { FileUpload, FileUploadSelectEvent } from "primereact/fileupload";
+import { Button } from "primereact/button";
+import { Calendar } from "primereact/calendar";
+import { Fieldset } from "primereact/fieldset";
+import { Dropdown } from "primereact/dropdown";
+import { Card } from "primereact/card";
+import cardHeader from "../../shared/CardHeader";
+import { Divider } from "primereact/divider";
+import { IExperiencia } from "../../interfaces/Primary/IExperiencia";
+import { ExperienciaService } from "../../services/ExperienciaService";
+import swal from "sweetalert";
 
-const apiService = new ExperienciaService();
+function Experiencia() {
+  const [exp1, setexp1] = useState<IExperiencia[]>([]);
+  const [formData, setFormData] = useState<IExperiencia>({
+    id_experiencia: 0,
+    institucion: "",
+    puesto: "",
+    area_trabajo: "",
+    fecha_inicio: "",
+    fecha_fin: "",
+    actividades: "",
+    estado: false,
+    certificado_trabajo: "",
+    persona: null,
+  });
 
-const Experiencia = () => {
+  const areaTrabajoOptions = [
+    { label: "Recursos Humanos", value: "Recursos Humanos" },
+    { label: "Docencia", value: "Docencia" },
+    { label: "Eventos", value: "Eventos" },
+    { label: "Administrativo", value: "Administrativo" },
+  ];
 
-    const [items, setItems] = useState<IExperiencia[]>([]);
-    const [selectedItem, setSelectedItem] = useState<IExperiencia | null>(null);
-    const [message, setMessage] = useState<IMessage | null>(null);
+  const fileUploadRef = useRef<FileUpload>(null);
+  const [dataLoaded, setDataLoaded] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
+  const expService = new ExperienciaService();
 
-    const fileUploadRef = useRef<FileUpload>(null);
-    const workAreas = [
-        "Recursos Humanos",
-        "Docencia",
-        "Eventos"
-    ]
+  const loadData = () => {
+    expService
+      .getAllItems()
+      .then((data) => {
+        setexp1(data);
+        setDataLoaded(true); // Marcar los datos como cargados
+      })
+      .catch((error) => {
+        console.error("Error al obtener los datos:", error);
+      });
+  };
+  useEffect(() => {
+    loadData();
+  }, []);
 
-    // * formik implementation
-    const formik = useFormik<IExperiencia>({
-        initialValues: {
-            institucion: '',
-            puesto: '',
-            area_trabajo: '',
-            fecha_inicio: null,
-            fecha_fin: null,
-            actividades: '',
-            estado: true,
-            certificado_trabajo: null,
-            persona: null,
+  const customBytesUploader = (event: FileUploadSelectEvent) => {
+    if (event.files && event.files.length > 0) {
+      const file = event.files[0];
+      const reader = new FileReader();
+
+      reader.onloadend = function () {
+        const base64data = reader.result as string;
+        setFormData({ ...formData, certificado_trabajo: base64data });
+      };
+
+      reader.onerror = (error) => {
+        console.error("Error al leer el archivo:", error);
+      };
+
+      reader.readAsDataURL(file);
+
+      if (fileUploadRef.current) {
+        fileUploadRef.current.clear();
+      }
+    }
+  };
+
+  const decodeBase64 = (base64Data: string) => {
+    try {
+      // Eliminar encabezados o metadatos de la cadena base64
+      const base64WithoutHeader = base64Data.replace(/^data:.*,/, "");
+
+      const decodedData = atob(base64WithoutHeader); // Decodificar la cadena base64
+      const byteCharacters = new Uint8Array(decodedData.length);
+
+      for (let i = 0; i < decodedData.length; i++) {
+        byteCharacters[i] = decodedData.charCodeAt(i);
+      }
+
+      const byteArray = new Blob([byteCharacters], { type: "application/pdf" });
+      const fileUrl = URL.createObjectURL(byteArray);
+
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.download = "Evidencias Capacitaciones.pdf";
+      link.click();
+      swal({
+        title: "Publicación",
+        text: "Descargando pdf....",
+        icon: "success",
+        timer: 1000,
+      });
+      console.log("pdf descargado...");
+
+      URL.revokeObjectURL(fileUrl);
+    } catch (error) {
+      console.error("Error al decodificar la cadena base64:", error);
+    }
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (
+      !formData.institucion ||
+      !formData.puesto ||
+      !formData.area_trabajo ||
+      !formData.fecha_inicio ||
+      !formData.fecha_fin ||
+      !formData.actividades ||
+      !formData.certificado_trabajo
+    ) {
+      swal("Advertencia", "Por favor, complete todos los campos", "warning");
+      return;
+    }
+
+    expService
+      .createItem(formData)
+      .then((response) => {
+        resetForm();
+        swal("Publicacion", "Datos Guardados Correctamente", "success");
+
+        expService
+          .getAllItems()
+          .then((data) => {
+            setexp1(data);
+            resetForm();
+            if (fileUploadRef.current) {
+              fileUploadRef.current.clear();
+            }
+          })
+          .catch((error) => {
+            console.error("Error al obtener los datos:", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error al enviar el formulario:", error);
+      });
+  };
+
+  const handleDelete = (id: number | undefined) => {
+    if (id !== undefined) {
+      swal({
+        title: "Confirmar Eliminación",
+        text: "¿Estás seguro de eliminar este registro?",
+        icon: "warning",
+        buttons: {
+          cancel: {
+            text: "Cancelar",
+            visible: true,
+            className: "cancel-button",
+          },
+          confirm: {
+            text: "Sí, eliminar",
+            className: "confirm-button",
+          },
         },
-        onSubmit: values => {
-            console.log(values);
-            handleSubmit(values);
-            formik.resetForm();
-        },
-        validate: (values) => {
-            let errors: any = {};
-
-            if (!values.institucion.trim()) {
-                errors.institucion = 'Institución es requerida';
-            }
-            if (!values.fecha_inicio) {
-                errors.fecha_inicio = 'Fecha Inicio es requerida';
-            }
-            if (!values.area_trabajo) {
-                errors.area_trabajo = 'Área de trabajo es requerida';
-            }
-            if (!values.puesto.trim()) {
-                errors.puesto = 'Puesto es requerida';
-            }
-            if (!values.fecha_fin) {
-                errors.fecha_fin = 'Fecha Final es requerida';
-            }
-            if (!values.certificado_trabajo) {
-                errors.certificado_trabajo = 'Certificado de trabajo es requerido';
-            }
-
-            return errors;
-
-        }
-
-    });
-
-    /* const isFormFieldInvalid = (name) => !!(formik.touched[name] && formik.errors[name]);
-
-    const getFormErrorMessage = (name) => {
-        return isFormFieldInvalid(name) ? <small className="p-error">{formik.errors[name]}</small> : <small className="p-error">&nbsp;</small>;
-    }*/
-
-    const customBytesUploader = async (event: FileUploadHandlerEvent) => {
-        // convert file to base64 encoded
-        fileConverter(event.files[0])
-            .then(data => {
-                formik.setFieldValue('certificado_trabajo', data);
-                setMessage(
-                    {severity: 'info', detail: 'Archivo Cargado'}
-                );
-            }).catch(error => {
-            console.error(error);
-            setMessage({severity: 'error', summary: 'Error', detail: error.message});
-        })
-
-        if (fileUploadRef.current) {
-            // clean the file uploaded
-            fileUploadRef.current.clear();
-        }
-    };
-
-
-    const loadDataToForm = (rowData: IExperiencia) => {
-        setSelectedItem(rowData);
-        if (rowData) {
-            formik.setValues({
-                ...rowData,
-                fecha_inicio: new Date(rowData.fecha_inicio!),
-                fecha_fin: new Date(rowData.fecha_fin!)
-            });
-        } else {
-            formik.resetForm();
-        }
-    }
-
-
-    // CALL TO SERVICE METHODS
-
-    useEffect(() => {
-        fetchItems();
-    }, [])
-
-    // SERVICE METHODS
-    const fetchItems = () => {
-        apiService.getAllItems()
-            .then(response => {
-                setItems(response);
-            })
-            .catch(error => {
-                console.error(error);
-                setMessage({
-                    severity: 'error',
-                    summary: 'Error',
-                    detail: error.message
-                })
-            })
-    }
-
-    const handleSubmit = async (data: IExperiencia) => {
-        if (selectedItem) {
-            // update an existing item
-            await apiService.updateItem(selectedItem.id_experiencia!, data)
-                .then(response => {
-                    console.log(response);
-                    setMessage({severity: 'success', detail: 'Registro actualizado'});
-                })
-                .catch(error => {
-                    console.error(error);
-                    setMessage({
-                        severity: 'error', summary: 'Error', detail: error.message
-                    });
-                });
-            setSelectedItem(null);
-        } else {
-            // create new item
-            await apiService.createItem(data)
-                .then(response => {
-                    console.log(response);
-                    setMessage({severity: 'success', detail: 'Registro creado'});
-                })
-                .catch(error => {
-                    console.error(error);
-                    setMessage({
-                        severity: 'error', summary: 'Error', detail: error.message
-                    });
-                });
-        }
-        fetchItems();
-    }
-
-    const handleDeleteItem = (item_id: number) => {
-        apiService.deleteItem(item_id)
+      }).then((confirmed) => {
+        if (confirmed) {
+          expService
+            .deleteItem(id)
             .then(() => {
-                console.log('Eliminado');
-                setMessage({
-                    severity: 'info', detail: 'Registro Eliminado'
-                });
-                fetchItems(); // reload items
+              setexp1(exp1.filter((exp) => exp.id_experiencia !== id));
+              swal(
+                "Eliminado",
+                "El registro ha sido eliminado correctamente",
+                "error"
+              );
             })
-            .catch(error => {
-                console.error(error);
-                setMessage({
-                    severity: 'error', summary: 'Error', detail: error.message
-                });
-            })
-        setSelectedItem(null);
-        formik.resetForm();
+            .catch((error) => {
+              console.error("Error al eliminar el registro:", error);
+              swal(
+                "Error",
+                "Ha ocurrido un error al eliminar el registro",
+                "error"
+              );
+            });
+        }
+      });
     }
+  };
 
-    // row templates
-    const actionBodyTemplate = (rowData: IExperiencia) => {
-        return (
-            <React.Fragment>
-                <Button icon="pi pi-pencil" rounded outlined className="mr-2" onClick={() => loadDataToForm(rowData)}/>
-                <Button icon="pi pi-trash" rounded outlined severity="danger" className="mr-2"
-                        onClick={() => confirmDeleteItem(rowData)}/>
-            </React.Fragment>
-        )
+  const handleEdit = (id: number | undefined) => {
+    if (id !== undefined) {
+      const editItem = exp1.find((exp) => exp.id_experiencia === id);
+      if (editItem) {
+        setFormData(editItem);
+
+        setEditMode(true);
+        setEditItemId(id);
+      }
     }
+  };
 
-    const dateBodyTemplate = (date: string) => {
-        const options: Intl.DateTimeFormatOptions = {
-            weekday: 'long',
-            day: 'numeric',
-            month: 'long',
-            year: 'numeric',
-            timeZone: 'UTC'
-        };
-
-        return new Date(date).toLocaleDateString('es-ES', options);
-    }
-
-    const confirmDeleteItem = (rowData: IExperiencia) => {
-        confirmDialog({
-            message: '¿Estás seguro de eliminar el elemento seleccionado?',
-            header: 'Confirmación',
-            icon: 'pi pi-exclamation-triangle',
-            accept: () => handleDeleteItem(rowData.id_experiencia!),
-            acceptLabel: "Si"
+  const handleUpdate = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (editItemId !== undefined) {
+      expService
+        .updateItem(Number(editItemId), formData as IExperiencia)
+        .then((response) => {
+          swal({
+            title: "Publicaciones",
+            text: "Datos actualizados correctamente",
+            icon: "success",
+          });
+          setFormData({
+            institucion: "",
+            puesto: "",
+            area_trabajo: "",
+            fecha_inicio: "",
+            fecha_fin: "",
+            actividades: "",
+            estado: false,
+            certificado_trabajo: "",
+            persona: null,
+          });
+          setexp1(
+            exp1.map((exp) =>
+              exp.id_experiencia === editItemId ? response : exp
+            )
+          );
+          setEditMode(false);
+          setEditItemId(undefined);
         })
+        .catch((error) => {
+          console.error("Error al actualizar el formulario:", error);
+        });
     }
+  };
 
-    const annexBodyTemplate = (rowData: IExperiencia) => {
-
-        const base64File = rowData.certificado_trabajo;
-        const fileName = `${rowData.puesto}_${formatDate(rowData.fecha_inicio!)}_${formatDate(rowData.fecha_fin!)}`
-        return base64File ? (
-            <Button type="button" icon="pi pi-file-pdf" severity="danger" rounded
-                    onClick={() => decoder(base64File, fileName)}
-                    data-pr-tooltip="PDF"/>) : (<span>Sin Anexo</span>)
+  const resetForm = () => {
+    setFormData({
+      institucion: "",
+      puesto: "",
+      area_trabajo: "",
+      fecha_inicio: "",
+      fecha_fin: "",
+      actividades: "",
+      estado: false,
+      certificado_trabajo: "",
+      persona: null,
+    });
+    setEditMode(false);
+    setEditItemId(undefined);
+    if (fileUploadRef.current) {
+      fileUploadRef.current.clear(); // Limpiar el campo FileUpload
     }
+  };
+  if (!dataLoaded) {
+    return <div>Cargando datos...</div>;
+  }
 
+  return (
+    <Fieldset className="fgrid col-fixed ">
+      <Card
+        header={cardHeader}
+        className="border-solid border-blue-800 border-3 flex-1 w-full h-full flex-wrap"
+      >
+        <div className="h1-rem">
+          <Divider align="center">
+            <h1 className="text-7xl font-smibold lg:md-2  w-full h-full max-w-full max-h-full min-w-min">
+              Experiencia
+            </h1>
+          </Divider>
+        </div>
 
-    return (
-        <>
-            <Card className="m-5">
-                <ToastMessage message={message}/>
-                <Divider align="center">
-                    <h2>Experiencia</h2>
-                </Divider>
-                <form className="formgrid grid" onSubmit={formik.handleSubmit}>
-                    <div className="field col-4">
-                        <label htmlFor="institution">Institución</label>
-                        <InputText id="institution"
-                                   className="p-inputtext-sm w-full"
-                                   name="institucion"
-                                   value={formik.values.institucion}
-                                   onChange={formik.handleChange}
-                                   onBlur={formik.handleBlur}
-                        />
-                        <small className="p-error">{formik.touched.institucion && formik.errors.institucion}</small>
-                    </div>
-                    <div className="field col-4">
-                        <label htmlFor="start-date">Fecha Inicial</label>
-                        <Calendar id="start-date"
-                                  dateFormat="dd/mm/yy"
-                                  name="fecha_inicio"
-                                  className="p-inputtext-sm w-full"
-                                  value={formik.values.fecha_inicio}
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
-                        />
-                        <small className="p-error">{formik.touched.fecha_inicio && formik.errors.fecha_inicio}</small>
-                    </div>
-                    <div className="field col-4">
-                        <label htmlFor="work-area">Área de Trabajo</label>
-                        <Dropdown
-                            id="work-area"
-                            placeholder="Seleccione"
-                            className="p-inputtext-sm w-full"
-                            options={workAreas}
-                            name="area_trabajo"
-                            value={formik.values.area_trabajo}
-                            onChange={formik.handleChange}
-                            onBlur={formik.handleBlur}
-                        />
-                        <small className="p-error">{formik.touched.area_trabajo && formik.errors.area_trabajo}</small>
-                    </div>
-                    <div className="field col-4">
-                        <label htmlFor="job">Puesto</label>
-                        <InputText id="job"
-                                   className="p-inputtext-sm w-full"
-                                   name="puesto"
-                                   value={formik.values.puesto}
-                                   onChange={formik.handleChange}
-                                   onBlur={formik.handleBlur}
-                        />
-                        <small className="p-error">{formik.touched.puesto && formik.errors.puesto}</small>
-                    </div>
-                    <div className="field col-4">
-                        <label htmlFor="end-date">Fecha Final</label>
-                        <Calendar id="end-date"
-                                  dateFormat="dd/mm/yy"
-                                  className="p-calendar-sm w-full"
-                                  name="fecha_fin"
-                                  value={formik.values.fecha_fin}
-                                  onChange={formik.handleChange}
-                                  onBlur={formik.handleBlur}
-                        />
-                        <small className="p-error">{formik.touched.fecha_fin && formik.errors.fecha_fin}</small>
-                    </div>
-                    <div className="field col-4 flex flex-column">
-                        <label htmlFor="annex-file">Anexo</label>
-                        <FileUpload
-                            id="annex-file"
-                            ref={fileUploadRef}
-                            mode="advanced"
-                            name="file"
-                            accept=".pdf"
-                            customUpload
-                            uploadHandler={customBytesUploader}
-                            chooseLabel="Seleccionar"
-                            uploadLabel="Cargar"
-                            cancelLabel="Cancelar"
-                            emptyTemplate={<p className="m-0">{
-                                formik.values.certificado_trabajo ? "Archivo Cargado" : "Arrastre y suelte aquí los archivos para cargarlos."}</p>}
-                        />
-                        <small
-                            className="p-error w-full">{formik.touched.certificado_trabajo && formik.errors.certificado_trabajo}</small>
-                    </div>
-
-                    <div className="col-12 flex justify-content-evenly align-content-center mt-4">
-                        <Button label={selectedItem ? 'Actualizar' : 'Guardar'}
-                                severity={selectedItem ? 'warning' : 'success'} type="submit"/>
-                        <Button label="Cancelar" severity="secondary" type="button" onClick={() => {
-                            formik.resetForm();
-                            setSelectedItem(null);
-                        }}/>
-                    </div>
-                </form>
-
-                <Card className="my-5 mx-auto">
-                    <DataTable value={items}
-                               dataKey="id_experiencia"
-                               paginator
-                               rows={10}
-                               rowsPerPageOptions={[5, 10, 25]}
+        <div
+          className="flex justify-content-center flex-wrap"
+          style={{ marginLeft: "60px" }}
+        >
+          <form
+            onSubmit={editMode ? handleUpdate : handleSubmit}
+            encType="multipart/form-data"
+          >
+            <div className="flex flex-wrap flex-row">
+              <div className="flex align-items-center justify-content-center">
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginLeft: "20px" }}
+                >
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="institucion"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
                     >
-
-                        <Column field="institucion" header="Institución"></Column>
-                        <Column field="area_trabajo" header="Área de trabajo"></Column>
-                        <Column field="puesto" header="Puesto"></Column>
-                        <Column field="fecha_inicio" header="Fecha Inicial"
-                                body={(rowData) => dateBodyTemplate(rowData.fecha_inicio)}></Column>
-                        <Column field="fecha_fin" header="Fecha Final"
-                                body={(rowData) => dateBodyTemplate(rowData.fecha_fin)}></Column>
-                        <Column body={(rowData) => annexBodyTemplate(rowData)}
-                                header="Anexo"></Column>
-                        <Column body={actionBodyTemplate}></Column>
-                    </DataTable>
-                </Card>
-
-                <div className="flex justify-content-end">
-                    <Button label="Continuar" icon="pi pi-arrow-right" iconPos="right"/>
+                      Institución:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese la Institución"
+                      id="institucion"
+                      name="institucion"
+                      style={{ width: "250px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          institucion: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.institucion}
+                    />
+                  </div>
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="puesto"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Puesto:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese su Puesto Anterior"
+                      id="puesto"
+                      name="puesto"
+                      style={{ width: "250px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          puesto: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.puesto}
+                    />
+                  </div>
                 </div>
-                <ConfirmDialog/>
-            </Card>
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginTop: "-2px", marginLeft: "25px" }}
+                >
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
+                    <label
+                      htmlFor="area_trabajo"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Área de Trabajo:
+                    </label>
+                    <Dropdown
+                      id="area_trabajo"
+                      name="area_trabajo"
+                      options={areaTrabajoOptions}
+                      onChange={(e) =>
+                        setFormData({ ...formData, area_trabajo: e.value })
+                      }
+                      value={formData.area_trabajo}
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Seleccione el Área de Trabajo"
+                      style={{ width: "250px" }} // Ajusta el ancho del Dropdown
+                    />
+                  </div>
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
+                    <label
+                      htmlFor="actividades"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Actividades:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese sus Actividades"
+                      id="actividades"
+                      name="actividades"
+                      style={{ width: "250px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          actividades: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.actividades}
+                    />
+                  </div>
+                </div>
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginTop: "-2px", marginLeft: "25px" }}
+                >
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
+                    <label
+                      htmlFor="fecha_inicio"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Fecha de Inicio:
+                    </label>
+                    <Calendar
+                      className="text-2xl"
+                      id="fecha_inicio"
+                      name="fecha_inicio"
+                      required
+                      placeholder="Ingrese la Fecha de Inicio"
+                      dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
+                      showIcon
+                      style={{ width: "250px" }}
+                      maxDate={new Date()}
+                      onChange={(e) => {
+                        const selectedDate =
+                          e.value instanceof Date ? e.value : null;
+                        const formattedDate = selectedDate
+                          ? selectedDate.toISOString().split("T")[0] // Formatear a ISO 8601
+                          : "";
+                        setFormData({
+                          ...formData,
+                          fecha_inicio: formattedDate,
+                        });
+                      }}
+                      value={
+                        formData.fecha_inicio
+                          ? new Date(formData.fecha_inicio)
+                          : null
+                      }
+                    />
+                  </div>
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
+                    <label
+                      htmlFor="fecha_fin"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Fecha de Fin:
+                    </label>
+                    <Calendar
+                      className="text-2xl"
+                      id="fecha_fin"
+                      name="fecha_fin"
+                      required
+                      placeholder="Ingrese la Fecha de Fin"
+                      dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
+                      showIcon
+                      style={{ width: "250px" }}
+                      maxDate={new Date()}
+                      onChange={(e) => {
+                        const selectedDate =
+                          e.value instanceof Date ? e.value : null;
+                        const formattedDate = selectedDate
+                          ? selectedDate.toISOString().split("T")[0] // Formatear a ISO 8601
+                          : "";
+                        setFormData({
+                          ...formData,
+                          fecha_fin: formattedDate,
+                        });
+                      }}
+                      value={
+                        formData.fecha_fin ? new Date(formData.fecha_fin) : null
+                      }
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6"
+                style={{ marginLeft: "-45px" }}
+              >
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="submit"
+                    style={{ marginTop: "55px" }}
+                    label={editMode ? "Actualizar" : "Guardar"}
+                    className="w-full text-3xl min-w-min "
+                    rounded
+                    onClick={editMode ? handleUpdate : handleSubmit}
+                  />
+                </div>
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="button"
+                    label="Cancelar"
+                    style={{ marginTop: "55px" }}
+                    className="w-full text-3xl min-w-min"
+                    rounded
+                    onClick={resetForm}
+                  />
+                </div>
+              </div>
+              <div style={{ marginLeft: "466px", marginTop: "-93px" }}>
+                <div className="flex flex-column align-items-center justify-content-center ml-4">
+                  <label
+                    htmlFor="pdf"
+                    className="text-3xl font-medium w-auto min-w-min"
+                    style={{
+                      marginRight: "20px",
+                      marginLeft: "169px",
+                      marginTop: "-5px",
+                    }}
+                  >
+                    Subir Certificado:
+                  </label>
+                  <FileUpload
+                    name="pdf"
+                    style={{ marginLeft: "380px", marginTop: "10px" }}
+                    chooseLabel="Escoger"
+                    uploadLabel="Cargar"
+                    cancelLabel="Cancelar"
+                    emptyTemplate={
+                      <p className="m-0 p-button-rounded">
+                        Arrastre y suelte los archivos aquí para cargarlos.
+                      </p>
+                    }
+                    customUpload
+                    onSelect={customBytesUploader}
+                    accept="application/pdf"
+                  />
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <table
+          style={{ minWidth: "40rem" }}
+          className="mt-4  w-full h-full text-3xl font-large"
+        >
+          <thead>
+            <tr style={{ backgroundColor: "#0C3255", color: "white" }}>
+              <th>Institución</th>
+              <th>Puesto</th>
+              <th>Área de Trabajo</th>
+              <th>Actividades</th>
+              <th>Fecha de Inicio</th>
+              <th>Fecha de Fin</th>
+              <th>Operaciones</th>
+              <th>Evidencia</th>
+            </tr>
+          </thead>
+          <tbody>
+            {exp1.map((exp) => (
+              <tr className="text-center" key={exp.id_experiencia?.toString()}>
+                <td>{exp.institucion}</td>
+                <td>{exp.puesto}</td>
+                <td>{exp.area_trabajo}</td>
+                <td>{exp.actividades}</td>
+                <td>
+                  {exp.fecha_inicio
+                    ? new Date(exp.fecha_inicio).toLocaleDateString("es-ES", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })
+                    : ""}
+                </td>
 
-        </>
-    )
-
+                <td>
+                  {exp.fecha_fin
+                    ? new Date(exp.fecha_fin).toLocaleDateString("es-ES", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })
+                    : ""}
+                </td>
+                <td>
+                  <Button
+                    type="button"
+                    className=""
+                    label="✎"
+                    style={{
+                      background: "#ff9800",
+                      borderRadius: "5%",
+                      fontSize: "25px",
+                      width: "50px",
+                      color: "black",
+                      justifyContent: "center",
+                    }}
+                    onClick={() => handleEdit(exp.id_experiencia?.valueOf())}
+                    // Agrega el evento onClick para la operación de editar
+                  />
+                  <Button
+                    type="button"
+                    className=""
+                    label="✘"
+                    style={{
+                      background: "#ff0000",
+                      borderRadius: "10%",
+                      fontSize: "25px",
+                      width: "50px",
+                      color: "black",
+                      justifyContent: "center",
+                    }}
+                    onClick={() => handleDelete(exp.id_experiencia?.valueOf())}
+                    // Agrega el evento onClick para la operación de eliminar
+                  />
+                </td>
+                <td>
+                  {exp.certificado_trabajo ? (
+                    <Button
+                      type="button"
+                      className=""
+                      label="Descargar PDF"
+                      style={{
+                        background: "#009688",
+                        borderRadius: "10%",
+                        fontSize: "12px",
+                        color: "black",
+                        justifyContent: "center",
+                      }}
+                      onClick={() => decodeBase64(exp.certificado_trabajo!)}
+                    />
+                  ) : (
+                    <span>Sin evidencia</span>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </Card>
+    </Fieldset>
+  );
 }
 
 export default Experiencia;

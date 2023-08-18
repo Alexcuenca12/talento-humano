@@ -14,10 +14,10 @@ import EvaDocente from "../Eva_Docente/EvaDocente";
 import CargaFamiliarContext from "../CargaFamiliar/CargaFamiliarContext";
 import Experiencia from "../Experiencia/Experiencia";
 import HabilidadesContext from "../Habilidades/HabilidadesContext";
-import { ListadoDocentes } from "../Resumen/ListadoDocentes";
 import PublicacionesContext from "../Publicaciones/PublicacionesContext";
 import Footer from "../../common/Footer";
 import Recomendaciones from "../Recomendaciones/RecomendacionesContext";
+import Resumen from "../Resumen/Resumen";
 
 export const DashboardRouter = () => {
   //Datos del sessionStorage
@@ -203,7 +203,6 @@ export const DashboardRouter = () => {
                 ) : rol === 2 ? (
                   <>
                     <NavBar />
-                    <HabilidadesContext />
                   </>
                 ) : (
                   <NavBarUserDisabled />
@@ -245,7 +244,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <ListadoDocentes />
+                    <Resumen />
                   </>
                 ) : rol === 2 ? (
                   <>
