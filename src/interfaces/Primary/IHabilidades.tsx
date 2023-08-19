@@ -1,6 +1,7 @@
+import {IPersona} from "./IPersona";
+
 export interface IHabilidades{
-    id_habilidades?: Number;
-    descripcion: String;
-    persona: Object;
+    id_habilidades?: number;
+    descripcion: string;
+    persona: IPersona;
   }
-  
