@@ -8,5 +8,5 @@ export interface InstruccionFormalData {
   anioGraduacion: number | null;
   areaEstudios: string;
   titulo: string;
-  persona: Object | null;
+  persona: object | null;
 }

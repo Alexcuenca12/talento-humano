@@ -13,6 +13,11 @@ import { Instruc_FormalService } from "../../services/Instru_FormalService";
 import swal from "sweetalert";
 
 function InstruccionFormalContext() {
+  //Session Storage
+  const userData = sessionStorage.getItem("user");
+  const userObj = JSON.parse(userData || "{}");
+  const idPersona = userObj.id;
+
   const [formal1, setcontra1] = useState<InstruccionFormalData[]>([]);
   const [formData, setFormData] = useState<InstruccionFormalData>({
     id_instruccion: 0,
@@ -24,7 +29,7 @@ function InstruccionFormalContext() {
     anioGraduacion: 0,
     areaEstudios: "",
     titulo: "",
-    persona: "",
+    persona: { id_persona: idPersona },
   });
 
   const fileUploadRef = useRef<FileUpload>(null);
@@ -221,7 +226,7 @@ function InstruccionFormalContext() {
             anioGraduacion: 0,
             areaEstudios: "",
             titulo: "",
-            persona: "",
+            persona: null
           });
           setcontra1(
             formal1.map((instruc) =>
@@ -247,7 +252,7 @@ function InstruccionFormalContext() {
       anioGraduacion: 0,
       areaEstudios: "",
       titulo: "",
-      persona: "",
+      persona: null
     });
     setEditMode(false);
     setEditItemId(undefined);

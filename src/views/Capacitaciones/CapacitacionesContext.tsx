@@ -14,6 +14,11 @@ import { CapacitacionesService } from "../../services/CapacitacionesService";
 import swal from "sweetalert";
 
 function PublicacionesContext() {
+  //Session Storage
+  const userData = sessionStorage.getItem("user");
+  const userObj = JSON.parse(userData || "{}");
+  const idPersona = userObj.id;
+
   const [contra1, setcontra1] = useState<ICapacitaciones[]>([]);
   const [formData, setFormData] = useState<ICapacitaciones>({
     id_capacitaciones: 0,
@@ -27,7 +32,9 @@ function PublicacionesContext() {
     numero_dias: 0,
     cantidad_horas: 0,
     evidencia: "",
-    persona: null,
+    persona: {
+      id_persona: idPersona,
+    },
   });
   const tipoCertificadoOptions = [
     { label: "Aprobación", value: "Aprobación" },

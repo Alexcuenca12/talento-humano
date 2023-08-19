@@ -13,6 +13,11 @@ import { CargaFamiliarService } from "../../services/CargaFamiliarService";
 import swal from "sweetalert";
 
 function CargaFamiliarContext() {
+  //Session Storage
+  const userData = sessionStorage.getItem("user");
+  const userObj = JSON.parse(userData || "{}");
+  const idPersona = userObj.id;
+
   const [contra1, setcontra1] = useState<ICargaFamiliar[]>([]);
   const [formData, setFormData] = useState<ICargaFamiliar>({
     id_cargaFamiliar: 0,
@@ -21,7 +26,7 @@ function CargaFamiliarContext() {
     apellido_pariente: "",
     fecha_nacimiento: "",
     evidencia: "",
-    persona: null,
+    persona: { id_persona: idPersona },
   });
 
   const fileUploadRef = useRef<FileUpload>(null);

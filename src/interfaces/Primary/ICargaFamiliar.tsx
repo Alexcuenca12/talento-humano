@@ -1,5 +1,3 @@
-import { IPersona } from "./IPersona";
-
 export interface ICargaFamiliar {
   id_cargaFamiliar?: number;
   cedula: string;
@@ -7,5 +5,5 @@ export interface ICargaFamiliar {
   apellido_pariente: string;
   fecha_nacimiento?: string;
   evidencia: string | null;
-  persona: IPersona | null;
+  persona: object | null;
 }

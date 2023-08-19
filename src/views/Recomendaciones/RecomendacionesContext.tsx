@@ -12,6 +12,10 @@ import { RecomendacionesService } from "../../services/RecomendacionesService";
 import swal from "sweetalert";
 
 function PublicacionesContext() {
+  const userData = sessionStorage.getItem("user");
+  const userObj = JSON.parse(userData || "{}");
+  const idPersona = userObj.id;
+
   const [contra1, setcontra1] = useState<IRecomendaciones[]>([]);
   const [formData, setFormData] = useState<IRecomendaciones>({
     id_recomendaciones: 0,
@@ -21,6 +25,9 @@ function PublicacionesContext() {
     segundo_apellido: "",
     correo: "",
     documentoRecomendacion: "",
+    persona: {
+      id_persona: idPersona,
+    },
   });
 
   const fileUploadRef = useRef<FileUpload>(null);
@@ -214,6 +221,7 @@ function PublicacionesContext() {
             segundo_apellido: "",
             correo: "",
             documentoRecomendacion: "",
+            persona: null,
           });
           setcontra1(
             contra1.map((contra) =>
@@ -237,6 +245,7 @@ function PublicacionesContext() {
       segundo_apellido: "",
       correo: "",
       documentoRecomendacion: "",
+      persona: null,
     });
     setEditMode(false);
     setEditItemId(undefined);

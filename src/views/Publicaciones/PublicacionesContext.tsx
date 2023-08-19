@@ -13,6 +13,11 @@ import { PublicacionesService } from "../../services/PublicacionesService";
 import swal from "sweetalert";
 
 function PublicacionesContext() {
+    //Session Storage
+    const userData = sessionStorage.getItem("user");
+    const userObj = JSON.parse(userData || "{}");
+    const idPersona = userObj.id;
+
   const [contra1, setcontra1] = useState<IPublicaciones[]>([]);
   const [formData, setFormData] = useState<IPublicaciones>({
     id_publi: 0,
@@ -27,7 +32,7 @@ function PublicacionesContext() {
     issn_publi: "",
     doi_publi: "",
     publicacion: "",
-    persona: "",
+    persona:{id_persona:idPersona},
   });
 
   const fileUploadRef = useRef<FileUpload>(null);
@@ -219,7 +224,7 @@ function PublicacionesContext() {
             issn_publi: "",
             doi_publi: "",
             publicacion: "",
-            persona: "",
+            persona: null
           });
           setcontra1(
             contra1.map((contra) =>
@@ -248,7 +253,7 @@ function PublicacionesContext() {
       issn_publi: "",
       doi_publi: "",
       publicacion: "",
-      persona: "",
+      persona: null
     });
     setEditMode(false);
     setEditItemId(undefined);

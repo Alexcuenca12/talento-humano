@@ -11,5 +11,5 @@ export interface IPublicaciones {
   issn_publi: string;
   doi_publi: string;
   publicacion: string;
-  persona: Object | null;
+  persona: object | null;
 }

@@ -1,5 +1,3 @@
-import {IPersona} from "./IPersona";
-
 export interface IExperiencia {
     id_experiencia?: number;
     institucion: string;
@@ -10,5 +8,5 @@ export interface IExperiencia {
     actividades: string;
     estado: boolean;
     certificado_trabajo: string | null;
-    persona: IPersona | null;
+    persona: object | null;
 }

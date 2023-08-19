@@ -13,6 +13,11 @@ import { ExperienciaService } from "../../services/ExperienciaService";
 import swal from "sweetalert";
 
 function Experiencia() {
+    //Session Storage
+    const userData = sessionStorage.getItem("user");
+    const userObj = JSON.parse(userData || "{}");
+    const idPersona = userObj.id;
+
   const [exp1, setexp1] = useState<IExperiencia[]>([]);
   const [formData, setFormData] = useState<IExperiencia>({
     id_experiencia: 0,
@@ -24,7 +29,7 @@ function Experiencia() {
     actividades: "",
     estado: false,
     certificado_trabajo: "",
-    persona: null,
+    persona: {id_persona: idPersona,},
   });
 
   const areaTrabajoOptions = [
