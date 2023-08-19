@@ -1,18 +1,67 @@
-import React, {useState} from 'react';
-import {InputText} from 'primereact/inputtext';
-import {Button} from 'primereact/button';
-import {Fieldset} from "primereact/fieldset";
+import React, {useEffect, useState} from 'react';
 import cardHeader from "../../shared/CardHeader";
 import {Divider} from "primereact/divider";
 import {Card} from "primereact/card";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
-import {Calendar} from "primereact/calendar";
-import {Dropdown} from "primereact/dropdown";
-import {FileUpload} from "primereact/fileupload";
+import {IHabilidades} from "../../interfaces/Primary/IHabilidades";
+import personaService from "../../services/PersonaService";
+import {IPersona} from "../../interfaces/Primary/IPersona";
 import {ICapacitaciones} from "../../interfaces/Primary/ICapacitaciones";
+import {ICargaFamiliar} from "../../interfaces/Primary/ICargaFamiliar";
+import {IContrato} from "../../interfaces/Primary/IContrato";
+import {IEva_Docente} from "../../interfaces/Primary/IEva_Docente";
+import {IHorario} from "../../interfaces/Primary/IHorario";
+import {IRecomendaciones} from "../../interfaces/Primary/Recomendaciones";
+import {IExperiencia} from "../../interfaces/Primary/IExperiencia";
 
 const Resumen = () => {
+    const userData = sessionStorage.getItem("user");
+    const userObj = JSON.parse(userData || "{}");
+    const userId = userObj.id as number;
+
+    const [persona, setPersona] = useState<IPersona | null>(null);
+    const [capacitaciones, setCapacitaciones] = useState<ICapacitaciones[]>([]);
+    const [cargaFamiliar, setCargaFamiliar] = useState<ICargaFamiliar[]>([]);
+    const [contratos, setContratos] = useState<IContrato[]>([]);
+    const [evaluaciones, setEvaluaciones] = useState<IEva_Docente[]>([]);
+    const [habilidades, setHabilidades] = useState<IHabilidades[]>([]);
+    const [horarios, setHorarios] = useState<IHorario[]>([]);
+    const [recomendaciones, setRecomendaciones] = useState<IRecomendaciones[]>([]);
+    const [experiencias, setExperiencias] = useState<IExperiencia[]>([]);
+
+    useEffect(() => {
+        fetchSummary();
+    }, [])
+    // SERVICE METHOD
+    const fetchSummary = () => {
+        personaService.getSummary(userId)
+            .then(response => {
+                console.log(response)
+                const {
+                    persona,
+                    capacitaciones,
+                    cargaFamiliar,
+                    contratos,
+                    evaluaciones,
+                    habilidades,
+                    horarios,
+                    recomendaciones,
+                    experiencias
+                } = response;
+                setPersona(persona);
+                setCapacitaciones(capacitaciones);
+                setCargaFamiliar(cargaFamiliar);
+                setContratos(contratos);
+                setEvaluaciones(evaluaciones);
+                setHabilidades(habilidades);
+                setHorarios(horarios);
+                setRecomendaciones(recomendaciones);
+                setExperiencias(experiencias);
+            }).catch(error => {
+            console.error(error);
+        })
+    }
 
     const fichaBody = () => {
         return (
@@ -229,12 +278,12 @@ const Resumen = () => {
         );
     };
 
-    const habilidadesBody = () => {
+    const habilidadesBody = (rowData: IHabilidades) => {
         return (
             <div className="flex">
                 <div className="mr-4">
                     <h2 className="text-3xl">Descripcion: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.descripcion}</p>
                 </div>
 
             </div>
@@ -254,10 +303,14 @@ const Resumen = () => {
                     <div className="flex flex-column align-content-center align-items-center">
                         <Card
                             className="flex flex-row flex-wrap w-full h-full  justify-content-center ">
-                            <DataTable tableStyle={{minWidth: '50rem'}}
-                                       className="mt-5  w-full h-full text-3xl font-medium">
+                            <DataTable
+                                value={[persona!]}
+                                dataKey="id_persona"
+                                tableStyle={{minWidth: '50rem'}}
+                                className="mt-5  w-full h-full text-3xl font-medium">
                                 <Column field='Ficha Personal' header="Ficha Personal"
-                                        headerStyle={{backgroundColor: '#0C3255', color: 'white'}} body={fichaBody}></Column>
+                                        headerStyle={{backgroundColor: '#0C3255', color: 'white'}}
+                                        body={fichaBody}></Column>
                                 <Column field='Acciones' header="Acciones"
                                         headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                             </DataTable>
@@ -270,10 +323,14 @@ const Resumen = () => {
                             <div className="flex flex-column align-content-center">
                                 <Card
                                     className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1 row-gap-8 gap-8  mt-6">
-                                    <DataTable tableStyle={{minWidth: '50rem'}}
-                                               className="mt-5  w-full h-full text-3xl font-medium">
+                                    <DataTable
+                                        value={contratos}
+                                        dataKey="id_contrato"
+                                        tableStyle={{minWidth: '50rem'}}
+                                        className="mt-5  w-full h-full text-3xl font-medium">
                                         <Column field='Contrato' header="Contrato"
-                                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}} body={contratoBody}></Column>
+                                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}
+                                                body={contratoBody}></Column>
                                         <Column field='Acciones' header="Acciones"
                                                 headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                     </DataTable>
@@ -282,8 +339,11 @@ const Resumen = () => {
 
                                 <Card
                                     className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1 row-gap-8 gap-8  mt-6">
-                                    <DataTable tableStyle={{minWidth: '50rem'}}
-                                               className="mt-5  w-full h-full text-3xl font-medium">
+                                    <DataTable
+                                        value={horarios}
+                                        dataKey="id_horarios"
+                                        tableStyle={{minWidth: '50rem'}}
+                                        className="mt-5  w-full h-full text-3xl font-medium">
                                         <Column field='Horario' header="Horario" body={horarioBody}
                                                 headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                         <Column field='Acciones' header="Acciones"
@@ -294,18 +354,25 @@ const Resumen = () => {
                                 </Card>
                                 <Card
                                     className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1 row-gap-8 gap-8  mt-6">
-                                    <DataTable tableStyle={{minWidth: '50rem'}}
-                                               className="mt-5  w-full h-full text-3xl font-medium">
+                                    <DataTable
+                                        value={capacitaciones}
+                                        dataKey="id_capacitaciones"
+                                        tableStyle={{minWidth: '50rem'}}
+                                        className="mt-5  w-full h-full text-3xl font-medium">
                                         <Column field='Capacitaciones' header="Capacitaciones"
-                                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}} body={capacitacionesBody}></Column>
+                                                headerStyle={{backgroundColor: '#0C3255', color: 'white'}}
+                                                body={capacitacionesBody}></Column>
                                         <Column field='Acciones' header="Acciones"
                                                 headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                     </DataTable>
                                 </Card>
                                 <Card
                                     className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1 row-gap-8 gap-8  mt-6">
-                                    <DataTable tableStyle={{minWidth: '50rem'}}
-                                               className="mt-5  w-full h-full text-3xl font-medium">
+                                    <DataTable
+                                        value={evaluaciones}
+                                        dataKey="id_evaluacion"
+                                        tableStyle={{minWidth: '50rem'}}
+                                        className="mt-5  w-full h-full text-3xl font-medium">
                                         <Column field='Evaluacion' header="Evaluacion" body={evaluacionBody}
                                                 headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                         <Column field='Acciones' header="Acciones"
@@ -314,9 +381,13 @@ const Resumen = () => {
                                 </Card>
                                 <Card
                                     className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
-                                    <DataTable tableStyle={{minWidth: '50rem'}}
-                                               className="mt-5  w-full h-full text-3xl font-medium">
-                                        <Column field='Recomendaciones' header="Recomendaciones" body={recomendacionesBody}
+                                    <DataTable
+                                        value={recomendaciones}
+                                        dataKey="id_recomendaciones"
+                                        tableStyle={{minWidth: '50rem'}}
+                                        className="mt-5  w-full h-full text-3xl font-medium">
+                                        <Column field='Recomendaciones' header="Recomendaciones"
+                                                body={recomendacionesBody}
                                                 headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                         <Column field='Acciones' header="Acciones"
                                                 headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
@@ -329,18 +400,23 @@ const Resumen = () => {
                         <div className="flex flex-column align-items-center justify-content-center ml-4">
                             <Card
                                 className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
-                                <DataTable tableStyle={{minWidth: '50rem'}}
-                                           className="mt-5  w-full h-full text-3xl font-medium">
+                                <DataTable
+                                    tableStyle={{minWidth: '50rem'}}
+                                    className="mt-5  w-full h-full text-3xl font-medium">
                                     <Column field='Instruccion Formal' header="Instruccion Formal"
-                                            headerStyle={{backgroundColor: '#0C3255', color: 'white'}} body={instruccionFBody}></Column>
+                                            headerStyle={{backgroundColor: '#0C3255', color: 'white'}}
+                                            body={instruccionFBody}></Column>
                                     <Column field='Acciones' header="Acciones"
                                             headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                 </DataTable>
                             </Card>
                             <Card
                                 className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
-                                <DataTable tableStyle={{minWidth: '50rem'}}
-                                           className="mt-5  w-full h-full text-3xl font-medium">
+                                <DataTable
+                                    value={cargaFamiliar}
+                                    dataKey="id_cargaFamiliar"
+                                    tableStyle={{minWidth: '50rem'}}
+                                    className="mt-5  w-full h-full text-3xl font-medium">
                                     <Column field='Carga Familiar' header="Carga Familiar" body={cargaFBody}
                                             headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                     <Column field='Acciones' header="Acciones"
@@ -349,8 +425,11 @@ const Resumen = () => {
                             </Card>
                             <Card
                                 className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
-                                <DataTable tableStyle={{minWidth: '50rem'}}
-                                           className="mt-5  w-full h-full text-3xl font-medium">
+                                <DataTable
+                                    value={experiencias}
+                                    dataKey="id_experiencia"
+                                    tableStyle={{minWidth: '50rem'}}
+                                    className="mt-5  w-full h-full text-3xl font-medium">
                                     <Column field='Experiencia' header="Experiencia" body={experienciaBody}
                                             headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                     <Column field='Acciones' header="Acciones"
@@ -359,10 +438,14 @@ const Resumen = () => {
                             </Card>
                             <Card
                                 className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
-                                <DataTable tableStyle={{minWidth: '50rem'}}
-                                           className="mt-5  w-full h-full text-3xl font-medium">
-                                    <Column field='Habilidades' header="Habilidades" body={habilidadesBody}
-                                            headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
+                                <DataTable
+                                    value={habilidades}
+                                    dataKey="id_habilidades"
+                                    tableStyle={{minWidth: '50rem'}}
+                                    className="mt-5  w-full h-full text-3xl font-medium">
+                                    <Column
+                                        field='descripcion' header="Habilidades" body={habilidadesBody}
+                                        headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                     <Column field='Acciones' header="Acciones"
                                             headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
                                 </DataTable>
