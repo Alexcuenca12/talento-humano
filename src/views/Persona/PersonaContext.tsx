@@ -1,9 +1,9 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {ChangeEvent, useEffect, useRef, useState} from "react";
 import {InputText} from "primereact/inputtext";
 import {Button} from "primereact/button";
 import {Card} from "primereact/card";
 import {Divider} from "primereact/divider";
-import {Calendar} from "primereact/calendar";
+import {Calendar, CalendarChangeEvent} from "primereact/calendar";
 import {Dropdown} from "primereact/dropdown";
 import "../../styles/Persona.css";
 import ToastMessage from "../../shared/ToastMessage";
@@ -28,11 +28,34 @@ const Persona = () => {
   const [message, setMessage] = useState<IMessage | null>(null);
   const [selectedItem, setSelectedItem] = useState<IPersona | null>(null);
   const fileUploadRef = useRef<FileUpload>(null);
-  const estadoCivil = ["Soltero", "Casado", "Divorciado", "Viudo", "Unión libre"]
-  const sexos = ["Hombre", "Mujer"]
-  const generos = ["Masculino", "Femenino", "Otro"]
-  const sangres = ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-", "No sabe"]
-  const etnias = ["Afroecuatoriano", "Indígena", "Montubio", "Mestizo", "Blanco", "Mulato", "Otro"]
+  const estadoCivil = ["SOLTERO/A", "CASADO/A", "DIVORCIADO/A", "VIUDO/A", "UNION LIBRE"]
+  const sexos = ["HOMBRE", "MUJER"]
+  const generos = ["MASCULINO", "FEMENINO", "OTRO"]
+  const sangres = ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-", "NO SABE"]
+  const etnias = ["AFROECUATORIANO", "INDÍGENA", "MONTUBIO", "MESTIZO", "BLANCO", "MULATO", "OTRO"]
+  const [edadCalculada, setEdadCalculada] = useState(0);
+
+  const calcularEdad = (fechaNacimiento:Date) => {
+    const diadeHoy = new Date();
+    const fechaNacimientoObj = new Date(fechaNacimiento);
+    const edad = diadeHoy.getFullYear() - fechaNacimientoObj.getFullYear();
+    if (
+        diadeHoy.getMonth() < fechaNacimientoObj.getMonth() ||
+        (diadeHoy.getMonth() === fechaNacimientoObj.getMonth() &&
+            diadeHoy.getDate() < fechaNacimientoObj.getDate())
+    ) {
+      return edad - 1;
+    }
+    return edad;
+  };
+
+  const handleDateChange = (e: CalendarChangeEvent) => {
+    const selectedDate = e.value as Date;
+      formik.setFieldValue('fecha_nacimiento', selectedDate);
+      const edad = calcularEdad(selectedDate);
+      setEdadCalculada(edad);
+      formik.setFieldValue('edad', edad);
+  };
 
   const customBytesUploader = async (event: FileUploadHandlerEvent) => {
     // convert file to base64 encoded
@@ -69,9 +92,9 @@ const Persona = () => {
       apellido_materno: '',
       primer_nombre: '',
       segundo_nombre: '',
-      fecha_nacimiento: null,
+      fecha_nacimiento: new Date(),
       pais_natal: '',
-      edad: 0,
+      edad: edadCalculada,
       genero: '',
       sexo: '',
       tipo_sangre: '',
@@ -157,6 +180,29 @@ const Persona = () => {
             formik.setFieldValue('apellido_materno', persona.apellido_materno);
             formik.setFieldValue('primer_nombre', persona.primer_nombre);
             formik.setFieldValue('segundo_nombre', persona.segundo_nombre);
+            formik.setFieldValue('estado_civil', persona.estado_civil);
+            const fechaNacimientoString = persona.fecha_nacimiento;
+            if (fechaNacimientoString) {
+              const fechaNacimientoDate = new Date(fechaNacimientoString);
+              if (!isNaN(fechaNacimientoDate.getTime())) {
+                formik.setFieldValue('fecha_nacimiento', fechaNacimientoDate);
+              } else {
+                console.error('Fecha de nacimiento no válida');
+              }
+            } else {
+              console.error('Fecha de nacimiento vacía o null');
+            }
+            formik.setFieldValue('pais_natal', persona.pais_natal);
+            if(persona.sexo == 'H'){
+              formik.setFieldValue('sexo', 'HOMBRE');
+            }else if(persona.sexo == 'M'){
+              formik.setFieldValue('sexo', 'MUJER');
+            }
+            formik.setFieldValue('genero', persona.genero);
+            formik.setFieldValue('tipo_sangre', persona.tipo_sangre);
+            formik.setFieldValue('etnia', persona.etnia);
+            formik.setFieldValue('idioma_raiz', persona.idioma_raiz);
+            formik.setFieldValue('idioma_secundario', persona.idioma_secundario);
             setMessage({severity: 'success', detail: 'Registro actualizado'});
           })
           .catch(error => {
@@ -287,11 +333,11 @@ const Persona = () => {
             <div className="field col-4">
               <label className="font-medium" htmlFor="start-date">Fecha de Nacimiento</label>
               <Calendar id="start-date"
-                        dateFormat="dd/mm/yy"
+                        dateFormat="yy-mm-dd"
                         name="fecha_inicio"
                         className="p-inputtextarea-resizable w-full text-2xl"
                         value={formik.values.fecha_nacimiento}
-                        onChange={formik.handleChange}
+                        onChange={handleDateChange}
                         onBlur={formik.handleBlur}
               />
               <small className="p-error">{formik.touched.fecha_nacimiento && formik.errors.fecha_nacimiento}</small>
