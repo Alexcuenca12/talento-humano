@@ -13,6 +13,7 @@ import { Divider } from "primereact/divider";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Calendar } from "primereact/calendar";
+import swal from "sweetalert";
 
 import "../../styles/Instruc_Formal.css";
 import { FileUpload, FileUploadSelectEvent } from "primereact/fileupload";
@@ -47,6 +48,7 @@ function Instruc_Formal() {
             );
             formik.resetForm();
             setEditMode(false);
+            swal('INSTRUCCIÓN FORMAL', 'Datos Actrualizados Correctamente', 'success');
           })
           .catch((error) => {
             console.error("Error al actualizar el formulario:", error);
@@ -57,6 +59,7 @@ function Instruc_Formal() {
           .then((response) => {
             setInstruc2((prevData) => [...prevData, response]);
             formik.resetForm();
+            swal('INSTRUCCIÓN FORMAL', 'Datos Guardados Correctamente', 'success');
           })
           .catch((error) => {
             console.error("Error al enviar el formulario:", error);

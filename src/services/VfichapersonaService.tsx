@@ -1,22 +1,22 @@
 import axios from "axios";
 
-export class PeriodoAcaService {
-    baseUrl = "http://localhost:8080/api/periodoacademico/";
+export class VfichapersonaService {
+    baseUrl = "http://localhost:8080/api/vfichaP/";
 
-    //Metodo para listar todas los periodos
+    //Metodo para listar todas los Contratos
     getAll() {
         return axios.get(this.baseUrl + "read").then((res) => res.data);
     }
     //Crear
-    save(periodoacademico: any) {
-        return axios.post(this.baseUrl + "create", periodoacademico).then((res) => res.data);
+    save(contrato: any) {
+        return axios.post(this.baseUrl + "create", contrato).then((res) => res.data);
     }
 
     //(Eliminado lógico)
     delete(id: number) {
         return axios.delete(`${this.baseUrl}delete/${id}`).then((res) => res.data);
     }
-    //Metodo para actualizar un periodo basado en el id de la misma
+    //Metodo para actualizar un Contrato basado en el id de la misma
     update(id: number, user: any) {
         return axios
             .put(this.baseUrl + "update/" + id.toString(), user)

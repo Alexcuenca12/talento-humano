@@ -13,15 +13,13 @@ export class ContratoService {
       }
 
   //(Eliminado lógico)
-    delete(contrato: any) {
-    return axios
-      .put(this.baseUrl + "eliminar/" + contrato.id_contrato, contrato)
-      .then((res) => res.data);
+    delete(id: number) {
+    return axios.delete(`${this.baseUrl}delete/${id}`).then((res) => res.data);
   }
   //Metodo para actualizar un Contrato basado en el id de la misma
-  update(contrato: any) {
+  update(id: number, user: any) {
     return axios
-      .put(this.baseUrl + "actualizar/" + contrato.id_contrato, contrato)
-      .then((res) => res.data);
+    .put(this.baseUrl + "update/" + id.toString(), user)
+    .then((res) => res.data);
   }
 }
