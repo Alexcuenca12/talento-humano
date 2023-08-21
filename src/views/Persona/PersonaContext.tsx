@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {InputText} from "primereact/inputtext";
 import {Button} from "primereact/button";
 import {Card} from "primereact/card";
@@ -19,6 +19,8 @@ import {InputTextarea} from "primereact/inputtextarea";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import {decoder} from "../../services/functions/decoder";
+import {Fieldset} from "primereact/fieldset";
+import cardHeader from "../../shared/CardHeader";
 
 const apiViewService = new VistaPersonaService();
 const apiService = new PersonaService();
@@ -120,7 +122,7 @@ const Persona = () => {
       correo: '',
       correo_institucional: '',
 
-      discapacidad: false,
+      discapacidad: '',
       tipo_discapacidad: '',
       porcentaje_discapacidad: '',
       carnet_conadis: '',
@@ -185,24 +187,45 @@ const Persona = () => {
             if (fechaNacimientoString) {
               const fechaNacimientoDate = new Date(fechaNacimientoString);
               if (!isNaN(fechaNacimientoDate.getTime())) {
-                formik.setFieldValue('fecha_nacimiento', fechaNacimientoDate);
-              } else {
-                console.error('Fecha de nacimiento no válida');
-              }
-            } else {
-              console.error('Fecha de nacimiento vacía o null');
-            }
+                formik.setFieldValue('fecha_nacimiento', fechaNacimientoDate);}
+              else {console.error('Fecha de nacimiento no válida');}
+            } else {console.error('Fecha de nacimiento vacía o null');}
             formik.setFieldValue('pais_natal', persona.pais_natal);
-            if(persona.sexo == 'H'){
-              formik.setFieldValue('sexo', 'HOMBRE');
-            }else if(persona.sexo == 'M'){
-              formik.setFieldValue('sexo', 'MUJER');
-            }
+            if(persona.sexo == 'H'){formik.setFieldValue('sexo', 'HOMBRE');}
+            else if(persona.sexo == 'M'){formik.setFieldValue('sexo', 'MUJER');}
             formik.setFieldValue('genero', persona.genero);
             formik.setFieldValue('tipo_sangre', persona.tipo_sangre);
             formik.setFieldValue('etnia', persona.etnia);
             formik.setFieldValue('idioma_raiz', persona.idioma_raiz);
             formik.setFieldValue('idioma_secundario', persona.idioma_secundario);
+
+            formik.setFieldValue('calles', persona.calles);
+            formik.setFieldValue('numero_casa', persona.numero_casa);
+            if(persona.numero_casa == '0'){formik.setFieldValue('numero_casa', 'S/N');}
+            formik.setFieldValue('sector', persona.sector);
+            formik.setFieldValue('referencia', persona.referencia);
+
+            formik.setFieldValue('celular', persona.celular);
+            formik.setFieldValue('telefono', persona.telefono);
+            formik.setFieldValue('correo', persona.correo);
+            formik.setFieldValue('correo_institucional', persona.correo_institucional);
+            const discapacidadString = persona.discapacidad;
+            if (discapacidadString =='f'){
+              const discapacidadBoolean = false;
+              formik.setFieldValue('discapacidad', 'SIN DISCAPACIDAD');
+              formik.setFieldValue('tipo_discapacidad', 'NINGUNA');
+              formik.setFieldValue('porcentaje_discapacidad', '0%');
+              formik.setFieldValue('carnet_conadis', 'NO TIENE');
+            }else if (discapacidadString =='t'){
+              const discapacidadBoolean = true;
+              formik.setFieldValue('discapacidad', 'CON DISCAPACIDAD');
+              formik.setFieldValue('tipo_discapacidad', persona.tipo_discapacidad);
+              formik.setFieldValue('porcentaje_discapacidad', persona.porcentaje_discapacidad);
+              formik.setFieldValue('carnet_conadis', persona.carnet_conadis);
+            }
+            if(persona.discapacidad == 'f'){
+              formik.setFieldValue('numero_casa', 'S/N');
+            }
             setMessage({severity: 'success', detail: 'Registro actualizado'});
           })
           .catch(error => {
@@ -242,14 +265,18 @@ const Persona = () => {
 
 
   return (
-      <>
-        <Card className="m-5">
+
+      <Fieldset className="fgrid col-fixed ">
+        <Card header={cardHeader}
+              className="border-solid border-blue-800 border-3 flex-1 w-full h-full flex-wrap">
           <ToastMessage message={message}/>
           <form className="formgrid grid" onSubmit={formik.handleSubmit}>
 
             <Divider align="center">
-              <h2 className="text-6xl font-smibold lg:md-2">Datos Personales</h2>
+              <h1 className="text-7xl font-smibold lg:md-2  w-full h-full max-w-full max-h-full min-w-min">
+                Datos Personales</h1>
             </Divider>
+
             <div className="field col-4">
               <label className="font-medium" htmlFor="cedula">Cedula</label>
               <InputText id="cedula"
@@ -639,10 +666,10 @@ const Persona = () => {
             </div>
             <div className="field col-3">
               <label className="font-medium" htmlFor="discapacidad ">Discapacidad</label>
-              <InputText id="telefono"
+              <InputText id="discapacidad"
                          className="p-inputtext-sm w-full text-2xl"
-                         name="telefono"
-                         value={formik.values.telefono}
+                         name="discapacidad"
+                         value={formik.values.discapacidad}
                          onChange={formik.handleChange}
                          onBlur={formik.handleBlur}
               />
@@ -723,7 +750,7 @@ const Persona = () => {
             </Card>
           </form>
         </Card>
-      </>
+      </Fieldset>
   );
 };
 
