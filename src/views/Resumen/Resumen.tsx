@@ -29,6 +29,7 @@ const Resumen = () => {
     const [horarios, setHorarios] = useState<IHorario[]>([]);
     const [recomendaciones, setRecomendaciones] = useState<IRecomendaciones[]>([]);
     const [experiencias, setExperiencias] = useState<IExperiencia[]>([]);
+    const [instruccion, setInstruccion] = useState<IHorario[]>([]);
 
     useEffect(() => {
         fetchSummary();
@@ -47,7 +48,8 @@ const Resumen = () => {
                     habilidades,
                     horarios,
                     recomendaciones,
-                    experiencias
+                    experiencias,
+
                 } = response;
                 setPersona(persona);
                 setCapacitaciones(capacitaciones);
@@ -63,7 +65,7 @@ const Resumen = () => {
         })
     }
 
-    const fichaBody = () => {
+    const fichaBody = (rowData: IPersona) => {
         return (
             <div className="flex">
                 <div className="mr-4">
@@ -106,30 +108,30 @@ const Resumen = () => {
         );
     };
 
-    const contratoBody = () => {
+    const contratoBody = (rowData: IContrato) => {
         return (
             <div className="flex">
                 <div className="mr-4">
                     <h2 className="text-3xl">Fecha Inicio: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{String(rowData.fecha_inicio)}</p>
                 </div>
                 <div className="mr-4">
                     <h2 className="text-3xl">Fecha Fin: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{String(rowData.fecha_fin)}</p>
                 </div>
                 <div className="mr-4 ">
                     <h2 className="text-3xl">Cargo: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.cargo}</p>
                 </div>
                 <div className=" ">
                     <h2 className="text-3xl">Salario: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.salario}</p>
                 </div>
             </div>
         );
     };
 
-    const horarioBody = () => {
+    const horarioBody = (rowData: IHorario) => {
         return (
             <div className="flex">
                 <div className="mr-4">
@@ -152,63 +154,60 @@ const Resumen = () => {
         );
     };
 
-    const capacitacionesBody = () => {
+    const capacitacionesBody = (rowData: ICapacitaciones) => {
         return (
             <div className="flex">
                 <div className="mr-4">
-                    <h2 className="text-3xl">Instruccion: </h2>
-                    <p className="text-2xl">{}</p>
+                    <h2 className="text-3xl">Institucion: </h2>
+                    <p className="text-2xl">{rowData.institucion}</p>
                 </div>
                 <div className="mr-4">
                     <h2 className="text-3xl">Tipo Evento: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.tipo_evento}</p>
                 </div>
                 <div className="mr-4 ">
                     <h2 className="text-3xl">Area de Estudio: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.area_estudios}</p>
                 </div>
                 <div className=" ">
                     <h2 className="text-3xl">Nombre de Evento: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.nombre_evento}</p>
                 </div>
                 <div className=" ">
                     <h2 className="text-3xl">Tipo certificado: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.tipo_certificado}</p>
                 </div>
             </div>
         );
     };
 
-    const evaluacionBody = () => {
+    const evaluacionBody = (rowData: IEva_Docente) => {
         return (
             <div className="flex">
                 <div className="mr-4">
                     <h2 className="text-3xl">Carrera: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.cod_carrera}</p>
                 </div>
                 <div className="mr-4">
                     <h2 className="text-3xl">Periodo Academico: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{String(rowData.periodo)}</p>
                 </div>
             </div>
         );
     };
 
-    const recomendacionesBody = () => {
+    const recomendacionesBody = (rowData: IRecomendaciones) => {
         return (
             <div className="flex">
                 <div className="mr-4">
                     <h2 className="text-3xl">Nombres: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.primer_nombre || rowData.primer_apellido}</p>
                 </div>
                 <div className="mr-4">
                     <h2 className="text-3xl">Email: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.correo}</p>
                 </div>
-                <div className="mr-4">
-                    <h2 className="text-3xl">Telefono: </h2>
-                    <p className="text-2xl">{}</p>
-                </div>
+
             </div>
         );
     };
@@ -240,39 +239,39 @@ const Resumen = () => {
         );
     };
 
-    const cargaFBody = () => {
+    const cargaFBody = (rowData: ICargaFamiliar) => {
         return (
             <div className="flex">
                 <div className="mr-4">
                     <h2 className="text-3xl">Cedula: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.cedula}</p>
                 </div>
                 <div className="mr-4">
                     <h2 className="text-3xl">Nombres: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.nombre_pariente || rowData.apellido_pariente}</p>
                 </div>
                 <div className="mr-4">
                     <h2 className="text-3xl">Fecha de nacimiento: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{String(rowData.fecha_nacimiento)}</p>
                 </div>
             </div>
         );
     };
 
-    const experienciaBody = () => {
+    const experienciaBody = (rowData: IExperiencia) => {
         return (
             <div className="flex">
                 <div className="mr-4">
                     <h2 className="text-3xl">Institucion: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.institucion}</p>
                 </div>
                 <div className="mr-4">
                     <h2 className="text-3xl">Area de trabajo: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.area_trabajo}</p>
                 </div>
                 <div className="mr-4">
                     <h2 className="text-3xl">Puesto: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.puesto}</p>
                 </div>
             </div>
         );
@@ -463,7 +462,6 @@ const Resumen = () => {
                         </div>
                     </div>
                 </Card>
-
             </Card>
         </Card>
 

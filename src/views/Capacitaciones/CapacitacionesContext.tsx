@@ -25,6 +25,7 @@ import {IMessage} from "../../interfaces/Secondary/IMessage";
 
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import {Toast} from "primereact/toast";
 
 const MySwal = withReactContent(Swal);
 
@@ -132,8 +133,6 @@ export default function CapacitacionesContext() {
             });
     };
 
-    const user = JSON.parse(sessionStorage!.getItem('user') || '{}');
-    const userId = user.id;
 
     const formik = useFormik<ICapacitaciones>({
         initialValues: {
@@ -147,7 +146,7 @@ export default function CapacitacionesContext() {
             numero_dias: 0,
             cantidad_horas: 0,
             evidencia: null,
-            persona: userId,
+            persona: null,
         },
         onSubmit: values => {
             console.log(values);
