@@ -2,7 +2,7 @@ import axios from "axios";
 import {AxiosInstance} from "axios/index";
 
 export class VistaPersonaService {
-  baseUrl = "http://localhost:8080/api/vistaPersona/";
+  baseUrl = "http://localhost:8080/api/fenix/cedula/";
 
   private api: AxiosInstance;
 

@@ -199,7 +199,6 @@ function InstruccionFormalContext() {
       const editItem = formal1.find((instruc) => instruc.id_instruccion === id);
       if (editItem) {
         setFormData(editItem);
-
         setEditMode(true);
         setEditItemId(id);
       }
