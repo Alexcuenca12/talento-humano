@@ -11,9 +11,10 @@ import {ICapacitaciones} from "../../interfaces/Primary/ICapacitaciones";
 import {ICargaFamiliar} from "../../interfaces/Primary/ICargaFamiliar";
 import {IContrato} from "../../interfaces/Primary/IContrato";
 import {IEva_Docente} from "../../interfaces/Primary/IEva_Docente";
-import {IHorario} from "../../interfaces/Primary/IHorario";
+import {IHorario, IHorarioData} from "../../interfaces/Primary/IHorario";
 import {IRecomendaciones} from "../../interfaces/Primary/Recomendaciones";
 import {IExperiencia} from "../../interfaces/Primary/IExperiencia";
+import {InstruccionFormalData} from "../../interfaces/Primary/IInstrucc_Formal";
 
 const Resumen = () => {
     const userData = sessionStorage.getItem("user");
@@ -29,7 +30,7 @@ const Resumen = () => {
     const [horarios, setHorarios] = useState<IHorario[]>([]);
     const [recomendaciones, setRecomendaciones] = useState<IRecomendaciones[]>([]);
     const [experiencias, setExperiencias] = useState<IExperiencia[]>([]);
-    const [instruccion, setInstruccion] = useState<IHorario[]>([]);
+    const [instrucciones, setInstrucciones] = useState<InstruccionFormalData[]>([]);
 
     useEffect(() => {
         fetchSummary();
@@ -49,6 +50,7 @@ const Resumen = () => {
                     horarios,
                     recomendaciones,
                     experiencias,
+                    instrucciones
 
                 } = response;
                 setPersona(persona);
@@ -60,53 +62,12 @@ const Resumen = () => {
                 setHorarios(horarios);
                 setRecomendaciones(recomendaciones);
                 setExperiencias(experiencias);
+                setInstrucciones(instrucciones);
             }).catch(error => {
             console.error(error);
         })
     }
 
-    const fichaBody = (rowData: IPersona) => {
-        return (
-            <div className="flex">
-                <div className="mr-4">
-                    <h2 className="text-3xl">Cedula: </h2>
-                    <p className="text-2xl">{}</p>
-                </div>
-                <div className="mr-4">
-                    <h2 className="text-3xl">Apellido Paterno: </h2>
-                    <p className="text-2xl">{}</p>
-                </div>
-                <div className="mr-4 ">
-                    <h2 className="text-3xl">Primer Nombre: </h2>
-                    <p className="text-2xl">{}</p>
-                </div>
-                <div className=" ">
-                    <h2 className="text-3xl">Fecha de Nacimiento: </h2>
-                    <p className="text-2xl">{}</p>
-                </div>
-                <div className=" ">
-                    <h2 className="text-3xl">Provincia: </h2>
-                    <p className="text-2xl">{}</p>
-                </div>
-                <div className=" ">
-                    <h2 className="text-3xl">Canton: </h2>
-                    <p className="text-2xl">{}</p>
-                </div>
-                <div className=" ">
-                    <h2 className="text-3xl">Parroquia: </h2>
-                    <p className="text-2xl">{}</p>
-                </div>
-                <div className=" ">
-                    <h2 className="text-3xl">Telefono Personal: </h2>
-                    <p className="text-2xl">{}</p>
-                </div>
-                <div className=" ">
-                    <h2 className="text-3xl">Discapacidad: </h2>
-                    <p className="text-2xl">{}</p>
-                </div>
-            </div>
-        );
-    };
 
     const contratoBody = (rowData: IContrato) => {
         return (
@@ -131,24 +92,20 @@ const Resumen = () => {
         );
     };
 
-    const horarioBody = (rowData: IHorario) => {
+    const horarioBody = (rowData: IHorarioData) => {
         return (
             <div className="flex">
                 <div className="mr-4">
-                    <h2 className="text-3xl">Materia: </h2>
-                    <p className="text-2xl">{}</p>
-                </div>
-                <div className="mr-4">
-                    <h2 className="text-3xl">Curso: </h2>
-                    <p className="text-2xl">{}</p>
+                    <h2 className="text-3xl">Distributivo: </h2>
+                    <p className="text-2xl">{rowData.distributivo}</p>
                 </div>
                 <div className="mr-4 ">
-                    <h2 className="text-3xl">Carrera: </h2>
-                    <p className="text-2xl">{}</p>
+                    <h2 className="text-3xl">Periodo: </h2>
+                    <p className="text-2xl">{rowData.periodo}</p>
                 </div>
                 <div className=" ">
-                    <h2 className="text-3xl">Periodo: </h2>
-                    <p className="text-2xl">{}</p>
+                    <h2 className="text-3xl">Horario: </h2>
+                    <p className="text-2xl">{rowData.horario}</p>
                 </div>
             </div>
         );
@@ -212,28 +169,20 @@ const Resumen = () => {
         );
     };
 
-    const instruccionFBody = () => {
+    const instruccionFBody = (rowData: InstruccionFormalData) => {
         return (
             <div className="flex">
                 <div className="mr-4">
                     <h2 className="text-3xl">Nivel de institucion: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.nivelInstruccion}</p>
                 </div>
                 <div className="mr-4">
                     <h2 className="text-3xl">Titulo Obtenido: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.tituloObtenido}</p>
                 </div>
                 <div className="mr-4 ">
                     <h2 className="text-3xl">Institucion Educativa: </h2>
-                    <p className="text-2xl">{}</p>
-                </div>
-                <div className=" ">
-                    <h2 className="text-3xl">Registro Senecyt: </h2>
-                    <p className="text-2xl">{}</p>
-                </div>
-                <div className=" ">
-                    <h2 className="text-3xl">Año de Ingreso: </h2>
-                    <p className="text-2xl">{}</p>
+                    <p className="text-2xl">{rowData.institucionEducativa}</p>
                 </div>
             </div>
         );
@@ -299,22 +248,7 @@ const Resumen = () => {
 
                 <Card className="flex justify-content-center flex-wrap">
 
-                    <div className="flex flex-column align-content-center align-items-center">
-                        <Card
-                            className="flex flex-row flex-wrap w-full h-full  justify-content-center ">
-                            <DataTable
-                                value={[persona!]}
-                                dataKey="id_persona"
-                                tableStyle={{minWidth: '50rem'}}
-                                className="mt-5  w-full h-full text-3xl font-medium">
-                                <Column field='Ficha Personal' header="Ficha Personal"
-                                        headerStyle={{backgroundColor: '#0C3255', color: 'white'}}
-                                        body={fichaBody}></Column>
-                                <Column field='Acciones' header="Acciones"
-                                        headerStyle={{backgroundColor: '#0C3255', color: 'white'}}></Column>
-                            </DataTable>
-                        </Card>
-                    </div>
+
                     <div className="flex flex-wrap flex-row">
 
 
