@@ -1,8 +1,7 @@
-export interface IEva_Docente {
-    id_evaluacion?: Number;
-    cod_carrera: String;
-    evidencia_evaluacion: String;
-    periodo: Object;
-    persona: Object;
-  }
-  
+export interface IEvaDocente {
+  id_evaluacion?: number;
+  evidencia_evaluacion: string;
+  cod_carrera: string;
+  periodo: object | null;
+  persona: object | null;
+}
