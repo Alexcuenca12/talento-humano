@@ -1,4 +1,5 @@
 import axios from "axios";
+import {IResumen} from "../interfaces/Primary/IResumen";
 
 
 export class PersonaService {
@@ -22,6 +23,13 @@ export class PersonaService {
   delete(id: number) {
     return axios.delete(`${this.baseUrl}delete/${id}`).then((res) => res.data);
   }
+
+  getSummary(id: number) {
+    return axios.get(`${this.baseUrl}combined/${id}`).then(response => response.data as IResumen)
+        .catch(error => {
+            throw error
+        })
+}
   //Metodo para actualizar un horario basado en el id de la misma
   update(id: number, user: any) {
     return axios

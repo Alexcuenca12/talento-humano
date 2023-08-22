@@ -37,11 +37,11 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
         telefono: String
         paisnacimiento: String
         paisresidencia: String
-        edad: String
+        edad: number
         estadocivil: String
         descripcionHabilidad: String
         actividadExperiencia: String
-        foto: String
+        foto: string|null
         genero: String
         primer_nombre_apellido_reco: String
         correo_reco: String
@@ -85,14 +85,14 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
 
 
         return {
-            cedula: data.persona.ci_pasaporte,
-            nombres: data.persona.nombres,
-            apellidos: data.persona.apellidos,
+            cedula: data.persona.cedula,
+            nombres: data.persona.primer_nombre,
+            apellidos: data.persona.apellido_paterno,
             correo: data.persona.correo,
             area_estudioCapacitacion: areaEstudios,
             celular: data.persona.celular,
             telefono: data.persona.telefono,
-            paisnacimiento: data.persona.pais_nacimiento,
+            paisnacimiento: data.persona.pais_natal,
             paisresidencia: data.persona.pais_residencia,
             edad: data.persona.edad,
             estadocivil: data.persona.estado_civil,

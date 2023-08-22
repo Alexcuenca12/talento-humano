@@ -2,7 +2,7 @@ import { IPersona } from '../../interfaces/Primary/IPersona';
 import { ICapacitaciones } from '../../interfaces/Primary/ICapacitaciones';
 import { ICargaFamiliar } from '../../interfaces/Primary/ICargaFamiliar';
 import { IContratoData } from '../../interfaces/Primary/IContrato';
-import { IEva_Docente } from '../../interfaces/Primary/IEva_Docente';
+import { IEvaDocente } from '../../interfaces/Primary/IEva_Docente';
 import { IHabilidadesData } from '../../interfaces/Primary/IHabilidades';
 import { IHorarioData } from '../../interfaces/Primary/IHorario';
 import { InstruccionFormalData } from '../../interfaces/Primary/IInstrucc_Formal';
@@ -15,7 +15,7 @@ export interface FichaCombinada {
     capacitaciones: ICapacitaciones[];
     cargaFamiliar: ICargaFamiliar[];
     contratos: IContratoData[];
-    evaluaciones: IEva_Docente[];
+    evaluaciones: IEvaDocente[];
     habilidades: IHabilidadesData[];
     horarios: IHorarioData[];
     recomendaciones: IRecomendaciones[];
