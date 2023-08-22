@@ -27,8 +27,7 @@ const Persona = () => {
   const [items, setItems] = useState<IPersona[]>([]);
   const [message, setMessage] = useState<IMessage | null>(null);
   const [selectedItem, setSelectedItem] = useState<IPersona | null>(null);
-  const [editMode, setEditMode] = useState(false);
-  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);const fileUploadRef = useRef<FileUpload>(null);
+  const fileUploadRef = useRef<FileUpload>(null);
   const estadoCivil = ["SOLTERO/A", "CASADO/A", "DIVORCIADO/A", "VIUDO/A", "UNION LIBRE"]
   const sexos = ["HOMBRE", "MUJER"]
   const generos = ["MASCULINO", "FEMENINO", "OTRO"]
@@ -36,6 +35,9 @@ const Persona = () => {
   const etnias = ["AFROECUATORIANO", "INDÍGENA", "MONTUBIO", "MESTIZO", "BLANCO", "MULATO", "OTRO"]
   const [edadCalculada, setEdadCalculada] = useState(0);
   const perService = new PersonaService();
+  const [per1, setPer1] = useState<IPersona[]>([]);
+
+
   const calcularEdad = (fechaNacimiento:Date) => {
     const diadeHoy = new Date();
     const fechaNacimientoObj = new Date(fechaNacimiento);
@@ -74,59 +76,6 @@ const Persona = () => {
     if (fileUploadRef.current) {
       // clean the file uploaded
       fileUploadRef.current.clear();
-    }
-  };
-
-  const handleEdit = (id: number | undefined) => {
-    if (id !== undefined) {
-      const editItem = items.find((per) => per.id_persona === id);
-      if (editItem) {
-        setSelectedItem(editItem);
-        setEditMode(true);
-        setEditItemId(id);
-      }
-    }
-  };
-
-  const handleDelete = (id: number | undefined) => {
-    if (id !== undefined) {
-      swal({
-        title: "Confirmar Eliminación",
-        text: "¿Estás seguro de eliminar este registro?",
-        icon: "warning",
-        buttons: {
-          cancel: {
-            text: "Cancelar",
-            visible: true,
-            className: "cancel-button",
-          },
-          confirm: {
-            text: "Sí, eliminar",
-            className: "confirm-button",
-          },
-        },
-      }).then((confirmed) => {
-        if (confirmed) {
-          perService
-              .delete(id)
-              .then(() => {
-                setItems(items.filter((per) => per.id_persona !== id));
-                swal(
-                    "Eliminado",
-                    "El registro ha sido eliminado correctamente",
-                    "error"
-                );
-              })
-              .catch((error) => {
-                console.error("Error al eliminar el registro:", error);
-                swal(
-                    "Error",
-                    "Ha ocurrido un error al eliminar el registro",
-                    "error"
-                );
-              });
-        }
-      });
     }
   };
 
@@ -177,7 +126,6 @@ const Persona = () => {
     },
     validate: (values) => {
       let errors: any = {};
-
       if (!values.cedula) {errors.cedula = 'Cedula es requerida';}
       if (!values.apellido_paterno) {errors.apellido_paterno = 'Apellido Paterno es requerido';}
       if (!values.apellido_materno) {errors.apellido_materno = 'Apellido Materno es requerido';}
@@ -331,7 +279,41 @@ const Persona = () => {
   };
 
 
-
+  const handleDelete = (id: number | undefined) => {
+    if (id !== undefined) {
+      swal({
+        title: "Confirmar Eliminación",
+        text: "¿Estás seguro de eliminar este registro?",
+        icon: "warning",
+        buttons: {
+          cancel: {
+            text: "Cancelar",
+            visible: true,
+            className: "cancel-button",
+          },
+          confirm: {
+            text: "Sí, eliminar",
+            className: "confirm-button",
+          },
+        },
+      }).then((confirmed) => {
+        if (confirmed) {
+          perService
+              .delete(id)
+              .then(() => {
+                setPer1(per1.filter((per) => per.id_persona !== id));
+                swal("Eliminado", "El registro ha sido eliminado correctamente", "error"
+                );
+              })
+              .catch((error) => {
+                console.error("Error al eliminar el registro:", error);
+                swal("Error", "Ha ocurrido un error al eliminar el registro", "error"
+                );
+              });
+        }
+      });
+    }
+  };
 
   return (
 
@@ -795,10 +777,9 @@ const Persona = () => {
             <div className="col-12 flex justify-content-evenly align-content-center mt-3">
               <Button
                   type="submit"
-                  style={{marginTop: "55px"}}
                   label={selectedItem ? 'Actualizar' : 'Guardar'}
                   severity={selectedItem ? 'warning' : 'success'}
-                  className="w-auto text-3xl min-w-min "
+                  style={{marginTop: "55px"}}
                   rounded
               />
               <Button
@@ -806,7 +787,6 @@ const Persona = () => {
                   label="Cancelar"
                   severity="secondary"
                   style={{marginTop: "55px"}}
-                  className="w-auto text-3xl min-w-min"
                   rounded
                   onClick={() => {
                 formik.resetForm();
@@ -852,7 +832,9 @@ const Persona = () => {
                           color: "black",
                           justifyContent: "center",
                         }}
-                        onClick={() => handleEdit(per.id_persona?.valueOf())}
+                        onClick={() => {
+                          formik.setValues(per);
+                        }}
                     />
                     <Button
                         type="button"
