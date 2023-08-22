@@ -3,7 +3,7 @@ import {InputText} from "primereact/inputtext";
 import {Button} from "primereact/button";
 import {Card} from "primereact/card";
 import {Divider} from "primereact/divider";
-import {Calendar} from "primereact/calendar";
+import {Calendar, CalendarChangeEvent} from "primereact/calendar";
 import {Dropdown} from "primereact/dropdown";
 import "../../styles/Persona.css";
 import ToastMessage from "../../shared/ToastMessage";
@@ -19,6 +19,9 @@ import {InputTextarea} from "primereact/inputtextarea";
 import {DataTable} from "primereact/datatable";
 import {Column} from "primereact/column";
 import {decoder} from "../../services/functions/decoder";
+import {Fieldset} from "primereact/fieldset";
+import cardHeader from "../../shared/CardHeader";
+import swal from "sweetalert";
 
 const apiViewService = new VistaPersonaService();
 const apiService = new PersonaService();
@@ -27,12 +30,36 @@ const Persona = () => {
   const [items, setItems] = useState<IPersona[]>([]);
   const [message, setMessage] = useState<IMessage | null>(null);
   const [selectedItem, setSelectedItem] = useState<IPersona | null>(null);
-  const fileUploadRef = useRef<FileUpload>(null);
-  const estadoCivil = ["Soltero", "Casado", "Divorciado", "Viudo", "Unión libre"]
-  const sexos = ["Hombre", "Mujer"]
-  const generos = ["Masculino", "Femenino", "Otro"]
-  const sangres = ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-", "No sabe"]
-  const etnias = ["Afroecuatoriano", "Indígena", "Montubio", "Mestizo", "Blanco", "Mulato", "Otro"]
+  const [editMode, setEditMode] = useState(false);
+  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);const fileUploadRef = useRef<FileUpload>(null);
+  const estadoCivil = ["SOLTERO/A", "CASADO/A", "DIVORCIADO/A", "VIUDO/A", "UNION LIBRE"]
+  const sexos = ["HOMBRE", "MUJER"]
+  const generos = ["MASCULINO", "FEMENINO", "OTRO"]
+  const sangres = ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-", "NO SABE"]
+  const etnias = ["AFROECUATORIANO", "INDÍGENA", "MONTUBIO", "MESTIZO", "BLANCO", "MULATO", "OTRO"]
+  const [edadCalculada, setEdadCalculada] = useState(0);
+  const perService = new PersonaService();
+  const calcularEdad = (fechaNacimiento:Date) => {
+    const diadeHoy = new Date();
+    const fechaNacimientoObj = new Date(fechaNacimiento);
+    const edad = diadeHoy.getFullYear() - fechaNacimientoObj.getFullYear();
+    if (
+        diadeHoy.getMonth() < fechaNacimientoObj.getMonth() ||
+        (diadeHoy.getMonth() === fechaNacimientoObj.getMonth() &&
+            diadeHoy.getDate() < fechaNacimientoObj.getDate())
+    ) {
+      return edad - 1;
+    }
+    return edad;
+  };
+
+  const handleDateChange = (e: CalendarChangeEvent) => {
+    const selectedDate = e.value as Date;
+      formik.setFieldValue('fecha_nacimiento', selectedDate);
+      const edad = calcularEdad(selectedDate);
+      setEdadCalculada(edad);
+      formik.setFieldValue('edad', edad);
+  };
 
   const customBytesUploader = async (event: FileUploadHandlerEvent) => {
     // convert file to base64 encoded
@@ -60,6 +87,91 @@ const Persona = () => {
                 onClick={() => decoder(base64File, 'CV Socioempleo')}
                 data-pr-tooltip="PDF"/>) : (<span>Sin Anexo</span>)
   }
+  const handleEdit = (id: number | undefined) => {
+    if (id !== undefined) {
+      const editItem = items.find((per) => per.id_persona === id);
+      if (editItem) {
+        setSelectedItem(editItem);
+        setEditMode(true);
+        setEditItemId(id);
+      }
+    }
+  };
+
+  const handleDelete = (id: number | undefined) => {
+    if (id !== undefined) {
+      swal({
+        title: "Confirmar Eliminación",
+        text: "¿Estás seguro de eliminar este registro?",
+        icon: "warning",
+        buttons: {
+          cancel: {
+            text: "Cancelar",
+            visible: true,
+            className: "cancel-button",
+          },
+          confirm: {
+            text: "Sí, eliminar",
+            className: "confirm-button",
+          },
+        },
+      }).then((confirmed) => {
+        if (confirmed) {
+          perService
+              .delete(id)
+              .then(() => {
+                setItems(items.filter((per) => per.id_persona !== id));
+                swal(
+                    "Eliminado",
+                    "El registro ha sido eliminado correctamente",
+                    "error"
+                );
+              })
+              .catch((error) => {
+                console.error("Error al eliminar el registro:", error);
+                swal(
+                    "Error",
+                    "Ha ocurrido un error al eliminar el registro",
+                    "error"
+                );
+              });
+        }
+      });
+    }
+  };
+
+  const decodeBase64 = (base64Data: string) => {
+    try {
+      // Eliminar encabezados o metadatos de la cadena base64
+      const base64WithoutHeader = base64Data.replace(/^data:.*,/, "");
+
+      const decodedData = atob(base64WithoutHeader); // Decodificar la cadena base64
+      const byteCharacters = new Uint8Array(decodedData.length);
+
+      for (let i = 0; i < decodedData.length; i++) {
+        byteCharacters[i] = decodedData.charCodeAt(i);
+      }
+
+      const byteArray = new Blob([byteCharacters], {type: "application/pdf"});
+      const fileUrl = URL.createObjectURL(byteArray);
+
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.download = "Evidencia CV Socioempleo.pdf";
+      link.click();
+      swal({
+        title: "Publicación",
+        text: "Descargando pdf....",
+        icon: "success",
+        timer: 1000,
+      });
+      console.log("pdf descargado...");
+
+      URL.revokeObjectURL(fileUrl);
+    } catch (error) {
+      console.error("Error al decodificar la cadena base64:", error);
+    }
+  };
 
 
   const formik = useFormik<IPersona>({
@@ -69,9 +181,9 @@ const Persona = () => {
       apellido_materno: '',
       primer_nombre: '',
       segundo_nombre: '',
-      fecha_nacimiento: null,
+      fecha_nacimiento: new Date(),
       pais_natal: '',
-      edad: 0,
+      edad: edadCalculada,
       genero: '',
       sexo: '',
       tipo_sangre: '',
@@ -97,7 +209,7 @@ const Persona = () => {
       correo: '',
       correo_institucional: '',
 
-      discapacidad: false,
+      discapacidad: '',
       tipo_discapacidad: '',
       porcentaje_discapacidad: '',
       carnet_conadis: '',
@@ -116,14 +228,10 @@ const Persona = () => {
       }
       if (!values.descripcion_perfil) {
         errors.descripcion_perfil = 'La descripcion es requerida';
-      }/*
+      }
       if (!values.cv_socioempleo) {
         errors.cv_socioempleo = 'El Curriculum Vitae es requerido';
       }
-      if (!values.foto) {
-        errors.foto = 'Foto requerida';
-      }*/
-
       return errors;
     }
   });
@@ -157,6 +265,50 @@ const Persona = () => {
             formik.setFieldValue('apellido_materno', persona.apellido_materno);
             formik.setFieldValue('primer_nombre', persona.primer_nombre);
             formik.setFieldValue('segundo_nombre', persona.segundo_nombre);
+            formik.setFieldValue('estado_civil', persona.estado_civil);
+            const fechaNacimientoString = persona.fecha_nacimiento;
+            if (fechaNacimientoString) {
+              const fechaNacimientoDate = new Date(fechaNacimientoString);
+              if (!isNaN(fechaNacimientoDate.getTime())) {
+                formik.setFieldValue('fecha_nacimiento', fechaNacimientoDate);}
+              else {console.error('Fecha de nacimiento no válida');}
+            } else {console.error('Fecha de nacimiento vacía o null');}
+            formik.setFieldValue('pais_natal', persona.pais_natal);
+            if(persona.sexo == 'H'){formik.setFieldValue('sexo', 'HOMBRE');}
+            else if(persona.sexo == 'M'){formik.setFieldValue('sexo', 'MUJER');}
+            formik.setFieldValue('genero', persona.genero);
+            formik.setFieldValue('tipo_sangre', persona.tipo_sangre);
+            formik.setFieldValue('etnia', persona.etnia);
+            formik.setFieldValue('idioma_raiz', persona.idioma_raiz);
+            formik.setFieldValue('idioma_secundario', persona.idioma_secundario);
+
+            formik.setFieldValue('calles', persona.calles);
+            formik.setFieldValue('numero_casa', persona.numero_casa);
+            if(persona.numero_casa == '0'){formik.setFieldValue('numero_casa', 'S/N');}
+            formik.setFieldValue('sector', persona.sector);
+            formik.setFieldValue('referencia', persona.referencia);
+
+            formik.setFieldValue('celular', persona.celular);
+            formik.setFieldValue('telefono', persona.telefono);
+            formik.setFieldValue('correo', persona.correo);
+            formik.setFieldValue('correo_institucional', persona.correo_institucional);
+            const discapacidadString = persona.discapacidad;
+            if (discapacidadString =='f'){
+              const discapacidadBoolean = false;
+              formik.setFieldValue('discapacidad', 'SIN DISCAPACIDAD');
+              formik.setFieldValue('tipo_discapacidad', 'NINGUNA');
+              formik.setFieldValue('porcentaje_discapacidad', '0%');
+              formik.setFieldValue('carnet_conadis', 'NO TIENE');
+            }else if (discapacidadString =='t'){
+              const discapacidadBoolean = true;
+              formik.setFieldValue('discapacidad', 'CON DISCAPACIDAD');
+              formik.setFieldValue('tipo_discapacidad', persona.tipo_discapacidad);
+              formik.setFieldValue('porcentaje_discapacidad', persona.porcentaje_discapacidad);
+              formik.setFieldValue('carnet_conadis', persona.carnet_conadis);
+            }
+            if(persona.discapacidad == 'f'){
+              formik.setFieldValue('numero_casa', 'S/N');
+            }
             setMessage({severity: 'success', detail: 'Registro actualizado'});
           })
           .catch(error => {
@@ -196,14 +348,18 @@ const Persona = () => {
 
 
   return (
-      <>
-        <Card className="m-5">
+
+      <Fieldset className="fgrid col-fixed ">
+        <Card header={cardHeader}
+              className="border-solid border-blue-800 border-3 flex-1 w-full h-full flex-wrap">
           <ToastMessage message={message}/>
           <form className="formgrid grid" onSubmit={formik.handleSubmit}>
 
             <Divider align="center">
-              <h2 className="text-6xl font-smibold lg:md-2">Datos Personales</h2>
+              <h1 className="text-7xl font-smibold lg:md-2  w-full h-full max-w-full max-h-full min-w-min">
+                Datos Personales</h1>
             </Divider>
+
             <div className="field col-4">
               <label className="font-medium" htmlFor="cedula">Cedula</label>
               <InputText id="cedula"
@@ -287,11 +443,11 @@ const Persona = () => {
             <div className="field col-4">
               <label className="font-medium" htmlFor="start-date">Fecha de Nacimiento</label>
               <Calendar id="start-date"
-                        dateFormat="dd/mm/yy"
+                        dateFormat="yy-mm-dd"
                         name="fecha_inicio"
                         className="p-inputtextarea-resizable w-full text-2xl"
                         value={formik.values.fecha_nacimiento}
-                        onChange={formik.handleChange}
+                        onChange={handleDateChange}
                         onBlur={formik.handleBlur}
               />
               <small className="p-error">{formik.touched.fecha_nacimiento && formik.errors.fecha_nacimiento}</small>
@@ -593,10 +749,10 @@ const Persona = () => {
             </div>
             <div className="field col-3">
               <label className="font-medium" htmlFor="discapacidad ">Discapacidad</label>
-              <InputText id="telefono"
+              <InputText id="discapacidad"
                          className="p-inputtext-sm w-full text-2xl"
-                         name="telefono"
-                         value={formik.values.telefono}
+                         name="discapacidad"
+                         value={formik.values.discapacidad}
                          onChange={formik.handleChange}
                          onBlur={formik.handleBlur}
               />
@@ -650,34 +806,108 @@ const Persona = () => {
             </div>
 
 
-            <div className="col-12 flex justify-content-evenly align-content-center mt-4">
-              <Button label={selectedItem ? 'Actualizar' : 'Guardar'}
-                      severity={selectedItem ? 'warning' : 'success'} type="submit"/>
-              <Button label="Cancelar" severity="secondary" type="button" onClick={() => {
+            <div className="col-12 flex justify-content-evenly align-content-center mt-3">
+              <Button
+                  type="submit"
+                  style={{marginTop: "55px"}}
+                  label={selectedItem ? 'Actualizar' : 'Guardar'}
+                  severity={selectedItem ? 'warning' : 'success'}
+                  className="w-auto text-3xl min-w-min "
+                  rounded
+              />
+              <Button
+                  type="button"
+                  label="Cancelar"
+                  severity="secondary"
+                  style={{marginTop: "55px"}}
+                  className="w-auto text-3xl min-w-min"
+                  rounded
+                  onClick={() => {
                 formik.resetForm();
                 setSelectedItem(null);
               }}/>
             </div>
-
-
-            <Card className="my-5 mx-auto">
-              <DataTable value={items}
-                         dataKey="id_experiencia"
-                         paginator
-                         rows={10}
-                         rowsPerPageOptions={[5, 10, 25]}
-              >
-
-                <Column field="institucion" header="Institución"></Column>
-                <Column field="area_trabajo" header="Área de trabajo"></Column>
-                <Column field="puesto" header="Puesto"></Column>
-                <Column body={(rowData) => annexBodyTemplate(rowData)}
-                        header="Anexo"></Column>
-              </DataTable>
-            </Card>
           </form>
+          <table style={{minWidth: "40rem"}}
+                 className="mt-4  w-full h-full text-3xl font-large">
+            <thead>
+            <tr style={{backgroundColor: "#0C3255", color: "white"}}>
+              <th>Cedula</th>
+              <th>Docente</th>
+              <th>Edad</th>
+              <th>Sexo</th>
+              <th>Celular</th>
+              <th>Correo</th>
+              <th>Discapacidad</th>
+              <th>Operaciones</th>
+              <th>Evidencia</th>
+            </tr>
+            </thead>
+            <tbody>
+            {items.map((per) => (
+                <tr className="text-center" key={per.id_persona?.toString()}>
+                  <td>{per.cedula}</td>
+                  <td>{per.apellido_paterno+" "+per.primer_nombre}</td>
+                  <td>{per.edad}</td>
+                  <td>{per.sexo}</td>
+                  <td>{per.celular}</td>
+                  <td>{per.correo}</td>
+                  <td>{per.discapacidad}</td>
+                  <td>
+                    <Button
+                        type="button"
+                        className=""
+                        label="✎"
+                        style={{
+                          background: "#ff9800",
+                          borderRadius: "10%",
+                          fontSize: "25px",
+                          width: "40px",
+                          color: "black",
+                          justifyContent: "center",
+                        }}
+                        onClick={() => handleEdit(per.id_persona?.valueOf())}
+                    />
+                    <Button
+                        type="button"
+                        className=""
+                        label="✘"
+                        style={{
+                          background: "#ff0000",
+                          borderRadius: "10%",
+                          fontSize: "30px",
+                          width: "40px",
+                          color: "black",
+                          justifyContent: "center",
+                        }}
+                        onClick={() => handleDelete(per.id_persona?.valueOf())}
+                    />
+                  </td>
+                  <td>
+                    {per.cv_socioempleo ? (
+                        <Button
+                            type="button"
+                            className=""
+                            label="Descargar PDF"
+                            style={{
+                              background: "#009688",
+                              borderRadius: "10%",
+                              fontSize: "12px",
+                              color: "black",
+                              justifyContent: "center",
+                            }}
+                            onClick={() => decodeBase64(per.cv_socioempleo!)}
+                        />
+                    ) : (
+                        <span>Sin evidencia</span>
+                    )}
+                  </td>
+                </tr>
+            ))}
+            </tbody>
+          </table>
         </Card>
-      </>
+      </Fieldset>
   );
 };
 

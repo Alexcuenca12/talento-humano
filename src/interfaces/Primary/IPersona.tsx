@@ -33,7 +33,7 @@ export interface IPersona {
   correo: string;
   correo_institucional: string;
 
-  discapacidad: boolean;
+  discapacidad: string;
   tipo_discapacidad: string;
   porcentaje_discapacidad: string;
   carnet_conadis: string;

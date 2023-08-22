@@ -6,8 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="9af82001-1699-42ac-aed2-937398d463ad" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/PersonaService.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/PersonaService.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/services/VistaPersonaService.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/services/VistaPersonaService.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/views/Persona/PersonaContext.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/views/Persona/PersonaContext.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -52,35 +50,35 @@
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 8
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 8
+}</component>
   <component name="ProjectId" id="2R7y00C9hC7r9gwUNDzgxJmlsSO" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "ReactCreateComponentLastSelected": "arrowFunctionComponent",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "Bryan",
-    "ignore.virus.scanning.warn.message": "true",
-    "last_opened_file_path": "C:/Users/bryan/Documents/Jet Brains Projects/React/proyecto001",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "preferences.sourceCode.TypeScript",
-    "ts.external.directory.path": "C:\\Users\\bryan\\Documents\\Github\\talento-humano\\node_modules\\typescript\\lib",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;ReactCreateComponentLastSelected&quot;: &quot;arrowFunctionComponent&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Bryan&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/bryan/Documents/Jet Brains Projects/React/proyecto001&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.sourceCode.TypeScript&quot;,
+    &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\bryan\\Documents\\Github\\talento-humano\\node_modules\\typescript\\lib&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="ReactDesignerToolWindowState">
     <option name="myId2Visible">
       <map>
@@ -113,7 +111,14 @@
       <workItem from="1689614229320" duration="44000" />
       <workItem from="1690145323143" duration="130000" />
       <workItem from="1690146867100" duration="6800000" />
-      <workItem from="1690946359990" duration="21858000" />
+      <workItem from="1690946359990" duration="22485000" />
+      <workItem from="1691040399042" duration="20000" />
+      <workItem from="1691040428453" duration="176000" />
+      <workItem from="1691485994852" duration="75000" />
+      <workItem from="1691486082523" duration="46000" />
+      <workItem from="1692059218634" duration="2900000" />
+      <workItem from="1692292377285" duration="602000" />
+      <workItem from="1692629240314" duration="20932000" />
     </task>
     <servers />
   </component>
