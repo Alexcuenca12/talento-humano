@@ -16,9 +16,6 @@ import {InputNumber} from "primereact/inputnumber";
 import {FileUpload, FileUploadHandlerEvent} from "primereact/fileupload";
 import {fileConverter} from "../../services/functions/fileConverter";
 import {InputTextarea} from "primereact/inputtextarea";
-import {DataTable} from "primereact/datatable";
-import {Column} from "primereact/column";
-import {decoder} from "../../services/functions/decoder";
 import {Fieldset} from "primereact/fieldset";
 import cardHeader from "../../shared/CardHeader";
 import swal from "sweetalert";
@@ -80,13 +77,6 @@ const Persona = () => {
     }
   };
 
-  const annexBodyTemplate = (rowData: IPersona) => {
-    const base64File = rowData.cv_socioempleo;
-    return base64File ? (
-        <Button type="button" icon="pi pi-file-pdf" severity="danger" rounded
-                onClick={() => decoder(base64File, 'CV Socioempleo')}
-                data-pr-tooltip="PDF"/>) : (<span>Sin Anexo</span>)
-  }
   const handleEdit = (id: number | undefined) => {
     if (id !== undefined) {
       const editItem = items.find((per) => per.id_persona === id);
@@ -142,19 +132,14 @@ const Persona = () => {
 
   const decodeBase64 = (base64Data: string) => {
     try {
-      // Eliminar encabezados o metadatos de la cadena base64
       const base64WithoutHeader = base64Data.replace(/^data:.*,/, "");
-
-      const decodedData = atob(base64WithoutHeader); // Decodificar la cadena base64
+      const decodedData = atob(base64WithoutHeader);
       const byteCharacters = new Uint8Array(decodedData.length);
-
       for (let i = 0; i < decodedData.length; i++) {
         byteCharacters[i] = decodedData.charCodeAt(i);
       }
-
       const byteArray = new Blob([byteCharacters], {type: "application/pdf"});
       const fileUrl = URL.createObjectURL(byteArray);
-
       const link = document.createElement("a");
       link.href = fileUrl;
       link.download = "Evidencia CV Socioempleo.pdf";
@@ -176,44 +161,14 @@ const Persona = () => {
 
   const formik = useFormik<IPersona>({
     initialValues: {
-      cedula: '',
-      apellido_paterno: '',
-      apellido_materno: '',
-      primer_nombre: '',
-      segundo_nombre: '',
-      fecha_nacimiento: new Date(),
-      pais_natal: '',
-      edad: edadCalculada,
-      genero: '',
-      sexo: '',
-      tipo_sangre: '',
-      estado_civil: '',
-      etnia: '',
-      idioma_raiz: '',
-      idioma_secundario: '',
-      foto: null,
-      cv_socioempleo: null,
-      descripcion_perfil:'',
-
-      pais_residencia: '',
-      provincia_residencia: '',
-      canton_residencia: '',
-      parroquia_residencia: '',
-      calles: '',
-      numero_casa: '',
-      sector: '',
-      referencia: '',
-
-      celular: '',
-      telefono: '',
-      correo: '',
-      correo_institucional: '',
-
-      discapacidad: '',
-      tipo_discapacidad: '',
-      porcentaje_discapacidad: '',
-      carnet_conadis: '',
-      foto_carnet: null,
+      cedula: '', apellido_paterno: '', apellido_materno: '', primer_nombre: '', segundo_nombre: '',
+      fecha_nacimiento: new Date(), pais_natal: '', edad: edadCalculada, genero: '', sexo: '', tipo_sangre: '',
+      estado_civil: '', etnia: '', idioma_raiz: '', idioma_secundario: '', foto: null, cv_socioempleo: null,
+      descripcion_perfil: '',
+      pais_residencia: '', provincia_residencia: '', canton_residencia: '', parroquia_residencia: '', calles: '',
+      numero_casa: '', sector: '', referencia: '',
+      celular: '', telefono: '', correo: '', correo_institucional: '',
+      discapacidad: '', tipo_discapacidad: '', porcentaje_discapacidad: '', carnet_conadis: '', foto_carnet: null,
     },
     onSubmit: values => {
       console.log(values);
@@ -223,15 +178,36 @@ const Persona = () => {
     validate: (values) => {
       let errors: any = {};
 
-      if (!values.cedula.trim()) {
-        errors.cedula = 'Cedula es requerida';
-      }
-      if (!values.descripcion_perfil) {
-        errors.descripcion_perfil = 'La descripcion es requerida';
-      }
-      if (!values.cv_socioempleo) {
-        errors.cv_socioempleo = 'El Curriculum Vitae es requerido';
-      }
+      if (!values.cedula) {errors.cedula = 'Cedula es requerida';}
+      if (!values.apellido_paterno) {errors.apellido_paterno = 'Apellido Paterno es requerido';}
+      if (!values.apellido_materno) {errors.apellido_materno = 'Apellido Materno es requerido';}
+      if (!values.primer_nombre) {errors.primer_nombre = 'Primer Nombre es requerido';}
+      if (!values.segundo_nombre) {errors.segundo_nombre = 'Segundo Nombre es requerido';}
+      if (!values.fecha_nacimiento) {errors.fecha_nacimiento = 'Fecha de Nacimiento es requerida';}
+      if (!values.pais_natal) {errors.pais_natal = 'Pais Natal es requerido';}
+      if (values.edad == 0) {errors.edad = 'Edad es requerida';}
+      if (!values.estado_civil) {errors.estado_civil = 'Estado Civil es requerido';}
+      if (!values.sexo) {errors.sexo = 'Sexo es requerido';}
+      if (!values.genero) {errors.genero = 'Genero es requerido';}
+      if (!values.tipo_sangre) {errors.tipo_sangre = 'Tipo de Sangre es requerido';}
+      if (!values.etnia) {errors.etnia = 'Etnia es requerido';}
+      if (!values.idioma_raiz) {errors.idioma_raiz = 'Idioma Raiz es requerido';}
+      if (!values.idioma_secundario) {errors.idioma_secundario = 'Idioma Secundario es requerido';}
+      if (!values.pais_residencia) {errors.pais_residencia = 'Pais de Residencia es requerido';}
+      if (!values.provincia_residencia) {errors.provincia_residencia = 'Provincia de Residencia es requerido';}
+      if (!values.canton_residencia) {errors.canton_residencia = 'Canton de Residencia es requerido';}
+      if (!values.parroquia_residencia) {errors.parroquia_residencia = 'Parroquia de Residencia es requerido';}
+      if (!values.calles) {errors.calles = 'Calles es requerido';}
+      if (!values.numero_casa) {errors.numero_casa = 'Numero de Casa es requerido';}
+      if (!values.sector) {errors.sector = 'Sector es requerido';}
+      if (!values.referencia) {errors.referencia = 'Referencia es requerido';}
+      if (!values.celular) {errors.celular = 'Celular es requerido';}
+      if (!values.telefono) {errors.telefono = 'Telefono es requerido';}
+      if (!values.correo) {errors.correo = 'Correo es requerido';}
+      if (!values.correo_institucional) {errors.correo_institucional = 'Correo Institucional es requerido';}
+      if (!values.discapacidad) {errors.discapacidad = 'Discapacidad es requerida';}
+      if (!values.descripcion_perfil) {errors.descripcion_perfil = 'La descripcion es requerida';}
+      if (!values.cv_socioempleo) {errors.cv_socioempleo = 'El Curriculum Vitae es requerido';}
       return errors;
     }
   });
@@ -240,7 +216,6 @@ const Persona = () => {
     fetchItems();
   }, [])
 
-  // SERVICE METHODS
   const fetchItems = () => {
     apiService.getAll()
         .then(response => {
@@ -255,6 +230,7 @@ const Persona = () => {
           })
         })
   }
+
   useEffect(() => {
     if (formik.values.cedula.length == 10){
       apiViewService.getByCedula(formik.values.cedula)
@@ -267,13 +243,15 @@ const Persona = () => {
             formik.setFieldValue('segundo_nombre', persona.segundo_nombre);
             formik.setFieldValue('estado_civil', persona.estado_civil);
             const fechaNacimientoString = persona.fecha_nacimiento;
+
             if (fechaNacimientoString) {
               const fechaNacimientoDate = new Date(fechaNacimientoString);
               if (!isNaN(fechaNacimientoDate.getTime())) {
                 formik.setFieldValue('fecha_nacimiento', fechaNacimientoDate);}
               else {console.error('Fecha de nacimiento no válida');}
             } else {console.error('Fecha de nacimiento vacía o null');}
-            formik.setFieldValue('pais_natal', persona.pais_natal);
+            if(persona.pais_natal == 'CUENCA'){formik.setFieldValue('pais_natal', 'ECUADOR');}
+            else{formik.setFieldValue('pais_natal', persona.pais_natal);}
             if(persona.sexo == 'H'){formik.setFieldValue('sexo', 'HOMBRE');}
             else if(persona.sexo == 'M'){formik.setFieldValue('sexo', 'MUJER');}
             formik.setFieldValue('genero', persona.genero);
@@ -282,25 +260,33 @@ const Persona = () => {
             formik.setFieldValue('idioma_raiz', persona.idioma_raiz);
             formik.setFieldValue('idioma_secundario', persona.idioma_secundario);
 
+            if(persona.pais_residencia == null){
+              formik.setFieldValue('pais_residencia', 'ECUADOR');
+              formik.setFieldValue('provincia_residencia', 'AZUAY');
+              formik.setFieldValue('canton_residencia', 'CUENCA');
+            }else{
+              formik.setFieldValue('pais_residencia', persona.pais_residencia);
+              formik.setFieldValue('provincia_residencia', persona.provincia_residencia);
+              formik.setFieldValue('canton_residencia', persona.canton_residencia);
+            }
             formik.setFieldValue('calles', persona.calles);
-            formik.setFieldValue('numero_casa', persona.numero_casa);
             if(persona.numero_casa == '0'){formik.setFieldValue('numero_casa', 'S/N');}
+            else{formik.setFieldValue('numero_casa', persona.numero_casa);}
             formik.setFieldValue('sector', persona.sector);
             formik.setFieldValue('referencia', persona.referencia);
 
             formik.setFieldValue('celular', persona.celular);
-            formik.setFieldValue('telefono', persona.telefono);
+            if(persona.telefono == ''){formik.setFieldValue('telefono', 'S/N');}
+            else{formik.setFieldValue('telefono', persona.telefono);}
             formik.setFieldValue('correo', persona.correo);
             formik.setFieldValue('correo_institucional', persona.correo_institucional);
             const discapacidadString = persona.discapacidad;
-            if (discapacidadString =='f'){
-              const discapacidadBoolean = false;
+            if (discapacidadString == 'f'){
               formik.setFieldValue('discapacidad', 'SIN DISCAPACIDAD');
               formik.setFieldValue('tipo_discapacidad', 'NINGUNA');
               formik.setFieldValue('porcentaje_discapacidad', '0%');
               formik.setFieldValue('carnet_conadis', 'NO TIENE');
-            }else if (discapacidadString =='t'){
-              const discapacidadBoolean = true;
+            }else if (discapacidadString == 't'){
               formik.setFieldValue('discapacidad', 'CON DISCAPACIDAD');
               formik.setFieldValue('tipo_discapacidad', persona.tipo_discapacidad);
               formik.setFieldValue('porcentaje_discapacidad', persona.porcentaje_discapacidad);
@@ -322,7 +308,6 @@ const Persona = () => {
   },[formik.values.cedula])
   const handleSubmit = async (data: IPersona) => {
     if (selectedItem) {
-      // update item
       await apiService.update(selectedItem.id_persona!, data)
           .then(response => {
             console.log(response);
@@ -330,7 +315,6 @@ const Persona = () => {
           })
       setSelectedItem(null);
     } else {
-      // create new item
       await apiService.save(data)
           .then(response => {
             console.log(response);
@@ -345,6 +329,8 @@ const Persona = () => {
     }
     fetchItems();
   };
+
+
 
 
   return (
