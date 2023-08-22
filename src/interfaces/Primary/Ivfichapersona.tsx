@@ -3,9 +3,15 @@ export interface Ivficahapersona {
     persona_correo: string;
     persona_nombres: string;
     persona_apellidos: string;
-    persona_cedula: Number;
+    persona_cedula: string;
     persona_correo_institucional: string;
     persona_genero: string;
+    persona_celular: string;
+    persona_telefono: string;
+    persona_paisnacimiento: string;
+    persona_paisresidencia: string;
+    persona_edad: string;
+    persona_estadocivil:string;
     capa_area_estudios: string;
     capa_horas: Number;
     capa_evidencia: string;
