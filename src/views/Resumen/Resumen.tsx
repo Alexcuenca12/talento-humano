@@ -33,16 +33,17 @@ const Resumen = () => {
     []
   );
   const [experiencias, setExperiencias] = useState<IExperiencia[]>([]);
-  const [instrucciones, setInstrucciones] = useState<InstruccionFormalData[]>(
-    []
-  );
+  const [instruccionFormals, setinstruccionFormals] = useState<
+    InstruccionFormalData[]
+  >([]);
 
   useEffect(() => {
     fetchSummary();
   }, []);
   // SERVICE METHOD
   const fetchSummary = () => {
-    personaService.getSummary(userId)
+    personaService
+      .getSummary(userId)
       .then((response) => {
         console.log(response);
         const {
@@ -53,6 +54,7 @@ const Resumen = () => {
           evaluaciones,
           habilidades,
           horarios,
+          instruccionFormals,
           recomendaciones,
           experiencias,
         } = response;
@@ -65,7 +67,7 @@ const Resumen = () => {
         setHorarios(horarios);
         setRecomendaciones(recomendaciones);
         setExperiencias(experiencias);
-        setInstrucciones(instrucciones);
+        setinstruccionFormals(instruccionFormals);
       })
       .catch((error) => {
         console.error(error);
@@ -77,11 +79,27 @@ const Resumen = () => {
       <div className="flex">
         <div className="mr-4">
           <h2 className="text-3xl">Fecha Inicio: </h2>
-          <p className="text-2xl">{String(rowData.fecha_inicio)}</p>
+          <p className="text-2xl">{String(rowData.fecha_inicio? new Date(rowData.fecha_inicio).toLocaleDateString(
+                        "es-ES",
+                        {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                        }
+                      )
+                    : "")}</p>
         </div>
         <div className="mr-4">
           <h2 className="text-3xl">Fecha Fin: </h2>
-          <p className="text-2xl">{String(rowData.fecha_fin)}</p>
+          <p className="text-2xl">{String(rowData.fecha_fin? new Date(rowData.fecha_fin).toLocaleDateString(
+                        "es-ES",
+                        {
+                          year: "numeric",
+                          month: "2-digit",
+                          day: "2-digit",
+                        }
+                      )
+                    : "")}</p>
         </div>
         <div className="mr-4 ">
           <h2 className="text-3xl">Cargo: </h2>
@@ -99,16 +117,16 @@ const Resumen = () => {
     return (
       <div className="flex">
         <div className="mr-4">
-          <h2 className="text-3xl">Distributivo: </h2>
-          <p className="text-2xl">{rowData.distributivo}</p>
+          <h2 className="text-3xl">Carrera: </h2>
+          <p className="text-2xl">{rowData.carreraHorario}</p>
         </div>
         <div className="mr-4 ">
           <h2 className="text-3xl">Periodo: </h2>
-          <p className="text-2xl">{rowData.periodo}</p>
+          <p className="text-2xl">{rowData.periodoAcademico}</p>
         </div>
         <div className=" ">
           <h2 className="text-3xl">Horario: </h2>
-          <p className="text-2xl">{rowData.horario}</p>
+          <p className="text-2xl">{rowData.jornadaHorario}</p>
         </div>
       </div>
     );
@@ -130,10 +148,6 @@ const Resumen = () => {
           <p className="text-2xl">{rowData.area_estudios}</p>
         </div>
         <div className=" ">
-          <h2 className="text-3xl">Nombre de Evento: </h2>
-          <p className="text-2xl">{rowData.nombre_evento}</p>
-        </div>
-        <div className=" ">
           <h2 className="text-3xl">Tipo certificado: </h2>
           <p className="text-2xl">{rowData.tipo_certificado}</p>
         </div>
@@ -150,7 +164,7 @@ const Resumen = () => {
         </div>
         <div className="mr-4">
           <h2 className="text-3xl">Periodo Academico: </h2>
-          <p className="text-2xl">{String(rowData.periodo)}</p>
+          <p className="text-2xl">{String(rowData.per_nombre)}</p>
         </div>
       </div>
     );
@@ -162,7 +176,7 @@ const Resumen = () => {
         <div className="mr-4">
           <h2 className="text-3xl">Nombres: </h2>
           <p className="text-2xl">
-            {rowData.primer_nombre || rowData.primer_apellido}
+            {rowData.primer_nombre +' '+ rowData.primer_apellido}
           </p>
         </div>
         <div className="mr-4">
@@ -207,7 +221,20 @@ const Resumen = () => {
         </div>
         <div className="mr-4">
           <h2 className="text-3xl">Fecha de nacimiento: </h2>
-          <p className="text-2xl">{String(rowData.fecha_nacimiento)}</p>
+          <p className="text-2xl">
+            {String(
+              rowData.fecha_nacimiento
+                ? new Date(rowData.fecha_nacimiento).toLocaleDateString(
+                    "es-ES",
+                    {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                    }
+                  )
+                : ""
+            )}
+          </p>
         </div>
       </div>
     );
@@ -247,7 +274,7 @@ const Resumen = () => {
     <Card className="fgrid col-fixed">
       <Card
         header={cardHeader}
-        className="border-solid border-blue-800 border-3 align-items-center align-content-center"
+        className="border-solid border-blue-250 border-3 align-items-center align-content-center"
       >
         <Divider align="center">
           <h1 className="text-7xl font-smibold lg:md-2">
@@ -259,12 +286,17 @@ const Resumen = () => {
           <div className="flex flex-wrap flex-row">
             <div className="flex align-items-center justify-content-center">
               <div className="flex flex-column align-content-center">
-                <Card className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1 row-gap-8 gap-8  mt-6">
+                <div
+                  className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
+                  style={{ marginLeft: "15%" }}
+                >
                   <DataTable
                     value={contratos}
                     dataKey="id_contrato"
-                    tableStyle={{ minWidth: "50rem" }}
-                    className="mt-5  w-full h-full text-3xl font-medium"
+                    tableStyle={{ minWidth: "50rem", width: "79rem" }}
+                    scrollable
+                    scrollHeight="400px"
+                    className="mt-5 w-full h-full text-3xl font-medium"
                   >
                     <Column
                       field="Contrato"
@@ -284,13 +316,18 @@ const Resumen = () => {
                       }}
                     ></Column>
                   </DataTable>
-                </Card>
+                </div>
 
-                <Card className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1 row-gap-8 gap-8  mt-6">
+                <div
+                  className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
+                  style={{ marginLeft: "15%" }}
+                >
                   <DataTable
                     value={horarios}
                     dataKey="id_horarios"
-                    tableStyle={{ minWidth: "50rem" }}
+                    tableStyle={{ minWidth: "50rem", width: "79rem" }}
+                    scrollable
+                    scrollHeight="400px"
                     className="mt-5  w-full h-full text-3xl font-medium"
                   >
                     <Column
@@ -311,12 +348,17 @@ const Resumen = () => {
                       }}
                     ></Column>
                   </DataTable>
-                </Card>
-                <Card className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1 row-gap-8 gap-8  mt-6">
+                </div>
+                <div
+                  className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
+                  style={{ marginLeft: "15%" }}
+                >
                   <DataTable
                     value={capacitaciones}
                     dataKey="id_capacitaciones"
-                    tableStyle={{ minWidth: "50rem" }}
+                    tableStyle={{ minWidth: "50rem", width: "79rem" }}
+                    scrollable
+                    scrollHeight="400px"
                     className="mt-5  w-full h-full text-3xl font-medium"
                   >
                     <Column
@@ -337,12 +379,17 @@ const Resumen = () => {
                       }}
                     ></Column>
                   </DataTable>
-                </Card>
-                <Card className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1 row-gap-8 gap-8  mt-6">
+                </div>
+                <div
+                  className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
+                  style={{ marginLeft: "15%" }}
+                >
                   <DataTable
                     value={evaluaciones}
                     dataKey="id_evaluacion"
-                    tableStyle={{ minWidth: "50rem" }}
+                    tableStyle={{ minWidth: "50rem", width: "79rem" }}
+                    scrollable
+                    scrollHeight="400px"
                     className="mt-5  w-full h-full text-3xl font-medium"
                   >
                     <Column
@@ -363,12 +410,17 @@ const Resumen = () => {
                       }}
                     ></Column>
                   </DataTable>
-                </Card>
-                <Card className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
+                </div>
+                <div
+                  className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
+                  style={{ marginLeft: "15%" }}
+                >
                   <DataTable
                     value={recomendaciones}
                     dataKey="id_recomendaciones"
-                    tableStyle={{ minWidth: "50rem" }}
+                    tableStyle={{ minWidth: "50rem", width: "79rem" }}
+                    scrollable
+                    scrollHeight="400px"
                     className="mt-5  w-full h-full text-3xl font-medium"
                   >
                     <Column
@@ -389,34 +441,48 @@ const Resumen = () => {
                       }}
                     ></Column>
                   </DataTable>
-                </Card>
-              </div>
-            </div>
-
-            <div className="flex flex-column align-items-center justify-content-center ml-4">
-              <Card className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
+                </div>
+                <div
+                className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6"
+                style={{ marginLeft: "15%" }}
+              >
                 <DataTable
-                  tableStyle={{ minWidth: "50rem" }}
+                  value={instruccionFormals}
+                  dataKey="id_instruccion"
+                  tableStyle={{ minWidth: "50rem", width: "79rem" }}
+                  scrollable
+                  scrollHeight="400px"
                   className="mt-5  w-full h-full text-3xl font-medium"
                 >
                   <Column
                     field="Instruccion Formal"
                     header="Instruccion Formal"
-                    headerStyle={{ backgroundColor: "#0C3255", color: "white" }}
-                    body={instruccionFBody}
+                    body={instruccionFBody} //
+                    headerStyle={{
+                      backgroundColor: "#0C3255",
+                      color: "white",
+                    }}
                   ></Column>
                   <Column
                     field="Acciones"
                     header="Acciones"
-                    headerStyle={{ backgroundColor: "#0C3255", color: "white" }}
+                    headerStyle={{
+                      backgroundColor: "#0C3255",
+                      color: "white",
+                    }}
                   ></Column>
                 </DataTable>
-              </Card>
-              <Card className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
+              </div>
+              <div
+                className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6"
+                style={{ marginLeft: "15%" }}
+              >
                 <DataTable
                   value={cargaFamiliar}
                   dataKey="id_cargaFamiliar"
                   tableStyle={{ minWidth: "50rem" }}
+                  scrollable
+                  scrollHeight="400px"
                   className="mt-5  w-full h-full text-3xl font-medium"
                 >
                   <Column
@@ -431,11 +497,16 @@ const Resumen = () => {
                     headerStyle={{ backgroundColor: "#0C3255", color: "white" }}
                   ></Column>
                 </DataTable>
-              </Card>
-              <Card className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
+              </div>
+              <div
+                className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6"
+                style={{ marginLeft: "15%" }}
+              >
                 <DataTable
                   value={experiencias}
                   dataKey="id_experiencia"
+                  scrollable
+                  scrollHeight="400px"
                   tableStyle={{ minWidth: "50rem" }}
                   className="mt-5  w-full h-full text-3xl font-medium"
                 >
@@ -451,12 +522,17 @@ const Resumen = () => {
                     headerStyle={{ backgroundColor: "#0C3255", color: "white" }}
                   ></Column>
                 </DataTable>
-              </Card>
-              <Card className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
+              </div>
+              <div
+                className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6"
+                style={{ marginLeft: "15%" }}
+              >
                 <DataTable
                   value={habilidades}
                   dataKey="id_habilidades"
                   tableStyle={{ minWidth: "50rem" }}
+                  scrollable
+                  scrollHeight="400px"
                   className="mt-5  w-full h-full text-3xl font-medium"
                 >
                   <Column
@@ -471,27 +547,12 @@ const Resumen = () => {
                     headerStyle={{ backgroundColor: "#0C3255", color: "white" }}
                   ></Column>
                 </DataTable>
-              </Card>
-              <Card className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6">
-                <DataTable
-                  tableStyle={{ minWidth: "50rem" }}
-                  className="mt-5  w-full h-full text-3xl font-medium"
-                >
-                  <Column
-                    field="Experiencia Agregada"
-                    header="Vacio"
-                    headerStyle={{ backgroundColor: "#0C3255", color: "white" }}
-                  ></Column>
-                  <Column
-                    field="Acciones"
-                    header="Acciones"
-                    headerStyle={{ backgroundColor: "#0C3255", color: "white" }}
-                  ></Column>
-                </DataTable>
-              </Card>
+              </div>
+              </div>
             </div>
           </div>
         </Card>
+        
       </Card>
     </Card>
   );

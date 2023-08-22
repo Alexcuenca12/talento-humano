@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text,  } from "@react-pdf/renderer";
+import { View, Text } from "@react-pdf/renderer";
 
 const styles = {
   sectionTitle: {
@@ -18,10 +18,9 @@ const styles = {
 function Instruccion({ datos }) {
   return (
     <View style={styles.section}>
-    <Text style={styles.sectionTitle}>Educacion:</Text>
-    
-    <Text style={styles.sectionContent}>{datos.Instruccion_form}</Text>
-    
+      <Text style={styles.sectionTitle}>Educacion:</Text>
+
+      <Text style={styles.sectionContent}>{datos.instruccionFormals}</Text>
     </View>
   );
 }

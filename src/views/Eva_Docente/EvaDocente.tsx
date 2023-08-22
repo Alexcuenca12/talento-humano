@@ -8,8 +8,10 @@ import cardHeader from "../../shared/CardHeader";
 import { Divider } from "primereact/divider";
 import { IEvaDocente } from "../../interfaces/Primary/IEva_Docente";
 import { VCarreras } from "../../interfaces/Secondary/VCarreras";
+import { VPeriodos } from "../../interfaces/Secondary/VPeriodos";
 import { EvaluacionService } from "../../services/EvaluacionService";
 import { VcarreraService } from "../../services/VCarreraService";
+import { VPeridosService } from "../../services/VPeridosService";
 import swal from "sweetalert";
 
 function PublicacionesContext() {
@@ -23,18 +25,25 @@ function PublicacionesContext() {
     id_evaluacion: 0,
     evidencia_evaluacion: "",
     cod_carrera: "",
-    periodo: null,
+    per_nombre: "",
     persona: { id_persona: idPersona },
   });
 
   const fileUploadRef = useRef<FileUpload>(null);
   const [dataLoaded, setDataLoaded] = useState(false);
+
   const [editMode, setEditMode] = useState(false);
   const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
+
   const evaService = new EvaluacionService();
   const carreraService = new VcarreraService();
+  const periodoService = new VPeridosService();
+
   const [carreras, setCarreras] = useState<VCarreras[]>([]);
+  const [periodos, setPeridos] = useState<VPeriodos[]>([]);
+
   const [selectedCarrera, setSelectedCarrera] = useState<string | null>(null);
+  const [selectedPeriodo, setSelectedPeriodo] = useState<string | null>(null);
 
   useEffect(() => {
     const loadCarrera = () => {
@@ -50,6 +59,22 @@ function PublicacionesContext() {
         });
     };
     loadCarrera();
+  }, []);
+
+  useEffect(() => {
+    const loadPeriodo = () => {
+      periodoService
+        .getAll()
+        .then((data) => {
+          setPeridos(data);
+          setDataLoaded(true);
+          setSelectedPeriodo(null);
+        })
+        .catch((error) => {
+          console.error("Error al obtener los datos:", error);
+        });
+    };
+    loadPeriodo();
   }, []);
 
   const loadData = () => {
@@ -222,7 +247,7 @@ function PublicacionesContext() {
           setFormData({
             evidencia_evaluacion: "",
             cod_carrera: "",
-            periodo: null,
+            per_nombre: "",
             persona: null,
           });
           seteva1(
@@ -243,7 +268,7 @@ function PublicacionesContext() {
     setFormData({
       evidencia_evaluacion: "",
       cod_carrera: "",
-      periodo: null,
+      per_nombre: "",
       persona: null,
     });
     setEditMode(false);
@@ -277,7 +302,7 @@ function PublicacionesContext() {
           >
             <div className="flex flex-wrap flex-row">
               <div className="flex align-items-center justify-content-center">
-                <div className="flex flex-column flex-wrap gap-4">
+                <div className="flex flex-column flex-wrap gap-4" style={{ marginLeft: "100px" }} >
                   <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
                       htmlFor="cod_carrera"
@@ -301,25 +326,26 @@ function PublicacionesContext() {
                     />
                   </div>
 
-                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
-                      htmlFor="tipo_evento"
+                      htmlFor="per_nombre"
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
-                      Periodo:
+                      Periodo Académico:
                     </label>
                     <Dropdown
-                      id="tipo_evento"
-                      name="tipo_evento"
+                      id="per_nombre"
+                      name="per_nombre"
+                      options={periodos}
                       onChange={(e) =>
-                        setFormData({ ...formData, periodo: e.value })
+                        setFormData({ ...formData, per_nombre: e.value })
                       }
-                      value={formData.periodo}
-                      optionLabel="label"
-                      optionValue="value"
-                      placeholder="Seleccione el Tipo de Evento"
-                      style={{ width: "250px" }} // Ajusta el ancho del Dropdown
+                      value={formData.per_nombre} // Make sure this is correctly bound
+                      optionLabel="per_nombre"
+                      optionValue="per_nombre"
+                      placeholder="Seleccione el Periodo Academico"
+                      style={{ width: "250px" }}
                     />
                   </div>
                 </div>
@@ -347,7 +373,7 @@ function PublicacionesContext() {
                   />
                 </div>
               </div>
-              <div style={{ marginLeft: "556px", marginTop: "-103px" }}>
+              <div style={{ marginLeft: "556px", marginTop: "-185px" }}>
                 <div className="flex flex-column align-items-center justify-content-center ml-4">
                   <label
                     htmlFor="pdf"
@@ -386,8 +412,8 @@ function PublicacionesContext() {
         >
           <thead>
             <tr style={{ backgroundColor: "#0C3255", color: "white" }}>
-              <th>Nº de Publicacion</th>
-              <th>Fecha de Publicación</th>
+              <th>Carrera</th>
+              <th>Periodo Académico</th>
               <th>Operaciones</th>
               <th>Evidencia</th>
             </tr>
@@ -395,8 +421,8 @@ function PublicacionesContext() {
           <tbody>
             {eva1.map((eva) => (
               <tr className="text-center" key={eva.id_evaluacion?.toString()}>
-                <td>{eva.id_evaluacion}</td>
                 <td>{eva.cod_carrera}</td>
+                <td>{eva.per_nombre}</td>
                 <td>
                   <Button
                     type="button"

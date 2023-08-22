@@ -18,14 +18,15 @@ import PublicacionesContext from "../Publicaciones/PublicacionesContext";
 import Footer from "../../common/Footer";
 import Recomendaciones from "../Recomendaciones/RecomendacionesContext";
 import Resumen from "../Resumen/Resumen";
+import PersonaCombinada from "../Persona/PersonaCombinada";
 
 export const DashboardRouter = () => {
   //Datos del sessionStorage
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const rol = userObj.rol;
+  const userId = userObj.id as number;
   const toast = useRef<Toast>(null);
-  console.log(userObj.rol);
 
   //Se utiliza a travez de Toast para mostrar mensajes de confirmacion/error.
   const showError = (errorPrincipal: string, detalleError: string) => {
@@ -245,6 +246,7 @@ export const DashboardRouter = () => {
                   <>
                     <NavBarDoc />
                     <Resumen />
+                    <PersonaCombinada  personaId={userId}/>
                   </>
                 ) : rol === 2 ? (
                   <>

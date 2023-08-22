@@ -6,6 +6,7 @@ import {IEvaDocente} from "./IEva_Docente";
 import {IHabilidadesData} from "./IHabilidades";
 import {IHorarioData} from "./IHorario";
 import {IRecomendaciones} from "./Recomendaciones";
+import {InstruccionFormalData} from "./IInstrucc_Formal";
 import {IExperiencia} from "./IExperiencia";
 
 export interface IResumen {
@@ -16,9 +17,7 @@ export interface IResumen {
     evaluaciones: IEvaDocente[],
     habilidades: IHabilidadesData[],
     horarios: IHorarioData[],
-    // publicaciones: IPublicaciones[] TODO: Revisar si existe la interfaz
     recomendaciones: IRecomendaciones[],
-    // instruccionFormals: I_InstruccionFormal[] TODO: No se tiene definida la interfaz
+    instruccionFormals: InstruccionFormalData[],
     experiencias: IExperiencia[]
-
 }

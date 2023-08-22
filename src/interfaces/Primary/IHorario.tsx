@@ -1,9 +1,9 @@
 export interface IHorarioData {
   id_horario?: Number;
-  periodo: string;
-  horario: string;
-  dias: string;
+  periodoAcademico: string;
+  jornadaHorario: string;
+  horasSemanalesHorario: string;
+  carreraHorario: string;
   distributivo: string;
-  id_periodo?: Number;
   persona: object | null;
 }
