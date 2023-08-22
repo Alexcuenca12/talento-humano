@@ -21,6 +21,7 @@ import {Column} from "primereact/column";
 import {decoder} from "../../services/functions/decoder";
 import {Fieldset} from "primereact/fieldset";
 import cardHeader from "../../shared/CardHeader";
+import swal from "sweetalert";
 
 const apiViewService = new VistaPersonaService();
 const apiService = new PersonaService();
@@ -29,14 +30,15 @@ const Persona = () => {
   const [items, setItems] = useState<IPersona[]>([]);
   const [message, setMessage] = useState<IMessage | null>(null);
   const [selectedItem, setSelectedItem] = useState<IPersona | null>(null);
-  const fileUploadRef = useRef<FileUpload>(null);
+  const [editMode, setEditMode] = useState(false);
+  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);const fileUploadRef = useRef<FileUpload>(null);
   const estadoCivil = ["SOLTERO/A", "CASADO/A", "DIVORCIADO/A", "VIUDO/A", "UNION LIBRE"]
   const sexos = ["HOMBRE", "MUJER"]
   const generos = ["MASCULINO", "FEMENINO", "OTRO"]
   const sangres = ["O+", "O-", "A+", "A-", "B+", "B-", "AB+", "AB-", "NO SABE"]
   const etnias = ["AFROECUATORIANO", "INDÍGENA", "MONTUBIO", "MESTIZO", "BLANCO", "MULATO", "OTRO"]
   const [edadCalculada, setEdadCalculada] = useState(0);
-
+  const perService = new PersonaService();
   const calcularEdad = (fechaNacimiento:Date) => {
     const diadeHoy = new Date();
     const fechaNacimientoObj = new Date(fechaNacimiento);
@@ -85,6 +87,91 @@ const Persona = () => {
                 onClick={() => decoder(base64File, 'CV Socioempleo')}
                 data-pr-tooltip="PDF"/>) : (<span>Sin Anexo</span>)
   }
+  const handleEdit = (id: number | undefined) => {
+    if (id !== undefined) {
+      const editItem = items.find((per) => per.id_persona === id);
+      if (editItem) {
+        setSelectedItem(editItem);
+        setEditMode(true);
+        setEditItemId(id);
+      }
+    }
+  };
+
+  const handleDelete = (id: number | undefined) => {
+    if (id !== undefined) {
+      swal({
+        title: "Confirmar Eliminación",
+        text: "¿Estás seguro de eliminar este registro?",
+        icon: "warning",
+        buttons: {
+          cancel: {
+            text: "Cancelar",
+            visible: true,
+            className: "cancel-button",
+          },
+          confirm: {
+            text: "Sí, eliminar",
+            className: "confirm-button",
+          },
+        },
+      }).then((confirmed) => {
+        if (confirmed) {
+          perService
+              .delete(id)
+              .then(() => {
+                setItems(items.filter((per) => per.id_persona !== id));
+                swal(
+                    "Eliminado",
+                    "El registro ha sido eliminado correctamente",
+                    "error"
+                );
+              })
+              .catch((error) => {
+                console.error("Error al eliminar el registro:", error);
+                swal(
+                    "Error",
+                    "Ha ocurrido un error al eliminar el registro",
+                    "error"
+                );
+              });
+        }
+      });
+    }
+  };
+
+  const decodeBase64 = (base64Data: string) => {
+    try {
+      // Eliminar encabezados o metadatos de la cadena base64
+      const base64WithoutHeader = base64Data.replace(/^data:.*,/, "");
+
+      const decodedData = atob(base64WithoutHeader); // Decodificar la cadena base64
+      const byteCharacters = new Uint8Array(decodedData.length);
+
+      for (let i = 0; i < decodedData.length; i++) {
+        byteCharacters[i] = decodedData.charCodeAt(i);
+      }
+
+      const byteArray = new Blob([byteCharacters], {type: "application/pdf"});
+      const fileUrl = URL.createObjectURL(byteArray);
+
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.download = "Evidencia CV Socioempleo.pdf";
+      link.click();
+      swal({
+        title: "Publicación",
+        text: "Descargando pdf....",
+        icon: "success",
+        timer: 1000,
+      });
+      console.log("pdf descargado...");
+
+      URL.revokeObjectURL(fileUrl);
+    } catch (error) {
+      console.error("Error al decodificar la cadena base64:", error);
+    }
+  };
 
 
   const formik = useFormik<IPersona>({
@@ -141,14 +228,10 @@ const Persona = () => {
       }
       if (!values.descripcion_perfil) {
         errors.descripcion_perfil = 'La descripcion es requerida';
-      }/*
+      }
       if (!values.cv_socioempleo) {
         errors.cv_socioempleo = 'El Curriculum Vitae es requerido';
       }
-      if (!values.foto) {
-        errors.foto = 'Foto requerida';
-      }*/
-
       return errors;
     }
   });
@@ -723,32 +806,106 @@ const Persona = () => {
             </div>
 
 
-            <div className="col-12 flex justify-content-evenly align-content-center mt-4">
-              <Button label={selectedItem ? 'Actualizar' : 'Guardar'}
-                      severity={selectedItem ? 'warning' : 'success'} type="submit"/>
-              <Button label="Cancelar" severity="secondary" type="button" onClick={() => {
+            <div className="col-12 flex justify-content-evenly align-content-center mt-3">
+              <Button
+                  type="submit"
+                  style={{marginTop: "55px"}}
+                  label={selectedItem ? 'Actualizar' : 'Guardar'}
+                  severity={selectedItem ? 'warning' : 'success'}
+                  className="w-auto text-3xl min-w-min "
+                  rounded
+              />
+              <Button
+                  type="button"
+                  label="Cancelar"
+                  severity="secondary"
+                  style={{marginTop: "55px"}}
+                  className="w-auto text-3xl min-w-min"
+                  rounded
+                  onClick={() => {
                 formik.resetForm();
                 setSelectedItem(null);
               }}/>
             </div>
-
-
-            <Card className="my-5 mx-auto">
-              <DataTable value={items}
-                         dataKey="id_experiencia"
-                         paginator
-                         rows={10}
-                         rowsPerPageOptions={[5, 10, 25]}
-              >
-
-                <Column field="institucion" header="Institución"></Column>
-                <Column field="area_trabajo" header="Área de trabajo"></Column>
-                <Column field="puesto" header="Puesto"></Column>
-                <Column body={(rowData) => annexBodyTemplate(rowData)}
-                        header="Anexo"></Column>
-              </DataTable>
-            </Card>
           </form>
+          <table style={{minWidth: "40rem"}}
+                 className="mt-4  w-full h-full text-3xl font-large">
+            <thead>
+            <tr style={{backgroundColor: "#0C3255", color: "white"}}>
+              <th>Cedula</th>
+              <th>Docente</th>
+              <th>Edad</th>
+              <th>Sexo</th>
+              <th>Celular</th>
+              <th>Correo</th>
+              <th>Discapacidad</th>
+              <th>Operaciones</th>
+              <th>Evidencia</th>
+            </tr>
+            </thead>
+            <tbody>
+            {items.map((per) => (
+                <tr className="text-center" key={per.id_persona?.toString()}>
+                  <td>{per.cedula}</td>
+                  <td>{per.apellido_paterno+" "+per.primer_nombre}</td>
+                  <td>{per.edad}</td>
+                  <td>{per.sexo}</td>
+                  <td>{per.celular}</td>
+                  <td>{per.correo}</td>
+                  <td>{per.discapacidad}</td>
+                  <td>
+                    <Button
+                        type="button"
+                        className=""
+                        label="✎"
+                        style={{
+                          background: "#ff9800",
+                          borderRadius: "10%",
+                          fontSize: "25px",
+                          width: "40px",
+                          color: "black",
+                          justifyContent: "center",
+                        }}
+                        onClick={() => handleEdit(per.id_persona?.valueOf())}
+                    />
+                    <Button
+                        type="button"
+                        className=""
+                        label="✘"
+                        style={{
+                          background: "#ff0000",
+                          borderRadius: "10%",
+                          fontSize: "30px",
+                          width: "40px",
+                          color: "black",
+                          justifyContent: "center",
+                        }}
+                        onClick={() => handleDelete(per.id_persona?.valueOf())}
+                    />
+                  </td>
+                  <td>
+                    {per.cv_socioempleo ? (
+                        <Button
+                            type="button"
+                            className=""
+                            label="Descargar PDF"
+                            style={{
+                              background: "#009688",
+                              borderRadius: "10%",
+                              fontSize: "12px",
+                              color: "black",
+                              justifyContent: "center",
+                            }}
+                            onClick={() => decodeBase64(per.cv_socioempleo!)}
+                        />
+                    ) : (
+                        <span>Sin evidencia</span>
+                    )}
+                  </td>
+                </tr>
+            ))}
+            </tbody>
+          </table>
         </Card>
       </Fieldset>
   );
