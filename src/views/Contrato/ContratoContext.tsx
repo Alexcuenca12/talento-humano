@@ -41,10 +41,14 @@ function ContratoContext() {
     { label: "Por horas", value: "Por Horas" },
   ];
   const salariopublicoOptions = [
-    { label: "1", value: "1" },
-    { label: "2", value: "2" },
-    { label: "3", value: "3" },
-    { label: "4", value: "4" },
+    { label: "SP 1", value: "SP1" },
+    { label: "SP 2", value: "SP2" },
+    { label: "SP 3", value: "SP3" },
+    { label: "SP 4", value: "SP4" },
+    { label: "SP 5", value: "SP5" },
+    { label: "SP 6", value: "SP6" },
+    { label: "NJS 1", value: "NJS1" },
+    { label: "NJS 2", value: "NJS2" },
   ];
   const [contratoVigente, setContratoVigente] = useState<boolean>(false);
 
@@ -187,19 +191,8 @@ function ContratoContext() {
       return;
     }
 
-    // Crear una instancia de Persona con el id deseado (por ejemplo, 1)
-    const personaData = {
-      id_persona: 1, // Coloca aquí el id válido de la persona
-    };
-
-    // Asignar el valor "1" al campo id_persona en formData
-    const dataToSend = {
-      ...formData,
-      persona: personaData, // Aquí se establece el valor "1" como una cadena
-    };
-
     contratService
-      .save(dataToSend)
+      .save(formData)
       .then((response) => {
         resetForm();
         swal("Contrato", "Datos Guardados Correctamente", "success");

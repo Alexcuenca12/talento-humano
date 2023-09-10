@@ -76,49 +76,16 @@ function PublicacionesContext() {
       id_persona: idPersona,
     },
   });
-  const tipoCertificadoOptions = [
-    { label: "Aprobación", value: "Aprobación" },
-    { label: "Asistencia", value: "Asistencia" },
-  ];
-  const areaEstudioOptions = [
-    { label: "Administración/oficina", value: "Administración/oficina" },
-    {
-      label: "Agricultura/Pesca/Ganadería",
-      value: "Agricultura/Pesca/Ganadería",
-    },
-    { label: "Arte/Diseño/Medios", value: "Arte/Diseño/Medios" },
-    { label: "Científico/Investigación", value: "Científico/Investigación" },
-    { label: "Dirección/ Gerencia", value: "Dirección/ Gerencia" },
-    { label: "Economía/Contabilidad", value: "Economía/Contabilidad" },
-    { label: "Educación Básica/Cursos", value: "Educación Básica/Cursos" },
-    { label: "Educación/Universidad", value: "Educación/Universidad" },
-    { label: "Entretenimiento/Deportes", value: "Entretenimiento/Deportes" },
-    { label: "Fabricación", value: "Fabricación" },
-    { label: "Finanzas/ Banca", value: "Finanzas/ Banca" },
-    { label: "Gobierno", value: "Gobierno" },
-    { label: "Hotelería/Turismo", value: "Hotelería/Turismo" },
-    { label: "Informática hardware", value: "Informática hardware" },
-    { label: "Informática software", value: "Informática software" },
-    {
-      label: "Informática/Telecomunicaciones",
-      value: "Informática/Telecomunicaciones",
-    },
-    { label: "Ingeniería/Técnico", value: "Ingeniería/Técnico" },
-    { label: "Internet", value: "Internet" },
-    { label: "Legal/ Asesoría", value: "Legal/ Asesoría" },
-    { label: "Marketing/Ventas", value: "Marketing/Ventas" },
-    { label: "Materia prima", value: "Materia prima" },
-    { label: "Medicina/Salud", value: "Medicina/Salud" },
-    { label: "Recursos Humanos/Personal", value: "Recursos Humanos/Personal" },
-    { label: "Sin Área de Estudio", value: "Sin Área de Estudio" },
-    { label: "Ventas al consumidor", value: "Ventas al consumidor" },
-  ];
+  
 
   const tipoJornadaOptions = [
     { label: "Seleccione Una", value: "N/A" },
-    { label: "MATUTINA", value: "CONFERENCIA" },
-    { label: "VESPERTINA", value: "CONGRESO" },
-    { label: "AMBAS", value: "AMBAS" },
+    { label: "MATUTINA", value: "MATUTINA" },
+    { label: "VESPERTINA", value: "VESPERTINA" },
+    { label: "NOCTURNA", value: "NOCTURNA" },
+    { label: "MATUTINA/NOCTURNA", value: "MATUTINA/NOCTURNA" },
+    { label: "MATUTINA/VESPERTINA", value: "MATUTINA/VESPERTINA" },
+    { label: "VESPERTINA/NOCTURNA", value: "VESPERTINA/NOCTURNA" },
   ];
   const fileUploadRef = useRef<FileUpload>(null);
   const [dataLoaded, setDataLoaded] = useState(false);
@@ -349,7 +316,7 @@ function PublicacionesContext() {
         <div className="h1-rem">
           <Divider align="center">
             <h1 className="text-7xl font-smibold lg:md-2  w-full h-full max-w-full max-h-full min-w-min">
-              Horario
+              Distributivo
             </h1>
           </Divider>
         </div>
@@ -420,7 +387,7 @@ function PublicacionesContext() {
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
-                      Horas Semanales:
+                      Horas de Clases  Semanales:
                     </label>
                     <InputText
                       className="text-2xl"
@@ -443,7 +410,7 @@ function PublicacionesContext() {
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
-                      Carrera:
+                      Carrera con Mayor Carga Horaria:
                     </label>
                     <Dropdown
                       id="cod_carrera"

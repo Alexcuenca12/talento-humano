@@ -1,15 +1,15 @@
-import React, {useEffect, useState, useRef} from "react";
-import {InputText} from "primereact/inputtext";
-import {FileUpload, FileUploadSelectEvent} from "primereact/fileupload";
-import {Button} from "primereact/button";
-import {Calendar} from "primereact/calendar";
-import {Fieldset} from "primereact/fieldset";
-import {Dropdown} from "primereact/dropdown";
-import {Card} from "primereact/card";
+import React, { useEffect, useState, useRef } from "react";
+import { InputText } from "primereact/inputtext";
+import { FileUpload, FileUploadSelectEvent } from "primereact/fileupload";
+import { Button } from "primereact/button";
+import { Calendar } from "primereact/calendar";
+import { Fieldset } from "primereact/fieldset";
+import { Dropdown } from "primereact/dropdown";
+import { Card } from "primereact/card";
 import cardHeader from "../../shared/CardHeader";
-import {Divider} from "primereact/divider";
-import {IExperiencia} from "../../interfaces/Primary/IExperiencia";
-import {ExperienciaService} from "../../services/ExperienciaService";
+import { Divider } from "primereact/divider";
+import { IExperiencia } from "../../interfaces/Primary/IExperiencia";
+import { ExperienciaService } from "../../services/ExperienciaService";
 import swal from "sweetalert";
 
 function Experiencia() {
@@ -29,14 +29,14 @@ function Experiencia() {
     actividades: "",
     estado: false,
     certificado_trabajo: "",
-    persona: {id_persona: idPersona,},
+    persona: { id_persona: idPersona },
   });
 
   const areaTrabajoOptions = [
-    {label: "Recursos Humanos", value: "Recursos Humanos"},
-    {label: "Docencia", value: "Docencia"},
-    {label: "Eventos", value: "Eventos"},
-    {label: "Administrativo", value: "Administrativo"},
+    { label: "Administrativo", value: "Administrativo" },
+    { label: "Docencia", value: "Docencia" },
+    { label: "Recursos Humanos", value: "Recursos Humanos" },
+    { label: "Otros", value: "Otros" },
   ];
 
   const fileUploadRef = useRef<FileUpload>(null);
@@ -47,14 +47,14 @@ function Experiencia() {
 
   const loadData = () => {
     expService
-        .getAllItems()
-        .then((data) => {
-          setexp1(data);
-          setDataLoaded(true); // Marcar los datos como cargados
-        })
-        .catch((error) => {
-          console.error("Error al obtener los datos:", error);
-        });
+      .getAllItems()
+      .then((data) => {
+        setexp1(data);
+        setDataLoaded(true); // Marcar los datos como cargados
+      })
+      .catch((error) => {
+        console.error("Error al obtener los datos:", error);
+      });
   };
   useEffect(() => {
     loadData();
@@ -67,7 +67,7 @@ function Experiencia() {
 
       reader.onloadend = function () {
         const base64data = reader.result as string;
-        setFormData({...formData, certificado_trabajo: base64data});
+        setFormData({ ...formData, certificado_trabajo: base64data });
       };
 
       reader.onerror = (error) => {
@@ -94,7 +94,7 @@ function Experiencia() {
         byteCharacters[i] = decodedData.charCodeAt(i);
       }
 
-      const byteArray = new Blob([byteCharacters], {type: "application/pdf"});
+      const byteArray = new Blob([byteCharacters], { type: "application/pdf" });
       const fileUrl = URL.createObjectURL(byteArray);
 
       const link = document.createElement("a");
@@ -119,40 +119,40 @@ function Experiencia() {
     e.preventDefault();
 
     if (
-        !formData.institucion ||
-        !formData.puesto ||
-        !formData.area_trabajo ||
-        !formData.fecha_inicio ||
-        !formData.fecha_fin ||
-        !formData.actividades ||
-        !formData.certificado_trabajo
+      !formData.institucion ||
+      !formData.puesto ||
+      !formData.area_trabajo ||
+      !formData.fecha_inicio ||
+      !formData.fecha_fin ||
+      !formData.actividades ||
+      !formData.certificado_trabajo
     ) {
       swal("Advertencia", "Por favor, complete todos los campos", "warning");
       return;
     }
 
     expService
-        .createItem(formData)
-        .then((response) => {
-          resetForm();
-          swal("Publicacion", "Datos Guardados Correctamente", "success");
+      .createItem(formData)
+      .then((response) => {
+        resetForm();
+        swal("Publicacion", "Datos Guardados Correctamente", "success");
 
-          expService
-              .getAllItems()
-              .then((data) => {
-                setexp1(data);
-                resetForm();
-                if (fileUploadRef.current) {
-                  fileUploadRef.current.clear();
-                }
-              })
-              .catch((error) => {
-                console.error("Error al obtener los datos:", error);
-              });
-        })
-        .catch((error) => {
-          console.error("Error al enviar el formulario:", error);
-        });
+        expService
+          .getAllItems()
+          .then((data) => {
+            setexp1(data);
+            resetForm();
+            if (fileUploadRef.current) {
+              fileUploadRef.current.clear();
+            }
+          })
+          .catch((error) => {
+            console.error("Error al obtener los datos:", error);
+          });
+      })
+      .catch((error) => {
+        console.error("Error al enviar el formulario:", error);
+      });
   };
 
   const handleDelete = (id: number | undefined) => {
@@ -175,23 +175,23 @@ function Experiencia() {
       }).then((confirmed) => {
         if (confirmed) {
           expService
-              .deleteItem(id)
-              .then(() => {
-                setexp1(exp1.filter((exp) => exp.id_experiencia !== id));
-                swal(
-                    "Eliminado",
-                    "El registro ha sido eliminado correctamente",
-                    "error"
-                );
-              })
-              .catch((error) => {
-                console.error("Error al eliminar el registro:", error);
-                swal(
-                    "Error",
-                    "Ha ocurrido un error al eliminar el registro",
-                    "error"
-                );
-              });
+            .deleteItem(id)
+            .then(() => {
+              setexp1(exp1.filter((exp) => exp.id_experiencia !== id));
+              swal(
+                "Eliminado",
+                "El registro ha sido eliminado correctamente",
+                "error"
+              );
+            })
+            .catch((error) => {
+              console.error("Error al eliminar el registro:", error);
+              swal(
+                "Error",
+                "Ha ocurrido un error al eliminar el registro",
+                "error"
+              );
+            });
         }
       });
     }
@@ -213,35 +213,35 @@ function Experiencia() {
     e.preventDefault();
     if (editItemId !== undefined) {
       expService
-          .updateItem(Number(editItemId), formData as IExperiencia)
-          .then((response) => {
-            swal({
-              title: "Publicaciones",
-              text: "Datos actualizados correctamente",
-              icon: "success",
-            });
-            setFormData({
-              institucion: "",
-              puesto: "",
-              area_trabajo: "",
-              fecha_inicio: "",
-              fecha_fin: "",
-              actividades: "",
-              estado: false,
-              certificado_trabajo: "",
-              persona: null,
-            });
-            setexp1(
-                exp1.map((exp) =>
-                    exp.id_experiencia === editItemId ? response : exp
-                )
-            );
-            setEditMode(false);
-            setEditItemId(undefined);
-          })
-          .catch((error) => {
-            console.error("Error al actualizar el formulario:", error);
+        .updateItem(Number(editItemId), formData as IExperiencia)
+        .then((response) => {
+          swal({
+            title: "Publicaciones",
+            text: "Datos actualizados correctamente",
+            icon: "success",
           });
+          setFormData({
+            institucion: "",
+            puesto: "",
+            area_trabajo: "",
+            fecha_inicio: "",
+            fecha_fin: "",
+            actividades: "",
+            estado: false,
+            certificado_trabajo: "",
+            persona: null,
+          });
+          setexp1(
+            exp1.map((exp) =>
+              exp.id_experiencia === editItemId ? response : exp
+            )
+          );
+          setEditMode(false);
+          setEditItemId(undefined);
+        })
+        .catch((error) => {
+          console.error("Error al actualizar el formulario:", error);
+        });
     }
   };
 
@@ -268,269 +268,271 @@ function Experiencia() {
   }
 
   return (
-      <Fieldset className="fgrid col-fixed ">
-        <Card
-            header={cardHeader}
-            className="border-solid border-blue-800 border-3 flex-1 w-full h-full flex-wrap"
+    <Fieldset className="fgrid col-fixed ">
+      <Card
+        header={cardHeader}
+        className="border-solid border-blue-800 border-3 flex-1 w-full h-full flex-wrap"
+      >
+        <div className="h1-rem">
+          <Divider align="center">
+            <h1 className="text-7xl font-smibold lg:md-2  w-full h-full max-w-full max-h-full min-w-min">
+              Experiencia
+            </h1>
+          </Divider>
+        </div>
+
+        <div
+          className="flex justify-content-center flex-wrap"
+          style={{ marginLeft: "60px" }}
         >
-          <div className="h1-rem">
-            <Divider align="center">
-              <h1 className="text-7xl font-smibold lg:md-2  w-full h-full max-w-full max-h-full min-w-min">
-                Experiencia
-              </h1>
-            </Divider>
-          </div>
-
-          <div
-              className="flex justify-content-center flex-wrap"
-              style={{marginLeft: "60px"}}
+          <form
+            onSubmit={editMode ? handleUpdate : handleSubmit}
+            encType="multipart/form-data"
           >
-            <form
-                onSubmit={editMode ? handleUpdate : handleSubmit}
-                encType="multipart/form-data"
-            >
-              <div className="flex flex-wrap flex-row">
-                <div className="flex align-items-center justify-content-center">
-                  <div
-                      className="flex flex-column flex-wrap gap-4"
-                      style={{marginLeft: "20px"}}>
-                    <div className="flex flex-wrap w-full h-full  justify-content-between">
-                      <label
-                          htmlFor="institucion"
-                          className="text-3xl font-medium w-auto min-w-min"
-                          style={{marginRight: "20px"}}>Institución:
-                      </label>
-                      <InputText
-                          className="text-2xl"
-                          placeholder="Ingrese la Institución"
-                          id="institucion"
-                          name="institucion"
-                          style={{width: "250px"}}
-                          onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                institucion: e.currentTarget.value,
-                              })
-                          }
-                          value={formData.institucion}
-                      />
-                    </div>
-
-
-                    <div className="flex flex-wrap w-full h-full  justify-content-between">
-                      <label
-                          htmlFor="puesto"
-                          className="text-3xl font-medium w-auto min-w-min"
-                          style={{marginRight: "20px"}}
-                      >
-                        Puesto:
-                      </label>
-                      <InputText
-                          className="text-2xl"
-                          placeholder="Ingrese su Puesto Anterior"
-                          id="puesto"
-                          name="puesto"
-                          style={{width: "250px"}}
-                          onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                puesto: e.currentTarget.value,
-                              })
-                          }
-                          value={formData.puesto}
-                      />
-                    </div>
+            <div className="flex flex-wrap flex-row">
+              <div className="flex align-items-center justify-content-center">
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginLeft: "20px" }}
+                >
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="institucion"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Institución:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese la Institución"
+                      id="institucion"
+                      name="institucion"
+                      style={{ width: "250px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          institucion: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.institucion}
+                    />
                   </div>
-                  <div
-                      className="flex flex-column flex-wrap gap-4"
-                      style={{marginTop: "-2px", marginLeft: "25px"}}
-                  >
-                    <div className="flex flex-wrap w-full h-full justify-content-between">
-                      <label
-                          htmlFor="area_trabajo"
-                          className="text-3xl font-medium w-auto min-w-min"
-                          style={{marginRight: "20px"}}
-                      >
-                        Área de Trabajo:
-                      </label>
-                      <Dropdown
-                          id="area_trabajo"
-                          name="area_trabajo"
-                          options={areaTrabajoOptions}
-                          onChange={(e) =>
-                              setFormData({...formData, area_trabajo: e.value})
-                          }
-                          value={formData.area_trabajo}
-                          optionLabel="label"
-                          optionValue="value"
-                          placeholder="Seleccione el Área de Trabajo"
-                          style={{width: "250px"}} // Ajusta el ancho del Dropdown
-                      />
-                    </div>
-                    <div className="flex flex-wrap w-full h-full justify-content-between">
-                      <label
-                          htmlFor="actividades"
-                          className="text-3xl font-medium w-auto min-w-min"
-                          style={{marginRight: "20px"}}
-                      >
-                        Actividades:
-                      </label>
-                      <InputText
-                          className="text-2xl"
-                          placeholder="Ingrese sus Actividades"
-                          id="actividades"
-                          name="actividades"
-                          style={{width: "250px"}}
-                          onChange={(e) =>
-                              setFormData({
-                                ...formData,
-                                actividades: e.currentTarget.value,
-                              })
-                          }
-                          value={formData.actividades}
-                      />
-                    </div>
-                  </div>
-                  <div
-                      className="flex flex-column flex-wrap gap-4"
-                      style={{marginTop: "-2px", marginLeft: "25px"}}
-                  >
-                    <div className="flex flex-wrap w-full h-full justify-content-between">
-                      <label
-                          htmlFor="fecha_inicio"
-                          className="text-3xl font-medium w-auto min-w-min"
-                          style={{marginRight: "20px"}}
-                      >
-                        Fecha de Inicio:
-                      </label>
-                      <Calendar
-                          className="text-2xl"
-                          id="fecha_inicio"
-                          name="fecha_inicio"
-                          required
-                          placeholder="Ingrese la Fecha de Inicio"
-                          dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
-                          showIcon
-                          style={{width: "250px"}}
-                          maxDate={new Date()}
-                          onChange={(e) => {
-                            const selectedDate =
-                                e.value instanceof Date ? e.value : null;
-                            const formattedDate = selectedDate
-                                ? selectedDate.toISOString().split("T")[0] // Formatear a ISO 8601
-                                : "";
-                            setFormData({
-                              ...formData,
-                              fecha_inicio: formattedDate,
-                            });
-                          }}
-                          value={
-                            formData.fecha_inicio
-                                ? new Date(formData.fecha_inicio)
-                                : null
-                          }
-                      />
-                    </div>
-                    <div className="flex flex-wrap w-full h-full justify-content-between">
-                      <label
-                          htmlFor="fecha_fin"
-                          className="text-3xl font-medium w-auto min-w-min"
-                          style={{marginRight: "20px"}}
-                      >
-                        Fecha de Fin:
-                      </label>
-                      <Calendar
-                          className="text-2xl"
-                          id="fecha_fin"
-                          name="fecha_fin"
-                          required
-                          placeholder="Ingrese la Fecha de Fin"
-                          dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
-                          showIcon
-                          style={{width: "250px"}}
-                          maxDate={new Date()}
-                          onChange={(e) => {
-                            const selectedDate =
-                                e.value instanceof Date ? e.value : null;
-                            const formattedDate = selectedDate
-                                ? selectedDate.toISOString().split("T")[0] // Formatear a ISO 8601
-                                : "";
-                            setFormData({
-                              ...formData,
-                              fecha_fin: formattedDate,
-                            });
-                          }}
-                          value={
-                            formData.fecha_fin ? new Date(formData.fecha_fin) : null
-                          }
-                      />
-                    </div>
+
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="puesto"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Puesto:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese su Puesto Anterior"
+                      id="puesto"
+                      name="puesto"
+                      style={{ width: "250px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          puesto: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.puesto}
+                    />
                   </div>
                 </div>
                 <div
-                    className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6"
-                    style={{marginLeft: "-45px"}}
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginTop: "-2px", marginLeft: "25px" }}
                 >
-                  <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                    <Button
-                        type="submit"
-                        style={{marginTop: "55px"}}
-                        label={editMode ? "Actualizar" : "Guardar"}
-                        className="w-full text-3xl min-w-min "
-                        rounded
-                        onClick={editMode ? handleUpdate : handleSubmit}
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
+                    <label
+                      htmlFor="area_trabajo"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Área de Trabajo:
+                    </label>
+                    <Dropdown
+                      id="area_trabajo"
+                      name="area_trabajo"
+                      options={areaTrabajoOptions}
+                      onChange={(e) =>
+                        setFormData({ ...formData, area_trabajo: e.value })
+                      }
+                      value={formData.area_trabajo}
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Seleccione el Área de Trabajo"
+                      style={{ width: "250px" }} // Ajusta el ancho del Dropdown
                     />
                   </div>
-                  <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                    <Button
-                        type="button"
-                        label="Cancelar"
-                        style={{marginTop: "55px"}}
-                        className="w-full text-3xl min-w-min"
-                        rounded
-                        onClick={resetForm}
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
+                    <label
+                      htmlFor="actividades"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Actividades:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese sus Actividades"
+                      id="actividades"
+                      name="actividades"
+                      style={{ width: "250px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          actividades: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.actividades}
                     />
                   </div>
                 </div>
-                <div style={{marginLeft: "466px", marginTop: "-93px"}}>
-                  <div className="flex flex-column align-items-center justify-content-center ml-4">
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginTop: "-2px", marginLeft: "25px" }}
+                >
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
-                        htmlFor="pdf"
-                        className="text-3xl font-medium w-auto min-w-min"
-                        style={{
-                          marginRight: "20px",
-                          marginLeft: "169px",
-                          marginTop: "-5px",
-                        }}
+                      htmlFor="fecha_inicio"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
                     >
-                      Subir Certificado:
+                      Fecha de Inicio:
                     </label>
-                    <FileUpload
-                        name="pdf"
-                        style={{marginLeft: "380px", marginTop: "10px"}}
-                        chooseLabel="Escoger"
-                        uploadLabel="Cargar"
-                        cancelLabel="Cancelar"
-                        emptyTemplate={
-                          <p className="m-0 p-button-rounded">
-                            Arrastre y suelte los archivos aquí para cargarlos.
-                          </p>
-                        }
-                        customUpload
-                        onSelect={customBytesUploader}
-                        accept="application/pdf"
+                    <Calendar
+                      className="text-2xl"
+                      id="fecha_inicio"
+                      name="fecha_inicio"
+                      required
+                      placeholder="Ingrese la Fecha de Inicio"
+                      dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
+                      showIcon
+                      style={{ width: "250px" }}
+                      maxDate={new Date()}
+                      onChange={(e) => {
+                        const selectedDate =
+                          e.value instanceof Date ? e.value : null;
+                        const formattedDate = selectedDate
+                          ? selectedDate.toISOString().split("T")[0] // Formatear a ISO 8601
+                          : "";
+                        setFormData({
+                          ...formData,
+                          fecha_inicio: formattedDate,
+                        });
+                      }}
+                      value={
+                        formData.fecha_inicio
+                          ? new Date(formData.fecha_inicio)
+                          : null
+                      }
+                    />
+                  </div>
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
+                    <label
+                      htmlFor="fecha_fin"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Fecha de Fin:
+                    </label>
+                    <Calendar
+                      className="text-2xl"
+                      id="fecha_fin"
+                      name="fecha_fin"
+                      required
+                      placeholder="Ingrese la Fecha de Fin"
+                      dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
+                      showIcon
+                      style={{ width: "250px" }}
+                      maxDate={new Date()}
+                      onChange={(e) => {
+                        const selectedDate =
+                          e.value instanceof Date ? e.value : null;
+                        const formattedDate = selectedDate
+                          ? selectedDate.toISOString().split("T")[0] // Formatear a ISO 8601
+                          : "";
+                        setFormData({
+                          ...formData,
+                          fecha_fin: formattedDate,
+                        });
+                      }}
+                      value={
+                        formData.fecha_fin ? new Date(formData.fecha_fin) : null
+                      }
                     />
                   </div>
                 </div>
               </div>
-            </form>
-          </div>
-          <table
-              style={{minWidth: "40rem"}}
-              className="mt-4  w-full h-full text-3xl font-large"
-          >
-            <thead>
-            <tr style={{backgroundColor: "#0C3255", color: "white"}}>
+              <div
+                className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6"
+                style={{ marginLeft: "-45px" }}
+              >
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="submit"
+                    style={{ marginTop: "55px" }}
+                    label={editMode ? "Actualizar" : "Guardar"}
+                    className="w-full text-3xl min-w-min "
+                    rounded
+                    onClick={editMode ? handleUpdate : handleSubmit}
+                  />
+                </div>
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="button"
+                    label="Cancelar"
+                    style={{ marginTop: "55px" }}
+                    className="w-full text-3xl min-w-min"
+                    rounded
+                    onClick={resetForm}
+                  />
+                </div>
+              </div>
+              <div style={{ marginLeft: "466px", marginTop: "-93px" }}>
+                <div className="flex flex-column align-items-center justify-content-center ml-4">
+                  <label
+                    htmlFor="pdf"
+                    className="text-3xl font-medium w-auto min-w-min"
+                    style={{
+                      marginRight: "20px",
+                      marginLeft: "169px",
+                      marginTop: "-5px",
+                    }}
+                  >
+                    Subir Certificado:
+                  </label>
+                  <FileUpload
+                    name="pdf"
+                    style={{ marginLeft: "380px", marginTop: "10px" }}
+                    chooseLabel="Escoger"
+                    uploadLabel="Cargar"
+                    cancelLabel="Cancelar"
+                    emptyTemplate={
+                      <p className="m-0 p-button-rounded">
+                        Arrastre y suelte los archivos aquí para cargarlos.
+                      </p>
+                    }
+                    customUpload
+                    onSelect={customBytesUploader}
+                    accept="application/pdf"
+                  />
+                </div>
+              </div>
+            </div>
+          </form>
+        </div>
+        <table
+          style={{ minWidth: "40rem" }}
+          className="mt-4  w-full h-full text-3xl font-large"
+        >
+          <thead>
+            <tr style={{ backgroundColor: "#0C3255", color: "white" }}>
               <th>Institución</th>
               <th>Puesto</th>
               <th>Área de Trabajo</th>
@@ -540,90 +542,90 @@ function Experiencia() {
               <th>Operaciones</th>
               <th>Evidencia</th>
             </tr>
-            </thead>
-            <tbody>
+          </thead>
+          <tbody>
             {exp1.map((exp) => (
-                <tr className="text-center" key={exp.id_experiencia?.toString()}>
-                  <td>{exp.institucion}</td>
-                  <td>{exp.puesto}</td>
-                  <td>{exp.area_trabajo}</td>
-                  <td>{exp.actividades}</td>
-                  <td>
-                    {exp.fecha_inicio
-                        ? new Date(exp.fecha_inicio).toLocaleDateString("es-ES", {
-                          year: "numeric",
-                          month: "2-digit",
-                          day: "2-digit",
-                        })
-                        : ""}
-                  </td>
+              <tr className="text-center" key={exp.id_experiencia?.toString()}>
+                <td>{exp.institucion}</td>
+                <td>{exp.puesto}</td>
+                <td>{exp.area_trabajo}</td>
+                <td>{exp.actividades}</td>
+                <td>
+                  {exp.fecha_inicio
+                    ? new Date(exp.fecha_inicio).toLocaleDateString("es-ES", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })
+                    : ""}
+                </td>
 
-                  <td>
-                    {exp.fecha_fin
-                        ? new Date(exp.fecha_fin).toLocaleDateString("es-ES", {
-                          year: "numeric",
-                          month: "2-digit",
-                          day: "2-digit",
-                        })
-                        : ""}
-                  </td>
-                  <td>
+                <td>
+                  {exp.fecha_fin
+                    ? new Date(exp.fecha_fin).toLocaleDateString("es-ES", {
+                        year: "numeric",
+                        month: "2-digit",
+                        day: "2-digit",
+                      })
+                    : ""}
+                </td>
+                <td>
+                  <Button
+                    type="button"
+                    className=""
+                    label="✎"
+                    style={{
+                      background: "#ff9800",
+                      borderRadius: "5%",
+                      fontSize: "25px",
+                      width: "50px",
+                      color: "black",
+                      justifyContent: "center",
+                    }}
+                    onClick={() => handleEdit(exp.id_experiencia?.valueOf())}
+                    // Agrega el evento onClick para la operación de editar
+                  />
+                  <Button
+                    type="button"
+                    className=""
+                    label="✘"
+                    style={{
+                      background: "#ff0000",
+                      borderRadius: "10%",
+                      fontSize: "25px",
+                      width: "50px",
+                      color: "black",
+                      justifyContent: "center",
+                    }}
+                    onClick={() => handleDelete(exp.id_experiencia?.valueOf())}
+                    // Agrega el evento onClick para la operación de eliminar
+                  />
+                </td>
+                <td>
+                  {exp.certificado_trabajo ? (
                     <Button
-                        type="button"
-                        className=""
-                        label="✎"
-                        style={{
-                          background: "#ff9800",
-                          borderRadius: "5%",
-                          fontSize: "25px",
-                          width: "50px",
-                          color: "black",
-                          justifyContent: "center",
-                        }}
-                        onClick={() => handleEdit(exp.id_experiencia?.valueOf())}
-                        // Agrega el evento onClick para la operación de editar
+                      type="button"
+                      className=""
+                      label="Descargar PDF"
+                      style={{
+                        background: "#009688",
+                        borderRadius: "10%",
+                        fontSize: "12px",
+                        color: "black",
+                        justifyContent: "center",
+                      }}
+                      onClick={() => decodeBase64(exp.certificado_trabajo!)}
                     />
-                    <Button
-                        type="button"
-                        className=""
-                        label="✘"
-                        style={{
-                          background: "#ff0000",
-                          borderRadius: "10%",
-                          fontSize: "25px",
-                          width: "50px",
-                          color: "black",
-                          justifyContent: "center",
-                        }}
-                        onClick={() => handleDelete(exp.id_experiencia?.valueOf())}
-                        // Agrega el evento onClick para la operación de eliminar
-                    />
-                  </td>
-                  <td>
-                    {exp.certificado_trabajo ? (
-                        <Button
-                            type="button"
-                            className=""
-                            label="Descargar PDF"
-                            style={{
-                              background: "#009688",
-                              borderRadius: "10%",
-                              fontSize: "12px",
-                              color: "black",
-                              justifyContent: "center",
-                            }}
-                            onClick={() => decodeBase64(exp.certificado_trabajo!)}
-                        />
-                    ) : (
-                        <span>Sin evidencia</span>
-                    )}
-                  </td>
-                </tr>
+                  ) : (
+                    <span>Sin evidencia</span>
+                  )}
+                </td>
+              </tr>
             ))}
-            </tbody>
-          </table>
-        </Card>
-      </Fieldset>
+          </tbody>
+        </table>
+      </Card>
+    </Fieldset>
   );
 }
 

@@ -77,6 +77,7 @@ function PublicacionesContext() {
   const tipoEventoOptions = [
     { label: "CONFERENCIA", value: "CONFERENCIA" },
     { label: "CONGRESO", value: "CONGRESO" },
+    { label: "CURSO", value: "CURSO" },
     { label: "DIPLOMADO", value: "DIPLOMADO" },
     { label: "JORNADA", value: "JORNADA" },
     { label: "PANEL", value: "PANEL" },
