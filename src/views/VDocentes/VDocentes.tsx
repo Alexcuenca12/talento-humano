@@ -13,7 +13,6 @@ function DocenteContext() {
   const [docentes, setDocentes] = useState<VDocentes[]>([]);
   const docenteService = new vDocenteService();
   const [searchTerm, setSearchTerm] = useState("");
-  const [cedulaSearchTerm, setCedulaSearchTerm] = useState("");
   const [selectedDocente, setSelectedDocente] = useState<string | null>(null);
   const history = useHistory();
 
@@ -28,12 +27,25 @@ function DocenteContext() {
       });
   }, []);
 
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(e.target.value);
+  };
+
   const filteredDocentes = docentes.filter((docente) => {
     const nombresCompletos = `${docente.nombres} ${docente.apellidos}`;
     return (
-      nombresCompletos.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      docente.docente_codigo.includes(cedulaSearchTerm)
+      nombresCompletos.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      docente.docente_codigo.includes(searchTerm)
     );
+  });
+
+  // Ordenar los resultados por apellido
+  const sortedDocentes = filteredDocentes.sort((a, b) => {
+    const apellidoA = a.apellidos.toLowerCase();
+    const apellidoB = b.apellidos.toLowerCase();
+    if (apellidoA < apellidoB) return -1;
+    if (apellidoA > apellidoB) return 1;
+    return 0;
   });
 
   // Manejar el clic en el botón para establecer el docente seleccionado
@@ -61,17 +73,10 @@ function DocenteContext() {
             <InputText
               type="text"
               className="text-2xl"
-              style={{ marginRight: "5px" }}
-              placeholder="Buscar por nombres"
+              style={{ width: "210px" }}
+              placeholder="Buscar por Nombre o Cédula"
               value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-            <InputText
-              type="text"
-              className="text-2xl"
-              placeholder="Buscar por cédula"
-              value={cedulaSearchTerm}
-              onChange={(e) => setCedulaSearchTerm(e.target.value)}
+              onChange={handleInputChange}
             />
           </div>
           <table
@@ -86,13 +91,13 @@ function DocenteContext() {
               </tr>
             </thead>
             <tbody>
-              {filteredDocentes.map((docente) => (
+              {sortedDocentes.map((docente) => (
                 <tr
                   className="text-center"
                   key={docente.id_docente?.toString() || ""}
                 >
                   <td>{docente.docente_codigo}</td>
-                  <td>{`${docente.nombres} ${docente.apellidos}`}</td>
+                  <td>{`${docente.apellidos} ${docente.nombres} `}</td>
                   <td>
                     <Button
                       type="button"
@@ -107,7 +112,9 @@ function DocenteContext() {
                         justifyContent: "center",
                         marginRight: "8px",
                       }}
-                      onClick={() => handleDocenteClick(docente.docente_codigo)}
+                      onClick={() =>
+                        handleDocenteClick(docente.docente_codigo)
+                      }
                     />
                   </td>
                 </tr>
