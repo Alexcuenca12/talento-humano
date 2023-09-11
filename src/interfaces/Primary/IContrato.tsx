@@ -12,5 +12,5 @@ export interface IContratoData {
   tiempo_dedicacion: string;
   salario_publico: string;
   contrato_vigente: boolean;
-  id_persona?: Number;
+  persona: object | null;
 }

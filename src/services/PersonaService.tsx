@@ -30,6 +30,13 @@ export class PersonaService {
             throw error
         })
 }
+
+getSummarySecre(cedula: string) {
+  return axios.get(`${this.baseUrl}combi/${cedula}`).then(response => response.data as IResumen)
+      .catch(error => {
+          throw error
+      })
+}
   //Metodo para actualizar un horario basado en el id de la misma
   update(id: number, user: any) {
     return axios

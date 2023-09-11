@@ -14,6 +14,10 @@ import swal from "sweetalert";
 import { Dropdown } from "primereact/dropdown";
 
 function ContratoContext() {
+  const userData = sessionStorage.getItem("user");
+  const userObj = JSON.parse(userData || "{}");
+  const idPersona = userObj.id;
+
   const [contra1, setcontra1] = useState<IContratoData[]>([]);
   const [formData, setFormData] = useState<IContratoData>({
     id_contrato: 0,
@@ -27,7 +31,7 @@ function ContratoContext() {
     tiempo_dedicacion: "",
     salario_publico: "",
     contrato_vigente: false,
-    id_persona: 0,
+   persona: { id_persona: idPersona },
   });
 
   const fileUploadRef = useRef<FileUpload>(null);
@@ -303,7 +307,7 @@ function ContratoContext() {
             tiempo_dedicacion: "",
             salario_publico: "",
             contrato_vigente: false,
-            id_persona: 0,
+            persona: null,
           });
           setcontra1(
             contra1.map((contra) =>
@@ -332,7 +336,7 @@ function ContratoContext() {
       tiempo_dedicacion: "",
       salario_publico: "",
       contrato_vigente: false,
-      id_persona: 0,
+      persona: null,
     });
     setEditMode(false);
     setEditItemId(undefined);
