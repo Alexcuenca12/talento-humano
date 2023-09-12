@@ -14,13 +14,12 @@ import swal from 'sweetalert';
 import { PDFDownloadLink, Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 
 
-function formatDate(dateString: string | undefined): string | null {
-    if (!dateString) return null; // Manejar el caso en que no haya fecha
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return null; // Verificar si la fecha es válida
+function formatDate(date: Date | undefined): string | null {
+    if (!date) return null; // Manejar el caso en que no haya fecha
     const formattedDate = date.toISOString().slice(0, 10); // Formatear la fecha como "YYYY-MM-DD"
     return formattedDate;
 }
+
 function PersonaCombinada({ personaId }: { personaId: number }) {
 
     const [pers1, setpers1] = useState<FichaCombinada>();
@@ -28,31 +27,38 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
     const [pdfContent, setPdfContent] = useState<React.ReactNode | null>(null);
 
     type PdfData = {
-        cedula: String
-        nombres: String
-        apellidos: String
-        correo: String
-        parroquia: String
-        sector: String
-        genero: String
-        area_estudioCapacitacion: String
-        intitucionCapacitacion: String
-        eventoCapacitacion: String
+        cedula: string
+        nombres: string
+        apellidos: string
+        correo: string
+        parroquia: string
+        sector: string
+        genero: string
+        celular: string
+        telefono: string
+        paisnacimiento: string
+        paisresidencia: string
+        edad: string
+        estadocivil: string
+        descripcionHabilidad: string
+        areaestudio: string
+        capacitacion: CapacitacionData[];
+        experiencia: ExperienciaData[];
+    };
+
+    type ExperienciaData = {
+        areaExperiencia: string;
+        instiExperiencia: string;
+        fechaiExperiencia: string | null;
+        fehcafExperiencia: string | null;
+        actividadExperiencia: string;
+    };
+    type CapacitacionData = {
+        area_estudioCapacitacion: string
+        intitucionCapacitacion: string
+        eventoCapacitacion: string
         fechaiCapacitacion: string | null
         fechafCapacitacion: string | null
-        celular: String
-        telefono: String
-        paisnacimiento: String
-        paisresidencia: String
-        edad: String
-        estadocivil: String
-        descripcionHabilidad: String
-        actividadExperiencia: String
-        areaExperiencia: String
-        fechaiExperiencia: string | null
-        fehcafExperiencia: string | null
-        instiExperiencia: String
-        areaestudio: String
     };
 
 
@@ -80,21 +86,25 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
         const data = pers1; // Obtén el primer objeto de la matriz
 
 
-        const areaEstudios = data.capacitaciones ? data.capacitaciones.map((capacitacion) => capacitacion.tipo_certicado).join('\n') : '';
-        const instiEstudios = data.capacitaciones ? data.capacitaciones.map((capacitacion) => capacitacion.institucion).join('\n') : '';
-        const eventoEstudios = data.capacitaciones ? data.capacitaciones.map((capacitacion) => capacitacion.tipo_evento).join('\n') : '';
-        const finiEstudios = data.capacitaciones ? data.capacitaciones.map((capacitacion) => capacitacion.fecha_inicio).join('\n') : '';
-        const ffinEstudios = data.capacitaciones ? data.capacitaciones.map((capacitacion) => capacitacion.fecha_fin).join('\n') : '';
-
-
-
-
         const descriHabi = data.habilidades ? data.habilidades.map((habilidad) => habilidad.descripcion).join('\n') : '';
-        const actiExper = data.experiencias ? data.experiencias.map((experiencia) => experiencia.actividades).join('\n') : '';
-        const areaExper = data.experiencias ? data.experiencias.map((experiencia) => experiencia.area_trabajo).join('\n') : '';
-        const finiExper = data.experiencias ? data.experiencias.map((experiencia) => experiencia.fecha_inicio).join('\n') : '';
-        const ffinExper = data.experiencias ? data.experiencias.map((experiencia) => experiencia.fecha_fin).join('\n') : '';
-        const instExper = data.experiencias ? data.experiencias.map((experiencia) => experiencia.institucion).join('\n') : '';
+
+        const capacitaciones: CapacitacionData[] = data.capacitaciones ? data.capacitaciones.map((capa) => ({
+
+            area_estudioCapacitacion: capa.area_estudios,
+            intitucionCapacitacion: capa.institucion,
+            eventoCapacitacion: capa.tipo_evento,
+            fechaiCapacitacion: formatDate(new Date(capa.fecha_inicio)),
+            fechafCapacitacion: formatDate(new Date(capa.fecha_fin)),
+
+        })) : [];
+
+        const experiencias: ExperienciaData[] = data.experiencias ? data.experiencias.map((experiencia) => ({
+            areaExperiencia: experiencia.area_trabajo,
+            instiExperiencia: experiencia.institucion,
+            fechaiExperiencia: formatDate(new Date(experiencia.fecha_inicio)),
+            fehcafExperiencia: formatDate(new Date(experiencia.fecha_fin)),
+            actividadExperiencia: experiencia.actividades,
+        })) : [];
 
 
 
@@ -112,11 +122,6 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
             parroquia: data.persona.parroquia_recidencial,
             sector: data.persona.sector,
             genero: data.persona.genero,
-            area_estudioCapacitacion: areaEstudios,
-            eventoCapacitacion: eventoEstudios,
-            intitucionCapacitacion: instiEstudios,
-            fechaiCapacitacion: formatDate(finiEstudios),
-            fechafCapacitacion: formatDate(ffinEstudios),
             celular: data.persona.celular,
             telefono: data.persona.telefono,
             paisnacimiento: data.persona.pais_nacimiento,
@@ -124,12 +129,9 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
             edad: data.persona.edad,
             estadocivil: data.persona.estado_civil,
             descripcionHabilidad: descriHabi,
-            actividadExperiencia: actiExper,
-            areaExperiencia: areaExper,
-            fechaiExperiencia: formatDate(finiExper),
-            fehcafExperiencia: formatDate(ffinExper),
-            instiExperiencia: instExper,
             areaestudio: area,
+            experiencia: experiencias,
+            capacitacion: capacitaciones,
 
         };
     };
@@ -244,7 +246,8 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
             horizontalLine: {
                 borderBottomWidth: 1,
                 borderBottomColor: 'black',
-                marginVertical: 5,
+                marginVertical: 1,
+                marginTop: -10,
             },
             leftColumn: {
                 flex: 1,
@@ -264,6 +267,7 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
 
                         <Text style={styles.sectionTitle}>Datos</Text>
                         <View style={styles.horizontalLine}></View>
+                        <View style={{ marginTop: 20 }}></View>
                         <View style={styles.tableRow}>
                             <View style={styles.leftColumn}>
                                 <Text style={styles.sectionContent}>{data.celular} , {data.telefono}</Text>
@@ -276,22 +280,36 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
                             </View>
                         </View>
 
-                        <Text style={styles.sectionTitle}>Experiencia Laboral</Text>
+                        <Text style={styles.sectionTitle}>Experiencia</Text>
                         <View style={styles.horizontalLine}></View>
-                        <Text style={styles.sectionSubTitle}>{data.areaExperiencia}</Text>
-                        <Text style={styles.sectionContent}>{data.instiExperiencia}</Text>
-                        <Text style={styles.sectionContent}>{data.fechaiExperiencia} - {data.fehcafExperiencia}</Text>
-                        <Text style={styles.sectionContent}>{data.actividadExperiencia}</Text>
+                        <View style={{ marginTop: 20 }}></View>
+                        {data.experiencia.map((experiencia, index) => (
+                            <View key={index} style={styles.sectionContent}>
+                                <Text style={styles.sectionSubTitle}>{experiencia.areaExperiencia}</Text>
+                                <Text>{experiencia.instiExperiencia}</Text>
+                                <Text>{experiencia.fechaiExperiencia} -{experiencia.fehcafExperiencia}</Text>
+                                <Text>{experiencia.actividadExperiencia}</Text>
+                                {index !== data.experiencia.length - 1}
+                            </View>
+                        ))}
 
                         <Text style={styles.sectionTitle}>Estudios</Text>
                         <View style={styles.horizontalLine}></View>
-                        <Text style={styles.sectionSubTitle}>{data.area_estudioCapacitacion}</Text>
-                        <Text style={styles.sectionContent}>{data.intitucionCapacitacion}</Text>
-                        <Text style={styles.sectionContent}>{data.eventoCapacitacion}</Text>
-                        <Text style={styles.sectionContent}>{data.fechaiCapacitacion} - {data.fechafCapacitacion}</Text>
+                        <View style={{ marginTop: 20 }}></View>
+                        {data.capacitacion.map((capacitacion, index) => (
+                            <View key={index} style={styles.sectionContent}>
+                                <Text style={styles.sectionSubTitle}>{capacitacion.area_estudioCapacitacion}</Text>
+                                <Text style={styles.sectionContent}>{capacitacion.intitucionCapacitacion}</Text>
+                                <Text style={styles.sectionContent}>{capacitacion.eventoCapacitacion}</Text>
+                                <Text style={styles.sectionContent}>{capacitacion.fechaiCapacitacion} - {capacitacion.fechafCapacitacion}</Text>
+                                {index !== data.capacitacion.length - 1}
+                            </View>
+                        ))}
+
 
                         <Text style={styles.sectionTitle}>Referencias</Text>
                         <View style={styles.horizontalLine}></View>
+                        <View style={{ marginTop: 20 }}></View>
                     </View>
                 </Page>
             </Document>

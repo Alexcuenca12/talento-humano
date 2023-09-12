@@ -1,12 +1,12 @@
 export interface IExperiencia {
   id_experiencia?: Number;
-  institucion: String;
-  puesto: String;
-  area_trabajo: String;
+  institucion: string;
+  puesto: string;
+  area_trabajo: string;
   fecha_inicio: Date;
   fecha_fin: Date;
-  actividades: String;
+  actividades: string;
   estado: Boolean;
-  certificado_trabajo: String;
+  certificado_trabajo: string;
   persona: Object;
 }
