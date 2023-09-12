@@ -5,7 +5,7 @@ import { IContratoData } from '../../interfaces/Primary/IContrato';
 import { IEva_Docente } from '../../interfaces/Primary/IEva_Docente';
 import { IHabilidadesData } from '../../interfaces/Primary/IHabilidades';
 import { IHorarioData } from '../../interfaces/Primary/IHorario';
-import { IInstrucc_Formal } from '../../interfaces/Primary/IInstrucc_Formal';
+import { IInstrucc_Formal2 } from '../../interfaces/Primary/IInstrucc_Formal2';
 import { IRecomendaciones } from '../../interfaces/Primary/Recomendaciones';
 import { IExperiencia } from '../../interfaces/Primary/IExperiencia';
 
@@ -19,6 +19,6 @@ export interface FichaCombinada {
     habilidades: IHabilidadesData[];
     horarios: IHorarioData[];
     recomendaciones: IRecomendaciones[];
-    instrFormal: IInstrucc_Formal[];
+    instruccionformal: IInstrucc_Formal2[];
     experiencias: IExperiencia[];
 }

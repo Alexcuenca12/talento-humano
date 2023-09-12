@@ -1,4 +1,4 @@
-export interface IInstrucc_FormalData{
+export interface IInstrucc_Formal2{
     id_instruccion?: Number;
     nivel_instruccion: string;
     institucion_educativa: string;

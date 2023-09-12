@@ -13,9 +13,17 @@ import { PersonaService } from '../../services/PersonaService'
 import swal from 'sweetalert';
 import { PDFDownloadLink, Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 
+
+function formatDate(dateString: string | undefined): string | null {
+    if (!dateString) return null; // Manejar el caso en que no haya fecha
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return null; // Verificar si la fecha es válida
+    const formattedDate = date.toISOString().slice(0, 10); // Formatear la fecha como "YYYY-MM-DD"
+    return formattedDate;
+}
 function PersonaCombinada({ personaId }: { personaId: number }) {
 
-    const [pers1, setpers1] = useState<FichaCombinada | null>(null);
+    const [pers1, setpers1] = useState<FichaCombinada>();
     const personaService = new PersonaService();
     const [pdfContent, setPdfContent] = useState<React.ReactNode | null>(null);
 
@@ -24,7 +32,14 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
         nombres: String
         apellidos: String
         correo: String
+        parroquia: String
+        sector: String
+        genero: String
         area_estudioCapacitacion: String
+        intitucionCapacitacion: String
+        eventoCapacitacion: String
+        fechaiCapacitacion: string | null
+        fechafCapacitacion: string | null
         celular: String
         telefono: String
         paisnacimiento: String
@@ -33,6 +48,11 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
         estadocivil: String
         descripcionHabilidad: String
         actividadExperiencia: String
+        areaExperiencia: String
+        fechaiExperiencia: string | null
+        fehcafExperiencia: string | null
+        instiExperiencia: String
+        areaestudio: String
     };
 
 
@@ -55,19 +75,48 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
         return <div>Cargando...</div>;
     }
 
+
     const generatePdfContent = (): PdfData => {
         const data = pers1; // Obtén el primer objeto de la matriz
 
-        const areaEstudios = data.capacitaciones.map((capacitacion) => capacitacion.area_estudios).join('\n');
-        const descriHabi = data.habilidades.map((habilidad) => habilidad.descripcion).join('\n');
-        const actiExper = data.experiencias.map((experiencia) => experiencia.actividades).join('\n');
+
+        const areaEstudios = data.capacitaciones ? data.capacitaciones.map((capacitacion) => capacitacion.tipo_certicado).join('\n') : '';
+        const instiEstudios = data.capacitaciones ? data.capacitaciones.map((capacitacion) => capacitacion.institucion).join('\n') : '';
+        const eventoEstudios = data.capacitaciones ? data.capacitaciones.map((capacitacion) => capacitacion.tipo_evento).join('\n') : '';
+        const finiEstudios = data.capacitaciones ? data.capacitaciones.map((capacitacion) => capacitacion.fecha_inicio).join('\n') : '';
+        const ffinEstudios = data.capacitaciones ? data.capacitaciones.map((capacitacion) => capacitacion.fecha_fin).join('\n') : '';
+
+
+
+
+        const descriHabi = data.habilidades ? data.habilidades.map((habilidad) => habilidad.descripcion).join('\n') : '';
+        const actiExper = data.experiencias ? data.experiencias.map((experiencia) => experiencia.actividades).join('\n') : '';
+        const areaExper = data.experiencias ? data.experiencias.map((experiencia) => experiencia.area_trabajo).join('\n') : '';
+        const finiExper = data.experiencias ? data.experiencias.map((experiencia) => experiencia.fecha_inicio).join('\n') : '';
+        const ffinExper = data.experiencias ? data.experiencias.map((experiencia) => experiencia.fecha_fin).join('\n') : '';
+        const instExper = data.experiencias ? data.experiencias.map((experiencia) => experiencia.institucion).join('\n') : '';
+
+
+
+
+        const area = data.instruccionformal ? data.instruccionformal.map((instruccion) => instruccion.institucion_educativa).join('\n') : '';
+
+        console.log('Instrucción Formal - Datos:', pers1.instruccionformal);
+
 
         return {
             cedula: data.persona.ci_pasaporte,
             nombres: data.persona.nombres,
             apellidos: data.persona.apellidos,
             correo: data.persona.correo,
+            parroquia: data.persona.parroquia_recidencial,
+            sector: data.persona.sector,
+            genero: data.persona.genero,
             area_estudioCapacitacion: areaEstudios,
+            eventoCapacitacion: eventoEstudios,
+            intitucionCapacitacion: instiEstudios,
+            fechaiCapacitacion: formatDate(finiEstudios),
+            fechafCapacitacion: formatDate(ffinEstudios),
             celular: data.persona.celular,
             telefono: data.persona.telefono,
             paisnacimiento: data.persona.pais_nacimiento,
@@ -76,9 +125,15 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
             estadocivil: data.persona.estado_civil,
             descripcionHabilidad: descriHabi,
             actividadExperiencia: actiExper,
+            areaExperiencia: areaExper,
+            fechaiExperiencia: formatDate(finiExper),
+            fehcafExperiencia: formatDate(ffinExper),
+            instiExperiencia: instExper,
+            areaestudio: area,
 
         };
     };
+
 
     const handleGeneratePDF = () => {
         const pdfData = generatePdfContent();
@@ -117,8 +172,7 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
             },
             tableRow: {
                 flexDirection: 'row',
-                borderBottomWidth: 1,
-                borderBottomColor: '#000',
+
                 alignItems: 'center',
             },
             tableCell: {
@@ -140,6 +194,12 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
             },
             sectionTitle: {
                 fontSize: 18,
+                fontWeight: 'bold',
+                marginBottom: 10,
+                color: 'black',
+            },
+            sectionSubTitle: {
+                fontSize: 15,
                 fontWeight: 'bold',
                 marginBottom: 10,
                 color: 'black',
@@ -170,62 +230,68 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
                 fontSize: 12,
                 marginBottom: 5,
             },
+            nameContainer: {
+                backgroundColor: 'lightblue',
+                textAlign: 'center',
+                padding: 10,
+                marginBottom: 10,
+            },
+            nameText: {
+                fontSize: 24,
+                fontWeight: 'bold',
+                color: 'black',
+            },
+            horizontalLine: {
+                borderBottomWidth: 1,
+                borderBottomColor: 'black',
+                marginVertical: 5,
+            },
+            leftColumn: {
+                flex: 1,
+            },
+            rightColumn: {
+                flex: 1,
+            },
         });
 
         const MyDocument = ({ data }: { data: PdfData }) => (
             <Document>
                 <Page style={styles.page}>
                     <View style={styles.margin}>
-                        <Text style={styles.title}>Hoja de Vida</Text>
-                        <View style={styles.tableRow}>
-                            <View style={styles.column}>
-
-                                <View>
-                                    <Text style={styles.title}>FOTO</Text>
-                                    <Text style={styles.description}>{data.nombres} {data.apellidos}</Text>
-                                    <Text style={styles.description}>{data.correo}</Text>
-                                    <Text style={styles.description}>{data.celular},{data.telefono}</Text>
-                                    <Text style={styles.description}>{data.paisresidencia}</Text>
-                                </View>
-
-                                <View style={styles.section}>
-                                    <Text style={styles.sectionTitle}>Datos Personales</Text>
-                                    <Text style={styles.sectionContent}>Cédula: {data.cedula}</Text>
-                                    <Text style={styles.sectionContent}>Fecha de Nacimiento: {data.edad}</Text>
-                                    <Text style={styles.sectionContent}>Nacionalidad: {data.paisnacimiento}</Text>
-                                    <Text style={styles.sectionContent}>Estado Civil: {data.estadocivil}</Text>
-                                    <Text style={styles.sectionContent}>Nivel de Inglés: *****</Text>
-                                </View>
-                            </View>
-                            <View style={styles.verticalLine}></View>
-                            <View style={styles.column}>
-                                <View style={styles.section}>
-                                    <Text style={styles.sectionTitle}>Perfil</Text>
-                                    <Text style={styles.sectionContent}>{data.area_estudioCapacitacion}</Text>
-                                </View>
-
-                                <View style={styles.section}>
-                                    <Text style={styles.sectionTitle}>Educación</Text>
-                                    {/* Map through education data and display here */}
-                                </View>
-
-                                <View style={styles.section}>
-                                    <Text style={styles.sectionTitle}>Habilidades</Text>
-                                    <Text style={styles.sectionContent}>{data.descripcionHabilidad}</Text>
-                                </View>
-
-                                <View style={styles.section}>
-                                    <Text style={styles.sectionTitle}>Experiencias</Text>
-                                    <Text style={styles.sectionContent}>{data.actividadExperiencia}</Text>
-                                </View>
-                            </View>
-
-
+                        <View style={styles.nameContainer}>
+                            <Text style={styles.nameText}>{data.nombres} {data.apellidos}</Text>
                         </View>
 
+                        <Text style={styles.sectionTitle}>Datos</Text>
+                        <View style={styles.horizontalLine}></View>
+                        <View style={styles.tableRow}>
+                            <View style={styles.leftColumn}>
+                                <Text style={styles.sectionContent}>{data.celular} , {data.telefono}</Text>
+                                <Text style={styles.sectionContent}>{data.correo}</Text>
+                                <Text style={styles.sectionContent}>{data.parroquia} , {data.sector} , {data.paisnacimiento}</Text>
+                            </View>
+                            <View style={styles.rightColumn}>
+                                <Text style={styles.sectionContent}>{data.edad} años , {data.estadocivil}, {data.genero} , {data.paisresidencia}</Text>
+                                <Text style={styles.sectionContent}>DNI: {data.cedula}</Text>
+                            </View>
+                        </View>
 
+                        <Text style={styles.sectionTitle}>Experiencia Laboral</Text>
+                        <View style={styles.horizontalLine}></View>
+                        <Text style={styles.sectionSubTitle}>{data.areaExperiencia}</Text>
+                        <Text style={styles.sectionContent}>{data.instiExperiencia}</Text>
+                        <Text style={styles.sectionContent}>{data.fechaiExperiencia} - {data.fehcafExperiencia}</Text>
+                        <Text style={styles.sectionContent}>{data.actividadExperiencia}</Text>
 
+                        <Text style={styles.sectionTitle}>Estudios</Text>
+                        <View style={styles.horizontalLine}></View>
+                        <Text style={styles.sectionSubTitle}>{data.area_estudioCapacitacion}</Text>
+                        <Text style={styles.sectionContent}>{data.intitucionCapacitacion}</Text>
+                        <Text style={styles.sectionContent}>{data.eventoCapacitacion}</Text>
+                        <Text style={styles.sectionContent}>{data.fechaiCapacitacion} - {data.fechafCapacitacion}</Text>
 
+                        <Text style={styles.sectionTitle}>Referencias</Text>
+                        <View style={styles.horizontalLine}></View>
                     </View>
                 </Page>
             </Document>

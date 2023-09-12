@@ -1,13 +1,13 @@
-import React, {useState} from 'react';
-import {InputText} from 'primereact/inputtext';
-import {Button} from 'primereact/button';
-import {Fieldset} from "primereact/fieldset";
-import {Card} from "primereact/card";
+import React, { useState } from 'react';
+import { InputText } from 'primereact/inputtext';
+import { Button } from 'primereact/button';
+import { Fieldset } from "primereact/fieldset";
+import { Card } from "primereact/card";
 import cardHeader from "../../shared/CardHeader";
-import {Divider} from "primereact/divider";
-import {Calendar} from "primereact/calendar";
-import {Dropdown} from "primereact/dropdown";
-import {RadioButton} from "primereact/radiobutton";
+import { Divider } from "primereact/divider";
+import { Calendar } from "primereact/calendar";
+import { Dropdown } from "primereact/dropdown";
+import { RadioButton } from "primereact/radiobutton";
 
 const Persona = () => {
     const [nombre, setNombre] = useState('');
@@ -44,17 +44,17 @@ const Persona = () => {
                                 <div className="flex align-items-center justify-content-center w-auto h-5rem">
                                     <label className="text-3xl font-medium w-auto pr-2 min-w-min">Cedula: </label>
                                     <InputText className="w-full min-w-min text-2xl" type="number"
-                                               placeholder="Ingrese su Cedula"/>
+                                        placeholder="Ingrese su Cedula" />
                                 </div>
                                 <div className="flex align-items-center justify-content-center w-auto h-5rem">
                                     <label className="text-3xl font-medium w-full min-w-min">Apellido Paterno:</label>
                                     <InputText type="text" placeholder="Ingrese sus Nombres"
-                                               className="w-full min-w-min text-2xl"/>
+                                        className="w-full min-w-min text-2xl" />
                                 </div>
                                 <div className="flex align-items-center justify-content-center h-5rem">
                                     <label className="text-3xl font-medium w-full min-w-min">Apellido Materno:</label>
                                     <InputText type="text" placeholder="Ingrese sus Apellidos"
-                                               className="w-full min-w-min text-2xl"/>
+                                        className="w-full min-w-min text-2xl" />
                                 </div>
                             </div>
 
@@ -63,19 +63,19 @@ const Persona = () => {
                                 <div className="flex align-items-center justify-content-center w-auto h-5rem">
                                     <label className="text-3xl font-medium w-full min-w-min">Primer Nombre:</label>
                                     <InputText type="text" placeholder="Ingrese sus Nombres"
-                                               className="w-full text-2xl"/>
+                                        className="w-full text-2xl" />
                                 </div>
                                 <div className="flex align-items-center justify-content-center w-auto h-5rem">
                                     <label className="text-3xl font-medium w-full min-w-min">Segundo Nombre:</label>
                                     <InputText type="text" placeholder="Ingrese sus Apellidos"
-                                               className="w-full text-2xl"/>
+                                        className="w-full text-2xl" />
                                 </div>
 
                                 <div className="flex align-items-center justify-content-center w-auto h-6rem ">
                                     <label className="text-3xl font-medium w-auto min-w-min">Fecha de
                                         nacimiento:</label>
                                     <Calendar placeholder="Ingrese su Fecha de Nacimiento" showIcon={true}
-                                              className="w-full text-2xl"/>
+                                        className="w-full text-2xl" />
                                 </div>
                             </div>
 
@@ -84,17 +84,17 @@ const Persona = () => {
                                 <div className="flex align-items-center justify-content-center w-auto h-5rem">
                                     <label className="text-3xl font-medium w-auto min-w-min">Pais de nacimiento:</label>
                                     <Dropdown optionLabel="name"
-                                              placeholder="Seleccione el pais" className="w-full md:w-14rem"/>
+                                        placeholder="Seleccione el pais" className="w-full md:w-14rem" />
                                 </div>
                                 <div className="flex align-items-center justify-content-center w-auto h-5remtable">
                                     <label className="text-3xl font-medium w-auto min-w-min">Edad:</label>
-                                    <InputText type="number" placeholder="Ingrese su edad" className="w-full text-2xl"/>
+                                    <InputText type="number" placeholder="Ingrese su edad" className="w-full text-2xl" />
                                 </div>
 
                                 <div className="flex align-items-center justify-content-center w-auto h-5rem ">
                                     <label className="text-3xl font-medium w-auto min-w-min">Genero:</label>
                                     <Dropdown optionLabel="name"
-                                              placeholder="Seleccione el genero" className="w-full md:w-14rem"/>
+                                        placeholder="Seleccione el genero" className="w-full md:w-14rem" />
                                 </div>
                             </div>
 
@@ -109,18 +109,18 @@ const Persona = () => {
                                 <div className="flex align-items-center justify-content-center w-auto h-5rem">
                                     <label className="text-3xl font-medium w-full min-w-min">Pais:</label>
                                     <Dropdown optionLabel="name"
-                                              placeholder="Seleccione el pais" className="w-full md:w-14rem"/>
+                                        placeholder="Seleccione el pais" className="w-full md:w-14rem" />
                                 </div>
                                 <div className="flex align-items-center justify-content-center w-auto h-5rem">
                                     <label className="text-3xl font-medium w-auto pr-2 min-w-min">Provincia:</label>
                                     <Dropdown optionLabel="name"
-                                              placeholder="Seleccione la provincia" className="w-full md:w-14rem"/>
+                                        placeholder="Seleccione la provincia" className="w-full md:w-14rem" />
                                 </div>
 
                                 <div className="flex align-items-center justify-content-center w-auto h-5rem ">
                                     <label className="text-3xl font-medium w-auto pr-2 min-w-min">Canton:</label>
                                     <Dropdown optionLabel="name"
-                                              placeholder="Seleccione el canton" className="w-full md:w-14rem"/>
+                                        placeholder="Seleccione el canton" className="w-full md:w-14rem" />
                                 </div>
                             </div>
 
@@ -130,18 +130,18 @@ const Persona = () => {
                                 <div className="flex align-items-center justify-content-center w-auto h-5rem">
                                     <label className="text-3xl font-medium w-auto pr-2 min-w-min">Parroquia:</label>
                                     <Dropdown optionLabel="name"
-                                              placeholder="Seleccione el parroquia" className="w-full md:w-14rem"/>
+                                        placeholder="Seleccione el parroquia" className="w-full md:w-14rem" />
                                 </div>
 
                                 <div className="flex align-items-center justify-content-center w-auto h-5rem">
                                     <label className="text-3xl font-medium w-auto pr-2 min-w-min">Calles:</label>
-                                    <InputText type="text" placeholder="Ingrese las calles" className="w-full text-2xl"/>
+                                    <InputText type="text" placeholder="Ingrese las calles" className="w-full text-2xl" />
                                 </div>
 
 
                                 <div className="flex align-items-center justify-content-center w-auto h-5rem-table ">
                                     <label className="text-3xl font-medium w-full min-w-min">Numero de casa:</label>
-                                    <InputText type="number" placeholder="Ingrese numero de casa" className="w-full text-2xl"/>
+                                    <InputText type="number" placeholder="Ingrese numero de casa" className="w-full text-2xl" />
                                 </div>
                             </div>
 
@@ -149,16 +149,16 @@ const Persona = () => {
                                 className="flex flex-row  w-full h-full  justify-content-around  flex-grow-1  row-gap-8 gap-8 flex-wrap">
                                 <div className="flex align-items-center justify-content-center w-auto h-5rem">
                                     <label className="text-3xl font-medium w-full min-w-min">Telefono de casa:</label>
-                                    <InputText type="text" placeholder="Ingrese el telefono" className="w-full text-2xl"/>
+                                    <InputText type="text" placeholder="Ingrese el telefono" className="w-full text-2xl" />
                                 </div>
                                 <div className="flex align-items-center justify-content-center w-auto h-5rem">
                                     <label className="text-3xl font-medium w-full min-w-min">Telefono Personal:</label>
-                                    <InputText type="number" placeholder="Ingrese el telefono" className="w-full text-2xl"/>
+                                    <InputText type="number" placeholder="Ingrese el telefono" className="w-full text-2xl" />
                                 </div>
 
                                 <div className="flex align-items-center justify-content-center w-auto h-5rem ">
                                     <label className="text-3xl font-medium w-auto pr-2 min-w-min">Correo:</label>
-                                    <InputText type="email" placeholder="Ingrese el correo" className="w-full text-2xl"/>
+                                    <InputText type="email" placeholder="Ingrese el correo" className="w-full text-2xl" />
                                 </div>
                             </div>
 
@@ -174,11 +174,11 @@ const Persona = () => {
                                         <div
                                             className="flex flex-initial gap-3 align-items-center justify-content-center">
                                             <div className="flex flex-none">
-                                                <RadioButton inputId="Si" name="si" value="si"/>
+                                                <RadioButton inputId="Si" name="si" value="si" />
                                                 <label htmlFor="si" className="ml-2 w-full text-2xl">Si</label>
                                             </div>
                                             <div className="flex flex-none">
-                                                <RadioButton inputId="no" name="no" value="no"/>
+                                                <RadioButton inputId="no" name="no" value="no" />
                                                 <label htmlFor="no" className="ml-2 w-full text-2xl" >No</label>
                                             </div>
                                         </div>
@@ -188,15 +188,15 @@ const Persona = () => {
                                         <div className="flex align-items-center justify-content-center  mb-3">
                                             <label className="text-2xl font-medium w-auto min-w-min">Tipo de Discapacidad:</label>
                                             <Dropdown optionLabel="name"
-                                                      placeholder="Seleccione el tipo" className="w-full md:w-14rem"/>
+                                                placeholder="Seleccione el tipo" className="w-full md:w-14rem" />
                                         </div>
                                         <div className="flex align-items-center justify-content-center w-auto mb-3">
                                             <label className="text-2xl font-medium w-auto min-w-min">N° Carnet Conadis:</label>
-                                            <InputText type="number" placeholder="Ingrese el numero"/>
+                                            <InputText type="number" placeholder="Ingrese el numero" />
                                         </div>
                                         <div className="flex align-items-center justify-content-center w-auto ">
                                             <label className="text-2xl font-medium w-auto min-w-min">Grado Discapacidad:</label>
-                                            <InputText type="number" placeholder="Ingrese el grado"/>
+                                            <InputText type="number" placeholder="Ingrese el grado" />
                                         </div>
 
                                     </Card>
@@ -207,11 +207,11 @@ const Persona = () => {
                                 className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap ">
                                 <div className="flex align-items-center justify-content-center w-auto min-w-min">
                                     <Button type="submit" label="Agregar" className="w-full text-3xl min-w-min "
-                                            rounded/>
+                                        rounded />
                                 </div>
                                 <div className="flex align-items-center justify-content-center w-auto min-w-min">
                                     <Button type="button" label="Cancel" className="w-full text-3xl min-w-min"
-                                            rounded/>
+                                        rounded />
                                 </div>
                             </div>
                         </form>
