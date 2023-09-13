@@ -2,7 +2,6 @@ import "../../styles/Bienvenida.css";
 import React, { useState, useRef } from "react";
 import { Toast } from "primereact/toast";
 import { useHistory } from "react-router-dom";
-// import UserForm from "../UserOut/UerFormO";
 
 const Bienvenida = () => {
   const history = useHistory();

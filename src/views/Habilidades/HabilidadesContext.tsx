@@ -53,22 +53,15 @@ function HabilidadesContext() {
       swal("Advertencia", "Por favor, complete todos los campos", "warning");
       return;
     }
-    // Crear una instancia de Persona con el id deseado (por ejemplo, 1)
-    const personaData = {
-      id_persona: 1, // Coloca aquí el id válido de la persona
-    };
 
-    // Asignar el valor "1" al campo id_persona en formData
-    const dataToSend = {
-      ...formData,
-      persona: personaData, // Aquí se establece el valor "1" como una cadena
-    };
+
+
 
     habilidadService
-      .save(dataToSend)
+      .save(formData)
       .then((response) => {
         resetForm();
-        console.log("guardado: ", dataToSend);
+        console.log("guardado: ", formData);
         swal("Habilidad", "Datos Guardados Correctamente", "success");
         habilidadService
           .getAll()

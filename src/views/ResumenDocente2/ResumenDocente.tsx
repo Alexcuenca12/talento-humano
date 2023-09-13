@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import cardHeader from "../../shared/CardHeader";
 import { Divider } from "primereact/divider";
+import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
@@ -16,7 +17,7 @@ import { IRecomendaciones } from "../../interfaces/Primary/Recomendaciones";
 import { IExperiencia } from "../../interfaces/Primary/IExperiencia";
 import { InstruccionFormalData } from "../../interfaces/Primary/IInstrucc_Formal";
 import { useParams } from "react-router-dom";
-
+import swal from "sweetalert";
 interface Params {
   codigoDocente: string;
 }
@@ -39,6 +40,39 @@ function ResumenDocente() {
   const [instruccionFormals, setinstruccionFormals] = useState<
     InstruccionFormalData[]
   >([]);
+
+  const decodeBase64 = (base64Data: string) => {
+    try {
+      // Eliminar encabezados o metadatos de la cadena base64
+      const base64WithoutHeader = base64Data.replace(/^data:.*,/, "");
+
+      const decodedData = atob(base64WithoutHeader); // Decodificar la cadena base64
+      const byteCharacters = new Uint8Array(decodedData.length);
+
+      for (let i = 0; i < decodedData.length; i++) {
+        byteCharacters[i] = decodedData.charCodeAt(i);
+      }
+
+      const byteArray = new Blob([byteCharacters], { type: "application/pdf" });
+      const fileUrl = URL.createObjectURL(byteArray);
+
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.download = "Evidencias Capacitaciones.pdf";
+      link.click();
+      swal({
+        title: "Publicación",
+        text: "Descargando pdf....",
+        icon: "success",
+        timer: 1000,
+      });
+      console.log("pdf descargado...");
+
+      URL.revokeObjectURL(fileUrl);
+    } catch (error) {
+      console.error("Error al decodificar la cadena base64:", error);
+    }
+  };
 
   useEffect(() => {
     fetchSummary();
@@ -79,6 +113,7 @@ function ResumenDocente() {
         });
     }
   };
+  const personaArray: IPersona[] = persona ? [persona] : [];
 
   const contratoBody = (rowData: IContratoData) => {
     return (
@@ -162,6 +197,55 @@ function ResumenDocente() {
           <p className="text-2xl">{rowData.tipo_certificado}</p>
         </div>
       </div>
+    );
+  };
+  const personasBody = (rowData: IPersona) => {
+    return (
+      <div className="flex">
+        <div className="mr-4">
+          <h2 className="text-3xl">Apellido: </h2>
+          <p className="text-2xl">{rowData.apellido_paterno}</p>
+        </div>
+        <div className="mr-4">
+          <h2 className="text-3xl">Nombre: </h2>
+          <p className="text-2xl">{rowData.primer_nombre}</p>
+        </div>
+        <div className="mr-4 ">
+          <h2 className="text-3xl">Cédula: </h2>
+          <p className="text-2xl">{rowData.cedula}</p>
+        </div>
+        <div className="mr-4 ">
+          <h2 className="text-3xl">Celular: </h2>
+          <p className="text-2xl">{rowData.celular}</p>
+        </div>
+        <div className="mr-4 ">
+          <h2 className="text-3xl">Estado Civil: </h2>
+          <p className="text-2xl">{rowData.estado_civil}</p>
+        </div>
+        <div className=" mr-4">
+          <h2 className="text-3xl">Edad: </h2>
+          <p className="text-2xl">{rowData.edad}</p>
+        </div>
+      </div>
+    );
+  };
+
+  const btnacciones = () => {
+    return (
+      <Button
+        type="button"
+        className=""
+        icon="pi pi-search"
+        style={{
+          background: "#ff0000",
+          borderRadius: "10%",
+          fontSize: "25px",
+          width: "50px",
+          color: "black",
+          justifyContent: "center",
+        }}
+        // Agrega el evento onClick para la operación de eliminar
+      />
     );
   };
 
@@ -301,6 +385,38 @@ function ResumenDocente() {
                   style={{ marginLeft: "15%" }}
                 >
                   <DataTable
+                    value={personaArray}
+                    dataKey="id_persona"
+                    tableStyle={{ minWidth: "60rem", width: "79rem" }}
+                    scrollable
+                    scrollHeight="500px"
+                    className="mt-5  w-full h-full text-3xl font-medium"
+                  >
+                    <Column
+                      field="Persona"
+                      header="Persona "
+                      body={personasBody}
+                      headerStyle={{
+                        backgroundColor: "#0C3255",
+                        color: "white",
+                      }}
+                    ></Column>
+                    <Column
+                      field="Acciones"
+                      header="Acciones"
+                      body={btnacciones}
+                      headerStyle={{
+                        backgroundColor: "#0C3255",
+                        color: "white",
+                      }}
+                    ></Column>
+                  </DataTable>
+                </div>
+                <div
+                  className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
+                  style={{ marginLeft: "15%" }}
+                >
+                  <DataTable
                     value={contratos}
                     dataKey="id_contrato"
                     tableStyle={{ minWidth: "50rem", width: "79rem" }}
@@ -359,6 +475,7 @@ function ResumenDocente() {
                     ></Column>
                   </DataTable>
                 </div>
+
                 <div
                   className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
                   style={{ marginLeft: "15%" }}
