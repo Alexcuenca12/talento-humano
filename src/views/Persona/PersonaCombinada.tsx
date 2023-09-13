@@ -12,6 +12,7 @@ import { FichaCombinada } from '../../interfaces/Primary/IFichaCombinada';
 import { PersonaService } from '../../services/PersonaService'
 import swal from 'sweetalert';
 import { PDFDownloadLink, Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
+ 
 
 
 function formatDate(date: Date | undefined): string | null {
@@ -40,10 +41,14 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
         paisresidencia: string
         edad: string
         estadocivil: string
+        idioma_raiz: string
+        idioma_secundario: string
         descripcionHabilidad: string
         areaestudio: string
         capacitacion: CapacitacionData[];
         experiencia: ExperienciaData[];
+        referencia: RecomendacionesData[];
+        habilidad: HabilidadesData[];
     };
 
     type ExperienciaData = {
@@ -53,12 +58,23 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
         fehcafExperiencia: string | null;
         actividadExperiencia: string;
     };
+    type RecomendacionesData = {
+        primer_nombre: string;
+        primer_apellido: string
+        correo: string;
+
+        
+    };
     type CapacitacionData = {
         area_estudioCapacitacion: string
         intitucionCapacitacion: string
         eventoCapacitacion: string
         fechaiCapacitacion: string | null
         fechafCapacitacion: string | null
+    };
+
+    type HabilidadesData = {
+        descripcion : string
     };
 
 
@@ -105,6 +121,18 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
             fehcafExperiencia: formatDate(new Date(experiencia.fecha_fin)),
             actividadExperiencia: experiencia.actividades,
         })) : [];
+        const recomendaciones: RecomendacionesData[] = data.recomendaciones ? data.recomendaciones.map((recomendacion) => ({
+            primer_nombre: recomendacion.primer_nombre,
+            primer_apellido: recomendacion.primer_apellido,
+            correo: recomendacion.correo
+            
+        })) : [];
+        
+        const habilidades: HabilidadesData[] = data.habilidades ? data.habilidades.map((habilidad) => ({
+            descripcion: habilidad.descripcion,
+            
+            
+        })) : [];
 
 
 
@@ -128,10 +156,14 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
             paisresidencia: data.persona.pais_residencia,
             edad: data.persona.edad,
             estadocivil: data.persona.estado_civil,
+            idioma_raiz: data.persona.idioma_raiz,
+            idioma_secundario : data.persona.idioma_secundario,
             descripcionHabilidad: descriHabi,
             areaestudio: area,
             experiencia: experiencias,
             capacitacion: capacitaciones,
+            referencia: recomendaciones,
+            habilidad: habilidades,
 
         };
     };
@@ -147,8 +179,7 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
                 padding: 20,
             },
             margin: {
-                borderWidth: 1,
-                borderColor: 'black',
+                
                 padding: 20,
             },
             title: {
@@ -210,21 +241,12 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
                 fontSize: 12,
                 marginBottom: 5,
             },
-            profileImage: {
-                width: 100,
-                height: 100,
-                marginBottom: 10,
-                alignSelf: 'center',
-            },
+            
             column: {
                 flex: 1,
                 marginLeft: 10,  // Ajusta este valor para controlar el espacio entre las columnas
             },
-            verticalLine: {
-                borderLeftWidth: 1,
-                borderLeftColor: 'black',
-                marginHorizontal: 10,  // Ajusta este valor para controlar el espacio a ambos lados de la línea
-            },
+           
             listContainer: {
                 marginTop: 10,
             },
@@ -287,7 +309,7 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
                             <View key={index} style={styles.sectionContent}>
                                 <Text style={styles.sectionSubTitle}>{experiencia.areaExperiencia}</Text>
                                 <Text>{experiencia.instiExperiencia}</Text>
-                                <Text>{experiencia.fechaiExperiencia} -{experiencia.fehcafExperiencia}</Text>
+                                <Text>{experiencia.fechaiExperiencia}  -  {experiencia.fehcafExperiencia}</Text>
                                 <Text>{experiencia.actividadExperiencia}</Text>
                                 {index !== data.experiencia.length - 1}
                             </View>
@@ -301,15 +323,51 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
                                 <Text style={styles.sectionSubTitle}>{capacitacion.area_estudioCapacitacion}</Text>
                                 <Text style={styles.sectionContent}>{capacitacion.intitucionCapacitacion}</Text>
                                 <Text style={styles.sectionContent}>{capacitacion.eventoCapacitacion}</Text>
-                                <Text style={styles.sectionContent}>{capacitacion.fechaiCapacitacion} - {capacitacion.fechafCapacitacion}</Text>
+                                <Text style={styles.sectionContent}>{capacitacion.fechaiCapacitacion}  -  {capacitacion.fechafCapacitacion}</Text>
                                 {index !== data.capacitacion.length - 1}
                             </View>
                         ))}
+                        
 
 
                         <Text style={styles.sectionTitle}>Referencias</Text>
                         <View style={styles.horizontalLine}></View>
                         <View style={{ marginTop: 20 }}></View>
+                        {data.referencia.map((referencia, index) => (
+                            <View key={index} style={styles.sectionContent}>
+                                <Text style={styles.sectionContent}>Nombre: {referencia.primer_nombre}</Text>
+                                <Text style={styles.sectionContent}>Apellido: {referencia.primer_apellido}</Text>
+                                <Text style={styles.sectionContent}>Correo: {referencia.correo}</Text>
+                                
+                                {index !== data.referencia.length - 1}
+                            </View>
+                        ))}
+
+                        <Text style={styles.sectionTitle}>Habilidades</Text>
+                        <View style={styles.horizontalLine}></View>
+                        <View style={{ marginTop: 20 }}></View>
+                        {data.habilidad.map((habilidad, index) => (
+                            <View key={index} style={styles.sectionContent}>
+                                <Text style={styles.sectionContent}>Descripción: {habilidad.descripcion}</Text>
+                                
+                                
+                                {index !== data.referencia.length - 1}
+                            </View>
+                        ))}
+
+                        <Text style={styles.sectionTitle}>Idiomas</Text>
+                        <View style={styles.horizontalLine}></View>
+                        <View style={{ marginTop: 20 }}></View>
+                        <View style={styles.tableRow}>
+                            <View style={styles.leftColumn}>
+                                <Text style={styles.sectionContent}>{data.idioma_raiz} , {data.idioma_secundario}</Text>
+                                
+                            </View>
+                            
+                        </View>
+                        
+
+
                     </View>
                 </Page>
             </Document>
