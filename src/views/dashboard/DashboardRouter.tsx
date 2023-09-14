@@ -19,6 +19,7 @@ import Footer from "../../common/Footer";
 import Recomendaciones from "../Recomendaciones/RecomendacionesContext";
 import Resumen from "../Resumen/Resumen";
 import PersonaCombinada from "../Persona/PersonaCombinada";
+import Filtros from "../Resumen/Filtros";
 
 export const DashboardRouter = () => {
   //Datos del sessionStorage
@@ -142,7 +143,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBarDoc />
-                    <CargaFamiliarContext/>
+                    <Filtros/>
                   </>
                 ) : rol === 2 ? (
                   <>

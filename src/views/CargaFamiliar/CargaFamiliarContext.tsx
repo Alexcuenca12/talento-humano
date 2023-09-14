@@ -29,41 +29,9 @@ function CargaFamiliarContext() {
     persona: { id_persona: idPersona },
   });
 
-  //Prueba de tabla
 
-  const [filters, setFilters] = useState({
-    contratoVigente: '',
-    fechaInicio: '',
-    discapacidad: '',
-    sp: '',
-    salario: '',
-    genero: '',
-  });
+  //Datos normales
 
-  const [data, setData] = useState([
-    {
-      nombre: 'Juan',
-      apellido: 'Perez',
-      fechaInicio: '2023-01-01',
-      fechaFin: '2023-12-31',
-      contratoVigente: 'SI',
-      sp: 'NO',
-      discapacidad: 'NO',
-      salario: 50000,
-      genero: 'Masculino',
-    },
-    {
-      nombre: 'María',
-      apellido: 'González',
-      fechaInicio: '2022-03-15',
-      fechaFin: '2022-12-31',
-      contratoVigente: 'NO',
-      sp: 'SI',
-      discapacidad: 'Silla de ruedas',
-      salario: 60000,
-      genero: 'Femenino',
-    },
-  ]);
 
   const fileUploadRef = useRef<FileUpload>(null);
   const [dataLoaded, setDataLoaded] = useState(false);
@@ -288,41 +256,6 @@ function CargaFamiliarContext() {
   }
 
 
-
-  //Prueba de tabla
-
-  // Función para manejar cambios en los filtros
-  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = e.target;
-    setFilters({ ...filters, [name]: value });
-  };
-
-  // Aplicar los filtros a los datos
-  const filteredData = data.filter((item) => {
-    return (
-        (filters.contratoVigente === '' || item.contratoVigente === filters.contratoVigente) &&
-        (filters.fechaInicio === '' || item.fechaInicio === filters.fechaInicio) &&
-        (filters.discapacidad === '' || item.discapacidad === filters.discapacidad) &&
-        (filters.sp === '' || item.sp === filters.sp) &&
-        (filters.salario === '' || item.salario >= parseInt(filters.salario)) &&
-        (filters.genero === '' || item.genero === filters.genero)
-    );
-  });
-
-  // Renderizar la tabla filtrada
-  const tableRows = filteredData.map((item, index) => (
-      <tr key={index}>
-        <td>{item.nombre}</td>
-        <td>{item.apellido}</td>
-        <td>{item.fechaInicio}</td>
-        <td>{item.fechaFin}</td>
-        <td>{item.contratoVigente}</td>
-        <td>{item.sp}</td>
-        <td>{item.discapacidad}</td>
-        <td>{item.salario}</td>
-        <td>{item.genero}</td>
-      </tr>
-  ));
 
 
   return (
@@ -614,36 +547,7 @@ function CargaFamiliarContext() {
           </tbody>
         </table>
 
-        <h1>Tabla de Empleados</h1>
-        <div>
-          <label>Contrato Vigente:</label>
-          <select name="contratoVigente" onChange={(e: React.ChangeEvent<HTMLSelectElement>) => handleFilterChange(e)}>
-            <option value="">Todos</option>
-            <option value="SI">SI</option>
-            <option value="NO">NO</option>
-          </select>
-        </div>
-        <div>
-          <label>Fecha de Inicio:</label>
-          <input type="text" name="fechaInicio" />
-        </div>
-        {/* Repite este patrón para otros filtros */}
-        <table>
-          <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Apellido</th>
-            <th>Fecha de Inicio</th>
-            <th>Fecha de Fin</th>
-            <th>Contrato Vigente</th>
-            <th>SP</th>
-            <th>Discapacidad</th>
-            <th>Salario</th>
-            <th>Género</th>
-          </tr>
-          </thead>
-          <tbody>{tableRows}</tbody>
-        </table>
+
 
       </Card>
 
