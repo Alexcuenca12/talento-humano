@@ -17,13 +17,13 @@ import { VcarreraService } from "../../services/VCarreraService";
 import { VPeridosService } from "../../services/VPeridosService";
 import swal from "sweetalert";
 
-function PublicacionesContext() {
+function HorarioContext() {
   //Session Storage
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
 
-  const [contra1, setcontra1] = useState<IHorarioData[]>([]);
+  const [horario1, sethorario1] = useState<IHorarioData[]>([]);
 
   const carreraService = new VcarreraService();
   const periodoService = new VPeridosService();
@@ -97,7 +97,7 @@ function PublicacionesContext() {
     horarioService
       .getAll()
       .then((data) => {
-        setcontra1(data);
+        sethorario1(data);
         setDataLoaded(true); // Marcar los datos como cargados
       })
       .catch((error) => {
@@ -186,7 +186,7 @@ function PublicacionesContext() {
         horarioService
           .getAll()
           .then((data) => {
-            setcontra1(data);
+            sethorario1(data);
             resetForm();
             if (fileUploadRef.current) {
               fileUploadRef.current.clear();
@@ -223,7 +223,7 @@ function PublicacionesContext() {
           horarioService
             .delete(id)
             .then(() => {
-              setcontra1(contra1.filter((contra) => contra.id_horario !== id));
+              sethorario1(horario1.filter((contra) => contra.id_horario !== id));
               swal(
                 "Eliminado",
                 "El registro ha sido eliminado correctamente",
@@ -245,7 +245,7 @@ function PublicacionesContext() {
 
   const handleEdit = (id: number | undefined) => {
     if (id !== undefined) {
-      const editItem = contra1.find((contra) => contra.id_horario === id);
+      const editItem = horario1.find((contra) => contra.id_horario === id);
       if (editItem) {
         setFormData(editItem);
 
@@ -274,8 +274,8 @@ function PublicacionesContext() {
             distributivo: "",
             persona: null,
           });
-          setcontra1(
-            contra1.map((contra) =>
+          sethorario1(
+            horario1.map((contra) =>
               contra.id_horario === editItemId ? response : contra
             )
           );
@@ -501,7 +501,7 @@ function PublicacionesContext() {
             </tr>
           </thead>
           <tbody>
-            {contra1.map((contrato) => (
+            {horario1.map((contrato) => (
               <tr className="text-center" key={contrato.id_horario?.toString()}>
                 <td>{contrato.periodoAcademico}</td>
                 <td>{contrato.carreraHorario}</td>
@@ -567,4 +567,4 @@ function PublicacionesContext() {
   );
 }
 
-export default PublicacionesContext;
+export default HorarioContext;

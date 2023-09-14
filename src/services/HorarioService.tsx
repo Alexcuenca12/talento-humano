@@ -12,7 +12,7 @@ export class HorarioService {
     return axios.post(this.baseUrl + "create", horario).then((res) => res.data);
   }
 
-  getAllByHabilidades(id: number) {
+  getAllByHorario(id: number) {
     return axios
       .get(`${this.baseUrl}readHorario/${id}`)
       .then((res) => res.data);

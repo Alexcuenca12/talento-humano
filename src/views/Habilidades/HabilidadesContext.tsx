@@ -54,9 +54,6 @@ function HabilidadesContext() {
       return;
     }
 
-
-
-
     habilidadService
       .save(formData)
       .then((response) => {
@@ -160,7 +157,7 @@ function HabilidadesContext() {
   const resetForm = () => {
     setFormData({
       descripcion: "",
-      persona:null,
+      persona: null,
     });
     setEditMode(false);
     setEditItemId(undefined);

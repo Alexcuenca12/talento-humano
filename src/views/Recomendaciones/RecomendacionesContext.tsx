@@ -16,7 +16,7 @@ function PublicacionesContext() {
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
 
-  const [contra1, setcontra1] = useState<IRecomendaciones[]>([]);
+  const [recom1, setrecom1] = useState<IRecomendaciones[]>([]);
   const [formData, setFormData] = useState<IRecomendaciones>({
     id_recomendaciones: 0,
     primer_nombre: "",
@@ -40,7 +40,7 @@ function PublicacionesContext() {
     recomService
       .getAll()
       .then((data) => {
-        setcontra1(data);
+        setrecom1(data);
         setDataLoaded(true); // Marcar los datos como cargados
       })
       .catch((error) => {
@@ -130,7 +130,7 @@ function PublicacionesContext() {
         recomService
           .getAll()
           .then((data) => {
-            setcontra1(data);
+            setrecom1(data);
             resetForm();
             if (fileUploadRef.current) {
               fileUploadRef.current.clear();
@@ -167,8 +167,8 @@ function PublicacionesContext() {
           recomService
             .delete(id)
             .then(() => {
-              setcontra1(
-                contra1.filter((contra) => contra.id_recomendaciones !== id)
+              setrecom1(
+                recom1.filter((contra) => contra.id_recomendaciones !== id)
               );
               swal(
                 "Eliminado",
@@ -191,7 +191,7 @@ function PublicacionesContext() {
 
   const handleEdit = (id: number | undefined) => {
     if (id !== undefined) {
-      const editItem = contra1.find(
+      const editItem = recom1.find(
         (contra) => contra.id_recomendaciones === id
       );
       if (editItem) {
@@ -223,8 +223,8 @@ function PublicacionesContext() {
             documentoRecomendacion: "",
             persona: null,
           });
-          setcontra1(
-            contra1.map((contra) =>
+          setrecom1(
+            recom1.map((contra) =>
               contra.id_recomendaciones === editItemId ? response : contra
             )
           );
@@ -450,7 +450,7 @@ function PublicacionesContext() {
             </tr>
           </thead>
           <tbody>
-            {contra1.map((recomendacion) => (
+            {recom1.map((recomendacion) => (
               <tr
                 className="text-center"
                 key={recomendacion.id_recomendaciones?.toString()}

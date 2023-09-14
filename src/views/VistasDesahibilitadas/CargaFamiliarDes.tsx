@@ -1,6 +1,6 @@
-import React, { useEffect, useState, useRef, ChangeEvent } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { InputText } from "primereact/inputtext";
-import { FileUpload, FileUploadSelectEvent } from "primereact/fileupload";
+import { FileUpload } from "primereact/fileupload";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import "../../styles/Contrato.css";
@@ -11,7 +11,6 @@ import { Divider } from "primereact/divider";
 import { ICargaFamiliar } from "../../interfaces/Primary/ICargaFamiliar";
 import { CargaFamiliarService } from "../../services/CargaFamiliarService";
 import swal from "sweetalert";
-import { Dropdown } from "primereact/dropdown";
 import { useParams } from "react-router-dom";
 
 interface Params {
@@ -68,38 +67,6 @@ function CargaContextDes() {
       });
   }, []);
 
-  interface FileUploadSelectEvent {
-    originalEvent?: ChangeEvent<HTMLInputElement> | DragEvent | undefined;
-    files: File[];
-  }
-
-  const customBytesUploader = (eventData: { files: File[] }) => {
-    const event: FileUploadSelectEvent = {
-      originalEvent: undefined, // Cambia null a undefined
-      files: eventData.files,
-    };
-
-    if (event.files && event.files.length > 0) {
-      const file = event.files[0];
-      const reader = new FileReader();
-
-      reader.onloadend = function () {
-        const base64data = reader.result as string;
-        setFormData({ ...formData, evidencia: base64data });
-      };
-
-      reader.onerror = (error) => {
-        console.error("Error al leer el archivo:", error);
-      };
-
-      reader.readAsDataURL(file);
-
-      if (fileUploadRef.current) {
-        fileUploadRef.current.clear();
-      }
-    }
-  };
-
   const decodeBase64 = (base64Data: string) => {
     try {
       // Eliminar encabezados o metadatos de la cadena base64
@@ -130,7 +97,7 @@ function CargaContextDes() {
       console.error("Error al decodificar la cadena base64:", error);
     }
   };
-  
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -167,64 +134,6 @@ function CargaContextDes() {
       .catch((error) => {
         console.error("Error al enviar el formulario:", error);
       });
-  };
-
-
-  const handleDelete = (id: number | undefined) => {
-    if (id !== undefined) {
-      swal({
-        title: "Confirmar Eliminación",
-        text: "¿Estás seguro de eliminar este registro?",
-        icon: "warning",
-        buttons: {
-          cancel: {
-            text: "Cancelar",
-            visible: true,
-            className: "cancel-button",
-          },
-          confirm: {
-            text: "Sí, eliminar",
-            className: "confirm-button",
-          },
-        },
-      }).then((confirmed) => {
-        if (confirmed) {
-          cargaService
-            .deleteCarga(id)
-            .then(() => {
-              setcarga1(
-                carga1.filter((contra) => contra.id_cargaFamiliar !== id)
-              );
-              swal(
-                "Eliminado",
-                "El registro ha sido eliminado correctamente",
-                "error"
-              );
-            })
-            .catch((error) => {
-              console.error("Error al eliminar el registro:", error);
-              swal(
-                "Error",
-                "Ha ocurrido un error al eliminar el registro",
-                "error"
-              );
-            });
-        }
-      });
-    }
-  };
-
-
-  const handleEdit = (id: number | undefined) => {
-    if (id !== undefined) {
-      const editItem = carga1.find((contra) => contra.id_cargaFamiliar === id);
-      if (editItem) {
-        setFormData(editItem);
-
-        setEditMode(true);
-        setEditItemId(id);
-      }
-    }
   };
 
   const handleUpdate = (e: React.FormEvent) => {
@@ -415,7 +324,6 @@ function CargaContextDes() {
                   </div>
                 </div>
               </div>
-
             </div>
           </form>
         </div>
@@ -480,6 +388,5 @@ function CargaContextDes() {
     </Fieldset>
   );
 }
-
 
 export default CargaContextDes;

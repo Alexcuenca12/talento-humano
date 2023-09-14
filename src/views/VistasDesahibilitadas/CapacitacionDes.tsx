@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, ChangeEvent } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { InputText } from "primereact/inputtext";
 import { FileUpload } from "primereact/fileupload";
 import { Dropdown } from "primereact/dropdown";
@@ -130,11 +130,6 @@ function CapacitacionesContextDes() {
       });
   }, []);
 
-  interface FileUploadSelectEvent {
-    originalEvent?: ChangeEvent<HTMLInputElement> | DragEvent | undefined;
-    files: File[];
-  }
-
   const decodeBase64 = (base64Data: string) => {
     try {
       // Eliminar encabezados o metadatos de la cadena base64
@@ -207,66 +202,6 @@ function CapacitacionesContextDes() {
       .catch((error) => {
         console.error("Error al enviar el formulario:", error);
       });
-  };
-
-  const handleDelete = (id: number | undefined) => {
-    if (id !== undefined) {
-      swal({
-        title: "Confirmar Eliminación",
-        text: "¿Estás seguro de eliminar este registro?",
-        icon: "warning",
-        buttons: {
-          cancel: {
-            text: "Cancelar",
-            visible: true,
-            className: "cancel-button",
-          },
-          confirm: {
-            text: "Sí, eliminar",
-            className: "confirm-button",
-          },
-        },
-      }).then((confirmed) => {
-        if (confirmed) {
-          capacitacionService
-            .deleteCapacitaciones(id)
-            .then(() => {
-              setcapacitacion1(
-                capacitacion1.filter(
-                  (contra) => contra.id_capacitaciones !== id
-                )
-              );
-              swal(
-                "Eliminado",
-                "El registro ha sido eliminado correctamente",
-                "error"
-              );
-            })
-            .catch((error) => {
-              console.error("Error al eliminar el registro:", error);
-              swal(
-                "Error",
-                "Ha ocurrido un error al eliminar el registro",
-                "error"
-              );
-            });
-        }
-      });
-    }
-  };
-
-  const handleEdit = (id: number | undefined) => {
-    if (id !== undefined) {
-      const editItem = capacitacion1.find(
-        (contra) => contra.id_capacitaciones === id
-      );
-      if (editItem) {
-        setFormData(editItem);
-
-        setEditMode(true);
-        setEditItemId(id);
-      }
-    }
   };
 
   const handleUpdate = (e: React.FormEvent) => {

@@ -18,7 +18,7 @@ function InstruccionFormalContext() {
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
 
-  const [formal1, setcontra1] = useState<InstruccionFormalData[]>([]);
+  const [formal1, setinstruc1] = useState<InstruccionFormalData[]>([]);
   const [formData, setFormData] = useState<InstruccionFormalData>({
     id_instruccion: 0,
     nivelInstruccion: "",
@@ -40,9 +40,9 @@ function InstruccionFormalContext() {
 
   const loadData = () => {
     instrucFormalService
-      .getAll()
+      .getAllByPersona(idPersona)
       .then((data) => {
-        setcontra1(data);
+        setinstruc1(data);
         setDataLoaded(true); // Marcar los datos como cargados
       })
       .catch((error) => {
@@ -135,7 +135,7 @@ function InstruccionFormalContext() {
         instrucFormalService
           .getAll()
           .then((data) => {
-            setcontra1(data);
+            setinstruc1(data);
             resetForm();
             if (fileUploadRef.current) {
               fileUploadRef.current.clear();
@@ -172,7 +172,7 @@ function InstruccionFormalContext() {
           instrucFormalService
             .delete(id)
             .then(() => {
-              setcontra1(
+              setinstruc1(
                 formal1.filter((instruc) => instruc.id_instruccion !== id)
               );
               swal(
@@ -227,7 +227,7 @@ function InstruccionFormalContext() {
             titulo: "",
             persona: null
           });
-          setcontra1(
+          setinstruc1(
             formal1.map((instruc) =>
               instruc.id_instruccion === editItemId ? response : instruc
             )
