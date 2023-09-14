@@ -37,7 +37,7 @@ function CargaFamiliarContext() {
 
   const loadData = () => {
     cargaService
-      .getAll()
+      .getAllByPersona(idPersona)
       .then((data) => {
         setcontra1(data);
         setDataLoaded(true); // Marcar los datos como cargados
@@ -126,7 +126,7 @@ function CargaFamiliarContext() {
         swal("Publicacion", "Datos Guardados Correctamente", "success");
 
         cargaService
-          .getAll()
+          .getAllByPersona(idPersona)
           .then((data) => {
             setcontra1(data);
             resetForm();

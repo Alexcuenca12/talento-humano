@@ -133,7 +133,7 @@ function InstruccionFormalContext() {
         swal("Publicacion", "Datos Guardados Correctamente", "success");
 
         instrucFormalService
-          .getAll()
+        .getAllByPersona(idPersona)
           .then((data) => {
             setinstruc1(data);
             resetForm();

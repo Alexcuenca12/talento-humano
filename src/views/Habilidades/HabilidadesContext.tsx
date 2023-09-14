@@ -37,7 +37,7 @@ function HabilidadesContext() {
 
   useEffect(() => {
     habilidadService
-      .getAll()
+      .getAllByPersona(idPersona)
       .then((data) => {
         sethabi1(data);
       })
@@ -61,7 +61,7 @@ function HabilidadesContext() {
         console.log("guardado: ", formData);
         swal("Habilidad", "Datos Guardados Correctamente", "success");
         habilidadService
-          .getAll()
+          .getAllByPersona(idPersona)
           .then((data) => {
             sethabi1(data);
             console.log("datos son: ", data);

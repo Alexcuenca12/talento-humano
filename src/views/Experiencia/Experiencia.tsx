@@ -48,7 +48,7 @@ function Experiencia() {
 
     const loadData = () => {
         expService
-            .getAllItems()
+            .getAllByPersona(idPersona)
             .then((data) => {
                 setexp1(data);
                 setDataLoaded(true); // Marcar los datos como cargados

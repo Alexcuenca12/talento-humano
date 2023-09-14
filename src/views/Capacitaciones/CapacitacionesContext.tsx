@@ -94,7 +94,7 @@ function PublicacionesContext() {
 
   const loadData = () => {
     capaService
-      .getAllCap()
+      .getAllByPersona(idPersona)
       .then((data) => {
         setcontra1(data);
         setDataLoaded(true); // Marcar los datos como cargados
@@ -188,7 +188,7 @@ function PublicacionesContext() {
         swal("Publicacion", "Datos Guardados Correctamente", "success");
 
         capaService
-          .getAllCap()
+          .getAllByPersona(idPersona)
           .then((data) => {
             setcontra1(data);
             resetForm();

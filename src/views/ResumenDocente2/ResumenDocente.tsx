@@ -47,17 +47,25 @@ function ResumenDocente() {
 
   const history = useHistory();
 
-  const [selectedCapacitacion, setSelectedCapacitacion] = useState<string | null>(null);
+  const [selectedCapacitacion, setSelectedCapacitacion] = useState<
+    string | null
+  >(null);
   const [selectedCarga, setSelectedCarga] = useState<string | null>(null);
   const [selectedContrato, setSelectedContrato] = useState<string | null>(null);
   const [selectedEva, setSelectedEva] = useState<string | null>(null);
   const [selectedExp, setSelectedExp] = useState<string | null>(null);
-  const [selectedHabilidad, setSelectedHabilidad] = useState<string | null>(null);
+  const [selectedHabilidad, setSelectedHabilidad] = useState<string | null>(
+    null
+  );
   const [selectedHorario, setSelectedHorario] = useState<string | null>(null);
   const [selectedInstruc, setSelectedInstruc] = useState<string | null>(null);
   const [selectedPersona, setSelectedPersona] = useState<string | null>(null);
-  const [selectedPublicacion, setSelectedPublicacion] = useState<string | null>(null);
-  const [selectedRecomendacion, setSelectedRecomendacion] = useState<string | null>(null);
+  const [selectedPublicacion, setSelectedPublicacion] = useState<string | null>(
+    null
+  );
+  const [selectedRecomendacion, setSelectedRecomendacion] = useState<
+    string | null
+  >(null);
 
   const handleCapacitacionClick = (codigoCapacitacion: string) => {
     setSelectedCapacitacion(codigoCapacitacion);
@@ -193,9 +201,14 @@ function ResumenDocente() {
           <h2 className="text-3xl">Cargo: </h2>
           <p className="text-2xl">{rowData.cargo}</p>
         </div>
-        <div className=" ">
+        <div className=" mr-4">
           <h2 className="text-3xl">Salario: </h2>
           <p className="text-2xl">{rowData.salario}</p>
+        </div>
+
+        <div className=" ">
+          <h2 className="text-3xl">Salario Público: </h2>
+          <p className="text-2xl">{rowData.salario_publico}</p>
         </div>
       </div>
     );
@@ -222,7 +235,14 @@ function ResumenDocente() {
             )}
           </p>
         </div>
-
+        <div className="mr-4 ">
+          <h2 className="text-3xl">Autores: </h2>
+          <p className="text-2xl">{rowData.autores_publi}</p>
+        </div>
+        <div className="mr-4 ">
+          <h2 className="text-3xl">Lugar Publicación: </h2>
+          <p className="text-2xl">{rowData.lugar_publi}</p>
+        </div>
         <div className=" ">
           <h2 className="text-3xl">Editorial: </h2>
           <p className="text-2xl">{rowData.editorial_publi}</p>
@@ -254,7 +274,7 @@ function ResumenDocente() {
     return (
       <div className="flex">
         <div className="mr-4">
-          <h2 className="text-3xl">Institucion: </h2>
+          <h2 className="text-3xl">Institución: </h2>
           <p className="text-2xl">{rowData.institucion}</p>
         </div>
         <div className="mr-4">
@@ -311,7 +331,7 @@ function ResumenDocente() {
           <p className="text-2xl">{rowData.cod_carrera}</p>
         </div>
         <div className="mr-4">
-          <h2 className="text-3xl">Periodo Academico: </h2>
+          <h2 className="text-3xl">Periodo Académico: </h2>
           <p className="text-2xl">{String(rowData.per_nombre)}</p>
         </div>
       </div>
@@ -324,7 +344,13 @@ function ResumenDocente() {
         <div className="mr-4">
           <h2 className="text-3xl">Nombres: </h2>
           <p className="text-2xl">
-            {rowData.primer_nombre + " " + rowData.primer_apellido}
+            {rowData.primer_nombre + " " + rowData.segundo_nombre}
+          </p>
+        </div>
+        <div className="mr-4">
+          <h2 className="text-3xl">Apellidos: </h2>
+          <p className="text-2xl">
+            {rowData.primer_apellido + " " + rowData.segundo_apellido}
           </p>
         </div>
         <div className="mr-4">
@@ -339,7 +365,7 @@ function ResumenDocente() {
     return (
       <div className="flex">
         <div className="mr-4">
-          <h2 className="text-3xl">Nivel de institucion: </h2>
+          <h2 className="text-3xl">Nivel de Institución: </h2>
           <p className="text-2xl">{rowData.nivelInstruccion}</p>
         </div>
         <div className="mr-4">
@@ -347,7 +373,7 @@ function ResumenDocente() {
           <p className="text-2xl">{rowData.tituloObtenido}</p>
         </div>
         <div className="mr-4 ">
-          <h2 className="text-3xl">Institucion Educativa: </h2>
+          <h2 className="text-3xl">Institución Educativa: </h2>
           <p className="text-2xl">{rowData.institucionEducativa}</p>
         </div>
       </div>
@@ -358,14 +384,16 @@ function ResumenDocente() {
     return (
       <div className="flex">
         <div className="mr-4">
-          <h2 className="text-3xl">Cedula: </h2>
+          <h2 className="text-3xl">Cédula: </h2>
           <p className="text-2xl">{rowData.cedula}</p>
         </div>
         <div className="mr-4">
           <h2 className="text-3xl">Nombres: </h2>
-          <p className="text-2xl">
-            {rowData.nombre_pariente || rowData.apellido_pariente}
-          </p>
+          <p className="text-2xl">{rowData.nombre_pariente}</p>
+        </div>
+        <div className="mr-4">
+          <h2 className="text-3xl">Apellidos: </h2>
+          <p className="text-2xl">{rowData.apellido_pariente}</p>
         </div>
         <div className="mr-4">
           <h2 className="text-3xl">Fecha de nacimiento: </h2>
@@ -392,16 +420,46 @@ function ResumenDocente() {
     return (
       <div className="flex">
         <div className="mr-4">
-          <h2 className="text-3xl">Institucion: </h2>
+          <h2 className="text-3xl">Institución: </h2>
           <p className="text-2xl">{rowData.institucion}</p>
         </div>
         <div className="mr-4">
-          <h2 className="text-3xl">Area de trabajo: </h2>
+          <h2 className="text-3xl">Área de trabajo: </h2>
           <p className="text-2xl">{rowData.area_trabajo}</p>
         </div>
         <div className="mr-4">
           <h2 className="text-3xl">Puesto: </h2>
           <p className="text-2xl">{rowData.puesto}</p>
+        </div>
+
+        <div className="mr-4">
+          <h2 className="text-3xl">Fecha Inicio: </h2>
+          <p className="text-2xl">
+            {String(
+              rowData.fecha_inicio
+                ? new Date(rowData.fecha_inicio).toLocaleDateString("es-ES", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  })
+                : ""
+            )}
+          </p>
+        </div>
+
+        <div className="mr-4">
+          <h2 className="text-3xl">Fecha Fin: </h2>
+          <p className="text-2xl">
+            {String(
+              rowData.fecha_fin
+                ? new Date(rowData.fecha_fin).toLocaleDateString("es-ES", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  })
+                : ""
+            )}
+          </p>
         </div>
       </div>
     );
@@ -411,7 +469,15 @@ function ResumenDocente() {
     return (
       <div className="flex">
         <div className="mr-4">
-          <h2 className="text-3xl">Descripcion: </h2>
+          <h2 className="text-3xl">Nº de Registro: </h2>
+          <p className="text-2xl">
+            {rowData.id_habilidades !== undefined
+              ? rowData.id_habilidades.toString()
+              : ""}
+          </p>
+        </div>
+        <div className="mr-4">
+          <h2 className="text-3xl">Descripción: </h2>
           <p className="text-2xl">{rowData.descripcion}</p>
         </div>
       </div>
@@ -671,8 +737,6 @@ function ResumenDocente() {
     );
   };
 
-
-
   return (
     <Card className="fgrid col-fixed">
       <Card
@@ -713,7 +777,9 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      frozen
                       body={btnAccionPersona}
+                      style={{ width: "50px" }}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -745,6 +811,8 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      frozen
+                      style={{ width: "50px" }}
                       body={btnAccionContrato}
                       headerStyle={{
                         backgroundColor: "#0C3255",
@@ -778,6 +846,8 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      frozen
+                      style={{ width: "50px" }}
                       body={btnAccionHorario}
                       headerStyle={{
                         backgroundColor: "#0C3255",
@@ -810,6 +880,8 @@ function ResumenDocente() {
                     ></Column>
                     <Column
                       field="Acciones"
+                      frozen
+                      style={{ width: "50px" }}
                       header="Acciones"
                       body={btnAccionCapacitacion}
                       headerStyle={{
@@ -832,8 +904,8 @@ function ResumenDocente() {
                     className="mt-5  w-full h-full text-3xl font-medium"
                   >
                     <Column
-                      field="Evaluacion"
-                      header="Evaluacion"
+                      field="Evaluación"
+                      header="Evaluación"
                       body={evaluacionBody}
                       headerStyle={{
                         backgroundColor: "#0C3255",
@@ -843,7 +915,9 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
-                      body={btnAccionEva} 
+                      body={btnAccionEva}
+                      frozen
+                      style={{ width: "50px" }}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -877,6 +951,8 @@ function ResumenDocente() {
                       field="Acciones"
                       header="Acciones"
                       body={btnAccionPubli}
+                      frozen
+                      style={{ width: "50px" }}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -908,6 +984,8 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      frozen
+                      style={{ width: "50px" }}
                       body={btnAccionRecom}
                       headerStyle={{
                         backgroundColor: "#0C3255",
@@ -929,8 +1007,8 @@ function ResumenDocente() {
                     className="mt-5  w-full h-full text-3xl font-medium"
                   >
                     <Column
-                      field="Instruccion Formal"
-                      header="Instruccion Formal"
+                      field="Instrucción Formal"
+                      header="Instrucción Formal"
                       body={instruccionFBody}
                       headerStyle={{
                         backgroundColor: "#0C3255",
@@ -941,6 +1019,8 @@ function ResumenDocente() {
                       field="Acciones"
                       header="Acciones"
                       body={btnAccionInstruccion}
+                      frozen
+                      style={{ width: "50px" }}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -973,6 +1053,8 @@ function ResumenDocente() {
                       field="Acciones"
                       header="Acciones"
                       body={btnAccionCarga}
+                      frozen
+                      style={{ width: "50px" }}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -1004,7 +1086,9 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
-                      body={btnAccionExp} //
+                      body={btnAccionExp}
+                      frozen
+                      style={{ width: "50px" }}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -1036,7 +1120,9 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
-                      body={btnAccionHabilidad} 
+                      body={btnAccionHabilidad}
+                      frozen
+                      style={{ width: "50px" }}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",

@@ -25,6 +25,7 @@ function PublicacionesContext() {
     segundo_apellido: "",
     correo: "",
     documentoRecomendacion: "",
+    numeroContacto: "",
     persona: {
       id_persona: idPersona,
     },
@@ -38,7 +39,7 @@ function PublicacionesContext() {
 
   const loadData = () => {
     recomService
-      .getAll()
+      .getAllByPersona(idPersona)
       .then((data) => {
         setrecom1(data);
         setDataLoaded(true); // Marcar los datos como cargados
@@ -128,7 +129,7 @@ function PublicacionesContext() {
         swal("Publicacion", "Datos Guardados Correctamente", "success");
 
         recomService
-          .getAll()
+          .getAllByPersona(idPersona)
           .then((data) => {
             setrecom1(data);
             resetForm();
@@ -221,6 +222,7 @@ function PublicacionesContext() {
             segundo_apellido: "",
             correo: "",
             documentoRecomendacion: "",
+            numeroContacto: "",
             persona: null,
           });
           setrecom1(
@@ -245,6 +247,7 @@ function PublicacionesContext() {
       segundo_apellido: "",
       correo: "",
       documentoRecomendacion: "",
+      numeroContacto: "",
       persona: null,
     });
     setEditMode(false);
@@ -277,11 +280,14 @@ function PublicacionesContext() {
             encType="multipart/form-data"
           >
             <div className="flex flex-wrap flex-row">
-              <div className="flex align-items-center justify-content-center">
+              <div
+                className="flex align-items-center justify-content-center"
+                style={{ marginLeft: "-180px" }}
+              >
                 <div className="flex flex-column flex-wrap gap-4">
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
-                      htmlFor="nombre"
+                      htmlFor="primer_nombre"
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
@@ -289,9 +295,9 @@ function PublicacionesContext() {
                     </label>
                     <InputText
                       className="text-2xl"
-                      placeholder="Ingrese el Primer Nombre"
-                      id="nombre"
-                      name="nombre"
+                      placeholder="Ingrese el 1er Nombre"
+                      id="primer_nombre"
+                      name="primer_nombre"
                       style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
@@ -304,7 +310,7 @@ function PublicacionesContext() {
                   </div>
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
-                      htmlFor="segundo"
+                      htmlFor="segundo_nombre"
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
@@ -312,9 +318,9 @@ function PublicacionesContext() {
                     </label>
                     <InputText
                       className="text-2xl"
-                      placeholder="Ingrese el Segundo Nombre"
-                      id="segundo"
-                      name="segundo"
+                      placeholder="Ingrese el 2do Nombre"
+                      id="segundo_nombre"
+                      name="segundo_nombre"
                       style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
@@ -327,7 +333,7 @@ function PublicacionesContext() {
                   </div>
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
-                      htmlFor="apellido"
+                      htmlFor="primer_apellido"
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
@@ -335,9 +341,9 @@ function PublicacionesContext() {
                     </label>
                     <InputText
                       className="text-2xl"
-                      placeholder="Ingrese el Primer Apellido"
-                      id="apellido"
-                      name="apellido"
+                      placeholder="Ingrese el 1er Apellido"
+                      id="primer_apellido"
+                      name="primer_apellido"
                       style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
@@ -348,9 +354,14 @@ function PublicacionesContext() {
                       value={formData.primer_apellido}
                     />
                   </div>
+                </div>
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginLeft: "25px" }}
+                >
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
-                      htmlFor="apellido2"
+                      htmlFor="segundo_apellido"
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
@@ -358,9 +369,9 @@ function PublicacionesContext() {
                     </label>
                     <InputText
                       className="text-2xl"
-                      placeholder="Ingrese el Segundo Apellido"
-                      id="apellido2"
-                      name="apellido2"
+                      placeholder="Ingrese el 2do. Apellido"
+                      id="segundo_apellido"
+                      name="segundo_apellido"
                       style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
@@ -377,11 +388,11 @@ function PublicacionesContext() {
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
-                      Correo Electrónico:
+                      Filiación de la Publicacion:
                     </label>
                     <InputText
                       className="text-2xl"
-                      placeholder="Ingrese el Correo Electrónico"
+                      placeholder="Ingrese el Correo"
                       id="correo"
                       name="correo"
                       style={{ width: "221px" }}
@@ -394,143 +405,186 @@ function PublicacionesContext() {
                       value={formData.correo}
                     />
                   </div>
-                  <div className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
-                    <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                      <Button
-                        type="submit"
-                        label={editMode ? "Actualizar" : "Guardar"}
-                        className="w-full text-3xl min-w-min "
-                        rounded
-                        onClick={editMode ? handleUpdate : handleSubmit}
-                      />
-                    </div>
-                    <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                      <Button
-                        type="button"
-                        label="Cancel"
-                        className="w-full text-3xl min-w-min"
-                        rounded
-                        onClick={resetForm}
-                      />
-                    </div>
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="numeroContacto"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Número de Contacto:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese el Número"
+                      id="numeroContacto"
+                      name="numeroContacto"
+                      style={{ width: "221px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          numeroContacto: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.numeroContacto}
+                    />
                   </div>
                 </div>
               </div>
-              <div className="flex flex-column align-items-center justify-content-center ml-4">
-                <FileUpload
-                  name="pdf"
-                  style={{ marginLeft: "480px" }}
-                  chooseLabel="Escoger"
-                  uploadLabel="Cargar"
-                  cancelLabel="Cancelar"
-                  emptyTemplate={
-                    <p className="m-0 p-button-rounded">
-                      Arrastre y suelte los archivos aquí para cargarlos.
-                    </p>
-                  }
-                  customUpload
-                  onSelect={customBytesUploader}
-                  accept="application/pdf"
-                />
+              <div
+                className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6"
+                style={{ marginLeft: "-45px", marginBottom: "40px" }}
+              >
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="submit"
+                    label={editMode ? "Actualizar" : "Guardar"}
+                    className="w-full text-3xl min-w-min "
+                    rounded
+                    onClick={editMode ? handleUpdate : handleSubmit}
+                  />
+                </div>
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="button"
+                    label="Cancelar"
+                    className="w-full text-3xl min-w-min"
+                    rounded
+                    onClick={resetForm}
+                  />
+                </div>
               </div>
             </div>
           </form>
         </div>
-        <table
-          style={{ minWidth: "50rem" }}
-          className="mt-5  w-full h-full text-3xl font-medium"
-        >
-          <thead>
-            <tr style={{ backgroundColor: "#0C3255", color: "white" }}>
-              <th>Nº</th>
-              <th>Nombre</th>
-              <th>Correo</th>
-              <th>Operaciones</th>
-              <th>Evidencia</th>
-            </tr>
-          </thead>
-          <tbody>
-            {recom1.map((recomendacion) => (
-              <tr
-                className="text-center"
-                key={recomendacion.id_recomendaciones?.toString()}
-              >
-                <td>{recomendacion.id_recomendaciones}</td>
-                <td>
-                  {recomendacion.primer_nombre +
-                    " " +
-                    recomendacion.segundo_nombre +
-                    " " +
-                    recomendacion.primer_apellido +
-                    " " +
-                    recomendacion.segundo_apellido}
-                </td>
-                <td>{recomendacion.correo}</td>
-                <td>
-                  <Button
-                    type="button"
-                    className=""
-                    label="✎"
-                    style={{
-                      background: "#ff9800",
-                      borderRadius: "5%",
-                      fontSize: "25px",
-                      width: "50px",
-                      color: "black",
-                      justifyContent: "center",
-                      marginRight: "8px", // Espacio entre los botones
-                    }}
-                    onClick={() =>
-                      handleEdit(recomendacion.id_recomendaciones?.valueOf())
-                    }
-                    // Agrega el evento onClick para la operación de editar
-                  />
-                  <Button
-                    type="button"
-                    className=""
-                    label="✘"
-                    style={{
-                      background: "#ff0000",
-                      borderRadius: "10%",
-                      fontSize: "25px",
-                      width: "50px",
-                      color: "black",
-                      justifyContent: "center",
-                    }}
-                    onClick={() =>
-                      handleDelete(recomendacion.id_recomendaciones?.valueOf())
-                    }
-                    // Agrega el evento onClick para la operación de eliminar
-                  />
-                </td>
-                <td>
-                  {recomendacion.documentoRecomendacion ? (
+        <div style={{ marginLeft: "556px", marginTop: "-240px" }}>
+          <div className="flex flex-column align-items-center justify-content-center ml-4">
+            <label
+              htmlFor="pdf"
+              className="text-3xl font-medium w-auto min-w-min"
+              style={{
+                marginRight: "20px",
+                marginLeft: "169px",
+                marginTop: "-5px",
+              }}
+            >
+              Subir Evidencia:
+            </label>
+            <FileUpload
+              name="pdf"
+              style={{ marginLeft: "380px", marginTop: "10px" }}
+              chooseLabel="Escoger"
+              uploadLabel="Cargar"
+              cancelLabel="Cancelar"
+              emptyTemplate={
+                <p className="m-0 p-button-rounded">
+                  Arrastre y suelte los archivos aquí para cargarlos.
+                </p>
+              }
+              customUpload
+              onSelect={customBytesUploader}
+              accept="application/pdf"
+            />
+          </div>
+        </div>
+        <div style={{marginTop:"50px"}}>
+          <table
+            style={{ minWidth: "40rem" }}
+            className="mt-4  w-full h-full text-3xl font-large"
+          >
+            <thead>
+              <tr style={{ backgroundColor: "#0C3255", color: "white" }}>
+                <th>Nº</th>
+                <th>Nombres</th>
+                <th>Correo</th>
+                <th>Número </th>
+                <th>Operaciones</th>
+                <th>Evidencia</th>
+              </tr>
+            </thead>
+            <tbody>
+              {recom1.map((recomendaciones) => (
+                <tr
+                  className="text-center"
+                  key={recomendaciones.id_recomendaciones?.toString()}
+                >
+                  <td>{recomendaciones.id_recomendaciones}</td>
+
+                  <td>
+                    {recomendaciones.primer_nombre +
+                      " " +
+                      recomendaciones.primer_apellido}
+                  </td>
+                  <td>{recomendaciones.correo}</td>
+                  <td>{recomendaciones.numeroContacto}</td>
+
+                  <td>
                     <Button
                       type="button"
                       className=""
-                      label="Descargar PDF"
+                      label="✎"
                       style={{
-                        background: "#009688",
-                        borderRadius: "10%",
-                        fontSize: "12px",
+                        background: "#ff9800",
+                        borderRadius: "5%",
+                        fontSize: "25px",
+                        width: "50px",
                         color: "black",
                         justifyContent: "center",
                       }}
                       onClick={() =>
-                        decodeBase64(recomendacion.documentoRecomendacion!)
+                        handleEdit(
+                          recomendaciones.id_recomendaciones?.valueOf()
+                        )
                       }
+                      // Agrega el evento onClick para la operación de editar
                     />
-                  ) : (
-                    <span>Sin evidencia</span>
-                  )}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+                    <Button
+                      type="button"
+                      className=""
+                      label="✘"
+                      style={{
+                        background: "#ff0000",
+                        borderRadius: "10%",
+                        fontSize: "25px",
+                        width: "50px",
+                        color: "black",
+                        justifyContent: "center",
+                      }}
+                      onClick={() =>
+                        handleDelete(
+                          recomendaciones.id_recomendaciones?.valueOf()
+                        )
+                      }
+                      // Agrega el evento onClick para la operación de eliminar
+                    />
+                  </td>
+                  <td>
+                    {recomendaciones.documentoRecomendacion ? (
+                      <Button
+                        type="button"
+                        className=""
+                        label="Descargar PDF"
+                        style={{
+                          background: "#009688",
+                          borderRadius: "10%",
+                          fontSize: "12px",
+                          color: "black",
+                          justifyContent: "center",
+                        }}
+                        onClick={() =>
+                          decodeBase64(recomendaciones.documentoRecomendacion!)
+                        }
+                      />
+                    ) : (
+                      <span>Sin evidencia</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </Card>
     </Fieldset>
   );
 }
-
 export default PublicacionesContext;

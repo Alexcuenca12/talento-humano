@@ -397,13 +397,6 @@ function PersonaContextDes() {
             <label className="font-medium"></label>
           </div>
 
-          <div className="field  flex flex-column">
-            <label className="font-medium" htmlFor="foto">
-              Foto Personal
-            </label>
-            <img src={imageUrl} height={200} width={200} />
-            <label className="font-medium" htmlFor="foto"></label>
-          </div>
           <div className="field col-4">
             <label className="font-medium"></label>
           </div>

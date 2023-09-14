@@ -36,6 +36,7 @@ function RecomendacionContextDes() {
     segundo_apellido: "",
     correo: "",
     documentoRecomendacion: "",
+    numeroContacto:"",
     persona: {
       id_persona: idPersona,
     },
@@ -158,6 +159,7 @@ function RecomendacionContextDes() {
             segundo_apellido: "",
             correo: "",
             documentoRecomendacion: "",
+            numeroContacto:"",
             persona: null,
           });
           setrecom1(
@@ -182,6 +184,7 @@ function RecomendacionContextDes() {
       segundo_apellido: "",
       correo: "",
       documentoRecomendacion: "",
+      numeroContacto:"",
       persona: null,
     });
     setEditMode(false);

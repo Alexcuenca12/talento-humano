@@ -79,7 +79,7 @@ function PublicacionesContext() {
 
   const loadData = () => {
     evaService
-      .getAll()
+      .getAllByPersona(idPersona)
       .then((data) => {
         seteva1(data);
         setDataLoaded(true); // Marcar los datos como cargados
@@ -162,7 +162,7 @@ function PublicacionesContext() {
         swal("Publicacion", "Datos Guardados Correctamente", "success");
 
         evaService
-          .getAll()
+          .getAllByPersona(idPersona)
           .then((data) => {
             seteva1(data);
             resetForm();

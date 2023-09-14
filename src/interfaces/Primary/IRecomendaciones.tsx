@@ -5,6 +5,7 @@ export interface IRecomendaciones {
   primer_apellido: string;
   segundo_apellido: string;
   correo: string;
+  numeroContacto:string;
   documentoRecomendacion: string;
   persona: object | null;
 }

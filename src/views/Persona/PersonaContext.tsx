@@ -24,6 +24,10 @@ const apiViewService = new VistaPersonaService();
 const apiService = new PersonaService();
 
 const Persona = () => {
+  const userData = sessionStorage.getItem("user");
+  const userObj = JSON.parse(userData || "{}");
+  const idPersona = userObj.id;
+
   const [items, setItems] = useState<IPersona[]>([]);
   const [message, setMessage] = useState<IMessage | null>(null);
   const [selectedItem, setSelectedItem] = useState<IPersona | null>(null);
@@ -246,9 +250,12 @@ const Persona = () => {
       }, [])
 
       const fetchItems = () => {
-        apiService.getAll()
+        if (idPersona !== undefined) {
+          apiService.getAllByPersona(idPersona)
+       
             .then(response => {
               setItems(response);
+              console.log(formik.values.id_persona);
             })
             .catch(error => {
               console.error(error);
@@ -256,9 +263,15 @@ const Persona = () => {
                 severity: 'error',
                 summary: 'Error',
                 detail: error.message
-              })
-            })
+              });
+            });
+        } else {
+          // Manejar el caso en que id_persona es undefined
+          console.error("id_persona es undefined");
+          // Puedes establecer un mensaje de error o realizar alguna otra acción apropiada aquí
+        }
       }
+      
 
       useEffect(() => {
         if (formik.values.cedula.length == 10) {

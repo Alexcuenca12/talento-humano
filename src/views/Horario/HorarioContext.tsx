@@ -95,7 +95,7 @@ function HorarioContext() {
 
   const loadData = () => {
     horarioService
-      .getAll()
+      .getAllByPersona(idPersona)
       .then((data) => {
         sethorario1(data);
         setDataLoaded(true); // Marcar los datos como cargados
@@ -184,7 +184,7 @@ function HorarioContext() {
         swal("Publicacion", "Datos Guardados Correctamente", "success");
 
         horarioService
-          .getAll()
+          .getAllByPersona(idPersona)
           .then((data) => {
             sethorario1(data);
             resetForm();
