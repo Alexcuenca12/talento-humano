@@ -26,6 +26,15 @@ export class CapacitacionesService {
       });
   }
 
+  getAllByCapacitaciones(id: number) {
+    return this.api.get(`readCapacitaciones/${id}`).then((res) => res.data);
+  }
+
+  getAllByPersona(id: number) {
+    return this.api.get(`readCapacitacionPersona/${id}`).then((res) => res.data);
+  }
+
+
   updateCapacitaciones(id: number, capacitaciones: ICapacitaciones) {
     return this.api
       .put(`/update/${id}`, capacitaciones)

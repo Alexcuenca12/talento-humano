@@ -23,6 +23,8 @@ import Resumen from "../Resumen/Resumen";
 import PersonaCombinada from "../Persona/PersonaCombinada";
 import ContratoDes from "../VistasDesahibilitadas/ContratoDes";
 import PublicacionesDes from "../VistasDesahibilitadas/PublicacionesDes";
+import CargaContextDes from "../VistasDesahibilitadas/CargaFamiliarDes";
+import CapacitacionesContextDes from "../VistasDesahibilitadas/CapacitacionDes";
 
 export const DashboardRouter = () => {
   //Datos del sessionStorage
@@ -294,6 +296,38 @@ export const DashboardRouter = () => {
                 )}
               </Route>
 
+              <Route path="/capacitacionDes/:codigoCapacitacion">
+                {rol === 1 ? (
+                  <>
+                    <NavBar />
+                    <CapacitacionesContextDes />
+                  </>
+                ) : rol === 2 ? (
+                  <>
+                    <NavBarDoc />
+                    <CapacitacionesContextDes />
+                  </>
+                ) : (
+                  <NavBarUserDisabled />
+                )}
+              </Route>
+
+              <Route path="/cargaDes/:codigoCarga">
+                {rol === 1 ? (
+                  <>
+                    <NavBar />
+                    <CargaContextDes />
+                  </>
+                ) : rol === 2 ? (
+                  <>
+                    <NavBarDoc />
+                    <CargaContextDes />
+                  </>
+                ) : (
+                  <NavBarUserDisabled />
+                )}
+              </Route>
+
               <Route path="/contratoDes/:codigoContrato">
                 {rol === 1 ? (
                   <>
@@ -310,6 +344,102 @@ export const DashboardRouter = () => {
                 )}
               </Route>
 
+              <Route path="/evaluacionDes/:codigoEvaluacion">
+                {rol === 1 ? (
+                  <>
+                    <NavBar />
+                    <ContratoDes />
+                  </>
+                ) : rol === 2 ? (
+                  <>
+                    <NavBarDoc />
+                    <ContratoDes />
+                  </>
+                ) : (
+                  <NavBarUserDisabled />
+                )}
+              </Route>
+
+              <Route path="/experienciaDes/:codigoExperiencia">
+                {rol === 1 ? (
+                  <>
+                    <NavBar />
+                    <ContratoDes />
+                  </>
+                ) : rol === 2 ? (
+                  <>
+                    <NavBarDoc />
+                    <ContratoDes />
+                  </>
+                ) : (
+                  <NavBarUserDisabled />
+                )}
+              </Route>
+
+              <Route path="/habilidadDes/:codigoHabilidad">
+                {rol === 1 ? (
+                  <>
+                    <NavBar />
+                    <ContratoDes />
+                  </>
+                ) : rol === 2 ? (
+                  <>
+                    <NavBarDoc />
+                    <ContratoDes />
+                  </>
+                ) : (
+                  <NavBarUserDisabled />
+                )}
+              </Route>
+
+              <Route path="/horarioDes/:codigoHorario">
+                {rol === 1 ? (
+                  <>
+                    <NavBar />
+                    <ContratoDes />
+                  </>
+                ) : rol === 2 ? (
+                  <>
+                    <NavBarDoc />
+                    <ContratoDes />
+                  </>
+                ) : (
+                  <NavBarUserDisabled />
+                )}
+              </Route>
+
+              <Route path="/instruccionDes/:codigoInstrucc">
+                {rol === 1 ? (
+                  <>
+                    <NavBar />
+                    <ContratoDes />
+                  </>
+                ) : rol === 2 ? (
+                  <>
+                    <NavBarDoc />
+                    <ContratoDes />
+                  </>
+                ) : (
+                  <NavBarUserDisabled />
+                )}
+              </Route>
+
+              <Route path="/personaDes/:codigoPersona">
+                {rol === 1 ? (
+                  <>
+                    <NavBar />
+                    <ContratoDes />
+                  </>
+                ) : rol === 2 ? (
+                  <>
+                    <NavBarDoc />
+                    <ContratoDes />
+                  </>
+                ) : (
+                  <NavBarUserDisabled />
+                )}
+              </Route>
+           
               <Route path="/publicacionDes/:codigoPublicacion">
                 {rol === 1 ? (
                   <>
@@ -325,6 +455,23 @@ export const DashboardRouter = () => {
                   <NavBarUserDisabled />
                 )}
               </Route>
+
+              <Route path="/recomendacionDes/:codigoRecomendacion">
+                {rol === 1 ? (
+                  <>
+                    <NavBar />
+                    <ContratoDes />
+                  </>
+                ) : rol === 2 ? (
+                  <>
+                    <NavBarDoc />
+                    <ContratoDes />
+                  </>
+                ) : (
+                  <NavBarUserDisabled />
+                )}
+              </Route>
+
 
               <Route path="*">
                 {rol === 1 ? (

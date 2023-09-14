@@ -24,6 +24,13 @@ export class PersonaService {
     return axios.delete(`${this.baseUrl}delete/${id}`).then((res) => res.data);
   }
 
+  
+  getAllByPersona(id: number) {
+    return axios
+      .get(`${this.baseUrl}readPersona/${id}`)
+      .then((res) => res.data);
+  }
+
   getSummary(id: number) {
     return axios.get(`${this.baseUrl}combined/${id}`).then(response => response.data as IResumen)
         .catch(error => {

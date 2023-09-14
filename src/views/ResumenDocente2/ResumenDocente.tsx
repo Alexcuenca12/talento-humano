@@ -457,7 +457,7 @@ function ResumenDocente() {
         }}
         onClick={() => {
           if (rowData && rowData.id_capacitaciones) {
-            handlePublicacionClick(rowData.id_capacitaciones.toString());
+            handleCapacitacionClick(rowData.id_capacitaciones.toString());
           }
         }}
       />
@@ -480,7 +480,7 @@ function ResumenDocente() {
         }}
         onClick={() => {
           if (rowData && rowData.id_cargaFamiliar) {
-            handlePublicacionClick(rowData.id_cargaFamiliar.toString());
+            handleCargaClick(rowData.id_cargaFamiliar.toString());
           }
         }}
       />
@@ -503,7 +503,7 @@ function ResumenDocente() {
         }}
         onClick={() => {
           if (rowData && rowData.id_evaluacion) {
-            handlePublicacionClick(rowData.id_evaluacion.toString());
+            handleEvaluacionClick(rowData.id_evaluacion.toString());
           }
         }}
       />
@@ -526,7 +526,7 @@ function ResumenDocente() {
         }}
         onClick={() => {
           if (rowData && rowData.id_experiencia) {
-            handlePublicacionClick(rowData.id_experiencia.toString());
+            handleExperienciaClick(rowData.id_experiencia.toString());
           }
         }}
       />
@@ -549,7 +549,7 @@ function ResumenDocente() {
         }}
         onClick={() => {
           if (rowData && rowData.id_habilidades) {
-            handlePublicacionClick(rowData.id_habilidades.toString());
+            handleHabilidadClick(rowData.id_habilidades.toString());
           }
         }}
       />
@@ -572,7 +572,7 @@ function ResumenDocente() {
         }}
         onClick={() => {
           if (rowData && rowData.id_horario) {
-            handlePublicacionClick(rowData.id_horario.toString());
+            handleHorarioClick(rowData.id_horario.toString());
           }
         }}
       />
@@ -595,7 +595,7 @@ function ResumenDocente() {
         }}
         onClick={() => {
           if (rowData && rowData.id_instruccion) {
-            handlePublicacionClick(rowData.id_instruccion.toString());
+            handleInstruccionClick(rowData.id_instruccion.toString());
           }
         }}
       />
@@ -618,7 +618,7 @@ function ResumenDocente() {
         }}
         onClick={() => {
           if (rowData && rowData.id_persona) {
-            handlePublicacionClick(rowData.id_persona.toString());
+            handlePersonaClick(rowData.id_persona.toString());
           }
         }}
       />
@@ -664,7 +664,7 @@ function ResumenDocente() {
         }}
         onClick={() => {
           if (rowData && rowData.id_recomendaciones) {
-            handlePublicacionClick(rowData.id_recomendaciones.toString());
+            handleRecomendacionClick(rowData.id_recomendaciones.toString());
           }
         }}
       />

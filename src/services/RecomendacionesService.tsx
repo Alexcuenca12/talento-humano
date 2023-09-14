@@ -13,7 +13,17 @@ export class RecomendacionesService {
     // Método para guardar la instrucción
     return axios.post(this.baseUrl + "create", recomendacion).then((res) => res.data);
   }
+  getAllByRecomendacion(id: number) {
+    return axios
+      .get(`${this.baseUrl}readRecomendaciones/${id}`)
+      .then((res) => res.data);
+  }
 
+  getAllByPersona(id: number) {
+    return axios
+      .get(`${this.baseUrl}readRecomendacionesPersona/${id}`)
+      .then((res) => res.data);
+  }
   //Método para cambiar el estado enabled a false de un Usuario (Eliminado lógico)
   delete(id: number) {
     return axios.delete(`${this.baseUrl}delete/${id}`).then((res) => res.data);
