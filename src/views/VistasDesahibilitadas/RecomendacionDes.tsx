@@ -36,7 +36,7 @@ function RecomendacionContextDes() {
     segundo_apellido: "",
     correo: "",
     documentoRecomendacion: "",
-    numeroContacto:"",
+    numeroContacto: "",
     persona: {
       id_persona: idPersona,
     },
@@ -62,6 +62,7 @@ function RecomendacionContextDes() {
             primer_apellido: contratoData.primer_apellido,
             segundo_apellido: contratoData.segundo_apellido,
             correo: contratoData.correo,
+            numeroContacto: contratoData.numeroContacto,
           });
           setrecom1(data);
         }
@@ -159,7 +160,7 @@ function RecomendacionContextDes() {
             segundo_apellido: "",
             correo: "",
             documentoRecomendacion: "",
-            numeroContacto:"",
+            numeroContacto: "",
             persona: null,
           });
           setrecom1(
@@ -184,7 +185,7 @@ function RecomendacionContextDes() {
       segundo_apellido: "",
       correo: "",
       documentoRecomendacion: "",
-      numeroContacto:"",
+      numeroContacto: "",
       persona: null,
     });
     setEditMode(false);
@@ -214,11 +215,13 @@ function RecomendacionContextDes() {
             encType="multipart/form-data"
           >
             <div className="flex flex-wrap flex-row">
-              <div className="flex align-items-center justify-content-center">
+              <div
+                className="flex align-items-center justify-content-center"
+              >
                 <div className="flex flex-column flex-wrap gap-4">
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
-                      htmlFor="nombre"
+                      htmlFor="primer_nombre"
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
@@ -226,10 +229,10 @@ function RecomendacionContextDes() {
                     </label>
                     <InputText
                       className="text-2xl"
-                      placeholder="Ingrese el Primer Nombre"
-                      id="nombre"
+                      placeholder="Ingrese el 1er Nombre"
+                      id="primer_nombre"
                       disabled={formDisabled}
-                      name="nombre"
+                      name="primer_nombre"
                       style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
@@ -242,7 +245,7 @@ function RecomendacionContextDes() {
                   </div>
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
-                      htmlFor="segundo"
+                      htmlFor="segundo_nombre"
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
@@ -250,10 +253,10 @@ function RecomendacionContextDes() {
                     </label>
                     <InputText
                       className="text-2xl"
+                      placeholder="Ingrese el 2do Nombre"
+                      id="segundo_nombre"
                       disabled={formDisabled}
-                      placeholder="Ingrese el Segundo Nombre"
-                      id="segundo"
-                      name="segundo"
+                      name="segundo_nombre"
                       style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
@@ -266,7 +269,7 @@ function RecomendacionContextDes() {
                   </div>
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
-                      htmlFor="apellido"
+                      htmlFor="primer_apellido"
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
@@ -274,10 +277,10 @@ function RecomendacionContextDes() {
                     </label>
                     <InputText
                       className="text-2xl"
+                      placeholder="Ingrese el 1er Apellido"
+                      id="primer_apellido"
                       disabled={formDisabled}
-                      placeholder="Ingrese el Primer Apellido"
-                      id="apellido"
-                      name="apellido"
+                      name="primer_apellido"
                       style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
@@ -288,9 +291,14 @@ function RecomendacionContextDes() {
                       value={formData.primer_apellido}
                     />
                   </div>
+                </div>
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginLeft: "25px" }}
+                >
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
-                      htmlFor="apellido2"
+                      htmlFor="segundo_apellido"
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
@@ -298,10 +306,10 @@ function RecomendacionContextDes() {
                     </label>
                     <InputText
                       className="text-2xl"
-                      placeholder="Ingrese el Segundo Apellido"
-                      id="apellido2"
-                      name="apellido2"
+                      placeholder="Ingrese el 2do. Apellido"
+                      id="segundo_apellido"
                       disabled={formDisabled}
+                      name="segundo_apellido"
                       style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
@@ -318,14 +326,14 @@ function RecomendacionContextDes() {
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
-                      Correo Electrónico:
+                      Filiación de la Publicacion:
                     </label>
                     <InputText
                       className="text-2xl"
-                      placeholder="Ingrese el Correo Electrónico"
+                      placeholder="Ingrese el Correo"
                       id="correo"
-                      name="correo"
                       disabled={formDisabled}
+                      name="correo"
                       style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
@@ -336,66 +344,92 @@ function RecomendacionContextDes() {
                       value={formData.correo}
                     />
                   </div>
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="numeroContacto"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px" }}
+                    >
+                      Número de Contacto:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese el Número"
+                      id="numeroContacto"
+                      disabled={formDisabled}
+                      name="numeroContacto"
+                      style={{ width: "221px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          numeroContacto: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.numeroContacto}
+                    />
+                  </div>
                 </div>
               </div>
             </div>
           </form>
         </div>
-        <table
-          style={{ minWidth: "50rem" }}
-          className="mt-5  w-full h-full text-3xl font-medium"
-        >
-          <thead>
-            <tr style={{ backgroundColor: "#0C3255", color: "white" }}>
-              <th>Nº</th>
-              <th>Nombre</th>
-              <th>Correo</th>
-              <th>Evidencia</th>
-            </tr>
-          </thead>
-          <tbody>
-            {recom1.map((recomendacion) => (
-              <tr
-                className="text-center"
-                key={recomendacion.id_recomendaciones?.toString()}
-              >
-                <td>{recomendacion.id_recomendaciones}</td>
-                <td>
-                  {recomendacion.primer_nombre +
-                    " " +
-                    recomendacion.segundo_nombre +
-                    " " +
-                    recomendacion.primer_apellido +
-                    " " +
-                    recomendacion.segundo_apellido}
-                </td>
-                <td>{recomendacion.correo}</td>
 
-                <td>
-                  {recomendacion.documentoRecomendacion ? (
-                    <Button
-                      type="button"
-                      className=""
-                      label="Descargar PDF"
-                      style={{
-                        background: "#009688",
-                        borderRadius: "10%",
-                        fontSize: "12px",
-                        color: "black",
-                        justifyContent: "center",
-                      }}
-                      onClick={() =>
-                        decodeBase64(recomendacion.documentoRecomendacion!)
-                      }
-                    />
-                  ) : (
-                    <span>Sin evidencia</span>
-                  )}
-                </td>
+        <div style={{ marginTop: "50px" }}>
+          <table
+            style={{ minWidth: "40rem" }}
+            className="mt-4  w-full h-full text-3xl font-large"
+          >
+            <thead>
+              <tr style={{ backgroundColor: "#0C3255", color: "white" }}>
+                <th>Nº</th>
+                <th>Nombres</th>
+                <th>Correo</th>
+                <th>Número </th>
+                <th>Evidencia</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {recom1.map((recomendaciones) => (
+                <tr
+                  className="text-center"
+                  key={recomendaciones.id_recomendaciones?.toString()}
+                >
+                  <td>{recomendaciones.id_recomendaciones}</td>
+
+                  <td>
+                    {recomendaciones.primer_nombre +
+                      " " +
+                      recomendaciones.primer_apellido}
+                  </td>
+                  <td>{recomendaciones.correo}</td>
+                  <td>{recomendaciones.numeroContacto}</td>
+
+                  <td>
+                    {recomendaciones.documentoRecomendacion ? (
+                      <Button
+                        type="button"
+                        className=""
+                        label="Descargar PDF"
+                        style={{
+                          background: "#009688",
+                          borderRadius: "10%",
+                          fontSize: "12px",
+                          color: "black",
+                          justifyContent: "center",
+                        }}
+                        onClick={() =>
+                          decodeBase64(recomendaciones.documentoRecomendacion!)
+                        }
+                      />
+                    ) : (
+                      <span>Sin evidencia</span>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </Card>
     </Fieldset>
   );
