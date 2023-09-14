@@ -18,6 +18,7 @@ import { IExperiencia } from "../../interfaces/Primary/IExperiencia";
 import { InstruccionFormalData } from "../../interfaces/Primary/IInstrucc_Formal";
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
+import { IPublicaciones } from "../../interfaces/Primary/IPublicaciones";
 
 interface Params {
   codigoDocente: string;
@@ -33,22 +34,85 @@ function ResumenDocente() {
   const [evaluaciones, setEvaluaciones] = useState<IEvaDocente[]>([]);
   const [habilidades, setHabilidades] = useState<IHabilidadesData[]>([]);
   const [horarios, setHorarios] = useState<IHorarioData[]>([]);
-  const personaService = new PersonaService();
+  const [publicaciones, setPublicaciones] = useState<IPublicaciones[]>([]);
+  const [instruccionFormals, setinstruccionFormals] = useState<
+    InstruccionFormalData[]
+  >([]);
   const [recomendaciones, setRecomendaciones] = useState<IRecomendaciones[]>(
     []
   );
   const [experiencias, setExperiencias] = useState<IExperiencia[]>([]);
-  const history = useHistory();
-  const [selectedContrato, setSelectedContrato] = useState<string | null>(null);
-  const [instruccionFormals, setinstruccionFormals] = useState<
-    InstruccionFormalData[]
-  >([]);
 
-  // Manejar el clic en el botón para establecer el docente seleccionado
-  const handleDocenteClick = (codigoContrato: string) => {
+  const personaService = new PersonaService();
+
+  const history = useHistory();
+
+  const [selectedCapacitacion, setSelectedCapacitacion] = useState<string | null>(null);
+  const [selectedCarga, setSelectedCarga] = useState<string | null>(null);
+  const [selectedContrato, setSelectedContrato] = useState<string | null>(null);
+  const [selectedEva, setSelectedEva] = useState<string | null>(null);
+  const [selectedExp, setSelectedExp] = useState<string | null>(null);
+  const [selectedHabilidad, setSelectedHabilidad] = useState<string | null>(null);
+  const [selectedHorario, setSelectedHorario] = useState<string | null>(null);
+  const [selectedInstruc, setSelectedInstruc] = useState<string | null>(null);
+  const [selectedPersona, setSelectedPersona] = useState<string | null>(null);
+  const [selectedPublicacion, setSelectedPublicacion] = useState<string | null>(null);
+  const [selectedRecomendacion, setSelectedRecomendacion] = useState<string | null>(null);
+
+  const handleCapacitacionClick = (codigoCapacitacion: string) => {
+    setSelectedCapacitacion(codigoCapacitacion);
+    history.push(`/capacitacionDes/${codigoCapacitacion}`);
+  };
+
+  const handleCargaClick = (codigoCarga: string) => {
+    setSelectedCarga(codigoCarga);
+    history.push(`/cargaDes/${codigoCarga}`);
+  };
+
+  const handleContratoClick = (codigoContrato: string) => {
     setSelectedContrato(codigoContrato);
-    // Redirigir a la ruta /resumendoc con el código de docente como parámetro
     history.push(`/contratoDes/${codigoContrato}`);
+  };
+
+  const handleEvaluacionClick = (codigoEvaluacion: string) => {
+    setSelectedEva(codigoEvaluacion);
+    history.push(`/evaluacionDes/${codigoEvaluacion}`);
+  };
+
+  const handleExperienciaClick = (codigoExperiencia: string) => {
+    setSelectedExp(codigoExperiencia);
+    history.push(`/experienciaDes/${codigoExperiencia}`);
+  };
+
+  const handleHabilidadClick = (codigoHabilidad: string) => {
+    setSelectedHabilidad(codigoHabilidad);
+    history.push(`/habilidadDes/${codigoHabilidad}`);
+  };
+
+  const handleHorarioClick = (codigoHorario: string) => {
+    setSelectedHorario(codigoHorario);
+    history.push(`/horarioDes/${codigoHorario}`);
+  };
+
+  const handleInstruccionClick = (codigoInstrucc: string) => {
+    setSelectedInstruc(codigoInstrucc);
+    history.push(`/instruccionDes/${codigoInstrucc}`);
+  };
+
+  const handlePersonaClick = (codigoPersona: string) => {
+    setSelectedPersona(codigoPersona);
+    history.push(`/personaDes/${codigoPersona}`);
+  };
+
+  const handleRecomendacionClick = (codigoRecomendacion: string) => {
+    setSelectedRecomendacion(codigoRecomendacion);
+    history.push(`/recomendacionDes/${codigoRecomendacion}`);
+  };
+
+  const handlePublicacionClick = (codigoPublicacion: string) => {
+    setSelectedPublicacion(codigoPublicacion);
+    // Redirigir a la ruta /resumendoc con el código de docente como parámetro
+    history.push(`/publicacionDes/${codigoPublicacion}`);
   };
 
   useEffect(() => {
@@ -70,6 +134,7 @@ function ResumenDocente() {
             evaluaciones,
             habilidades,
             horarios,
+            publicaciones,
             instruccionFormals,
             recomendaciones,
             experiencias,
@@ -81,6 +146,7 @@ function ResumenDocente() {
           setEvaluaciones(evaluaciones);
           setHabilidades(habilidades);
           setHorarios(horarios);
+          setPublicaciones(publicaciones);
           setRecomendaciones(recomendaciones);
           setExperiencias(experiencias);
           setinstruccionFormals(instruccionFormals);
@@ -130,6 +196,36 @@ function ResumenDocente() {
         <div className=" ">
           <h2 className="text-3xl">Salario: </h2>
           <p className="text-2xl">{rowData.salario}</p>
+        </div>
+      </div>
+    );
+  };
+
+  const publicacionBody = (rowData: IPublicaciones) => {
+    return (
+      <div className="flex">
+        <div className="mr-4 ">
+          <h2 className="text-3xl">Titulo: </h2>
+          <p className="text-2xl">{rowData.titulo_publi}</p>
+        </div>
+        <div className="mr-4">
+          <h2 className="text-3xl">Fecha Publicación: </h2>
+          <p className="text-2xl">
+            {String(
+              rowData.fecha_publi
+                ? new Date(rowData.fecha_publi).toLocaleDateString("es-ES", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  })
+                : ""
+            )}
+          </p>
+        </div>
+
+        <div className=" ">
+          <h2 className="text-3xl">Editorial: </h2>
+          <p className="text-2xl">{rowData.editorial_publi}</p>
         </div>
       </div>
     );
@@ -204,30 +300,6 @@ function ResumenDocente() {
           <p className="text-2xl">{rowData.edad}</p>
         </div>
       </div>
-    );
-  };
-
-  const btnacciones = (rowData: IContratoData) => {
-    return (
-      <Button
-        type="button"
-        className=""
-        icon="pi pi-search"
-        style={{
-          background: "#ff0000",
-          borderRadius: "10%",
-          fontSize: "25px",
-          width: "50px",
-          color: "black",
-          justifyContent: "center",
-        }}
-        onClick={() => {
-          if (rowData && rowData.id_contrato) {
-            handleDocenteClick(rowData.id_contrato.toString());
-          }
-        }}
-        
-      />
     );
   };
 
@@ -346,6 +418,261 @@ function ResumenDocente() {
     );
   };
 
+  const btnAccionContrato = (rowData: IContratoData) => {
+    return (
+      <Button
+        type="button"
+        className=""
+        icon="pi pi-search"
+        style={{
+          background: "#ff0000",
+          borderRadius: "10%",
+          fontSize: "25px",
+          width: "50px",
+          color: "black",
+          justifyContent: "center",
+        }}
+        onClick={() => {
+          if (rowData && rowData.id_contrato) {
+            handleContratoClick(rowData.id_contrato.toString());
+          }
+        }}
+      />
+    );
+  };
+
+  const btnAccionCapacitacion = (rowData: ICapacitaciones) => {
+    return (
+      <Button
+        type="button"
+        className=""
+        icon="pi pi-search"
+        style={{
+          background: "#ff0000",
+          borderRadius: "10%",
+          fontSize: "25px",
+          width: "50px",
+          color: "black",
+          justifyContent: "center",
+        }}
+        onClick={() => {
+          if (rowData && rowData.id_capacitaciones) {
+            handlePublicacionClick(rowData.id_capacitaciones.toString());
+          }
+        }}
+      />
+    );
+  };
+
+  const btnAccionCarga = (rowData: ICargaFamiliar) => {
+    return (
+      <Button
+        type="button"
+        className=""
+        icon="pi pi-search"
+        style={{
+          background: "#ff0000",
+          borderRadius: "10%",
+          fontSize: "25px",
+          width: "50px",
+          color: "black",
+          justifyContent: "center",
+        }}
+        onClick={() => {
+          if (rowData && rowData.id_cargaFamiliar) {
+            handlePublicacionClick(rowData.id_cargaFamiliar.toString());
+          }
+        }}
+      />
+    );
+  };
+
+  const btnAccionEva = (rowData: IEvaDocente) => {
+    return (
+      <Button
+        type="button"
+        className=""
+        icon="pi pi-search"
+        style={{
+          background: "#ff0000",
+          borderRadius: "10%",
+          fontSize: "25px",
+          width: "50px",
+          color: "black",
+          justifyContent: "center",
+        }}
+        onClick={() => {
+          if (rowData && rowData.id_evaluacion) {
+            handlePublicacionClick(rowData.id_evaluacion.toString());
+          }
+        }}
+      />
+    );
+  };
+
+  const btnAccionExp = (rowData: IExperiencia) => {
+    return (
+      <Button
+        type="button"
+        className=""
+        icon="pi pi-search"
+        style={{
+          background: "#ff0000",
+          borderRadius: "10%",
+          fontSize: "25px",
+          width: "50px",
+          color: "black",
+          justifyContent: "center",
+        }}
+        onClick={() => {
+          if (rowData && rowData.id_experiencia) {
+            handlePublicacionClick(rowData.id_experiencia.toString());
+          }
+        }}
+      />
+    );
+  };
+
+  const btnAccionHabilidad = (rowData: IHabilidadesData) => {
+    return (
+      <Button
+        type="button"
+        className=""
+        icon="pi pi-search"
+        style={{
+          background: "#ff0000",
+          borderRadius: "10%",
+          fontSize: "25px",
+          width: "50px",
+          color: "black",
+          justifyContent: "center",
+        }}
+        onClick={() => {
+          if (rowData && rowData.id_habilidades) {
+            handlePublicacionClick(rowData.id_habilidades.toString());
+          }
+        }}
+      />
+    );
+  };
+
+  const btnAccionHorario = (rowData: IHorarioData) => {
+    return (
+      <Button
+        type="button"
+        className=""
+        icon="pi pi-search"
+        style={{
+          background: "#ff0000",
+          borderRadius: "10%",
+          fontSize: "25px",
+          width: "50px",
+          color: "black",
+          justifyContent: "center",
+        }}
+        onClick={() => {
+          if (rowData && rowData.id_horario) {
+            handlePublicacionClick(rowData.id_horario.toString());
+          }
+        }}
+      />
+    );
+  };
+
+  const btnAccionInstruccion = (rowData: InstruccionFormalData) => {
+    return (
+      <Button
+        type="button"
+        className=""
+        icon="pi pi-search"
+        style={{
+          background: "#ff0000",
+          borderRadius: "10%",
+          fontSize: "25px",
+          width: "50px",
+          color: "black",
+          justifyContent: "center",
+        }}
+        onClick={() => {
+          if (rowData && rowData.id_instruccion) {
+            handlePublicacionClick(rowData.id_instruccion.toString());
+          }
+        }}
+      />
+    );
+  };
+
+  const btnAccionPersona = (rowData: IPersona) => {
+    return (
+      <Button
+        type="button"
+        className=""
+        icon="pi pi-search"
+        style={{
+          background: "#ff0000",
+          borderRadius: "10%",
+          fontSize: "25px",
+          width: "50px",
+          color: "black",
+          justifyContent: "center",
+        }}
+        onClick={() => {
+          if (rowData && rowData.id_persona) {
+            handlePublicacionClick(rowData.id_persona.toString());
+          }
+        }}
+      />
+    );
+  };
+
+  const btnAccionPubli = (rowData: IPublicaciones) => {
+    return (
+      <Button
+        type="button"
+        className=""
+        icon="pi pi-search"
+        style={{
+          background: "#ff0000",
+          borderRadius: "10%",
+          fontSize: "25px",
+          width: "50px",
+          color: "black",
+          justifyContent: "center",
+        }}
+        onClick={() => {
+          if (rowData && rowData.id_publi) {
+            handlePublicacionClick(rowData.id_publi.toString());
+          }
+        }}
+      />
+    );
+  };
+
+  const btnAccionRecom = (rowData: IRecomendaciones) => {
+    return (
+      <Button
+        type="button"
+        className=""
+        icon="pi pi-search"
+        style={{
+          background: "#ff0000",
+          borderRadius: "10%",
+          fontSize: "25px",
+          width: "50px",
+          color: "black",
+          justifyContent: "center",
+        }}
+        onClick={() => {
+          if (rowData && rowData.id_recomendaciones) {
+            handlePublicacionClick(rowData.id_recomendaciones.toString());
+          }
+        }}
+      />
+    );
+  };
+
+
+
   return (
     <Card className="fgrid col-fixed">
       <Card
@@ -386,6 +713,7 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      body={btnAccionPersona}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -417,7 +745,7 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
-                      body={btnacciones}
+                      body={btnAccionContrato}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -450,6 +778,7 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      body={btnAccionHorario}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -482,6 +811,7 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      body={btnAccionCapacitacion}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -513,6 +843,40 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      body={btnAccionEva} 
+                      headerStyle={{
+                        backgroundColor: "#0C3255",
+                        color: "white",
+                      }}
+                    ></Column>
+                  </DataTable>
+                </div>
+
+                <div
+                  className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
+                  style={{ marginLeft: "15%" }}
+                >
+                  <DataTable
+                    value={publicaciones}
+                    dataKey="id_publicacion"
+                    tableStyle={{ minWidth: "50rem", width: "79rem" }}
+                    scrollable
+                    scrollHeight="400px"
+                    className="mt-5  w-full h-full text-3xl font-medium"
+                  >
+                    <Column
+                      field="Publicación"
+                      header="Publicación"
+                      body={publicacionBody}
+                      headerStyle={{
+                        backgroundColor: "#0C3255",
+                        color: "white",
+                      }}
+                    ></Column>
+                    <Column
+                      field="Acciones"
+                      header="Acciones"
+                      body={btnAccionPubli}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -544,6 +908,7 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      body={btnAccionRecom}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -575,6 +940,7 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      body={btnAccionInstruccion}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -606,6 +972,7 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      body={btnAccionCarga}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -637,6 +1004,7 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      body={btnAccionExp} //
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -668,6 +1036,7 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      body={btnAccionHabilidad} 
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",

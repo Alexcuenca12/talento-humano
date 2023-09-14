@@ -22,6 +22,7 @@ import VDocentes from "../VDocentes/VDocentes";
 import Resumen from "../Resumen/Resumen";
 import PersonaCombinada from "../Persona/PersonaCombinada";
 import ContratoDes from "../VistasDesahibilitadas/ContratoDes";
+import PublicacionesDes from "../VistasDesahibilitadas/PublicacionesDes";
 
 export const DashboardRouter = () => {
   //Datos del sessionStorage
@@ -303,6 +304,22 @@ export const DashboardRouter = () => {
                   <>
                     <NavBarDoc />
                     <ContratoDes />
+                  </>
+                ) : (
+                  <NavBarUserDisabled />
+                )}
+              </Route>
+
+              <Route path="/publicacionDes/:codigoPublicacion">
+                {rol === 1 ? (
+                  <>
+                    <NavBar />
+                    <PublicacionesDes />
+                  </>
+                ) : rol === 2 ? (
+                  <>
+                    <NavBarDoc />
+                    <PublicacionesDes />
                   </>
                 ) : (
                   <NavBarUserDisabled />

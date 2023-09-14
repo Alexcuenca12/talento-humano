@@ -8,6 +8,7 @@ import {IHorarioData} from "./IHorario";
 import {IRecomendaciones} from "./Recomendaciones";
 import {InstruccionFormalData} from "./IInstrucc_Formal";
 import {IExperiencia} from "./IExperiencia";
+import { IPublicaciones } from "./IPublicaciones";
 
 export interface IResumen {
     persona: IPersona,
@@ -17,6 +18,7 @@ export interface IResumen {
     evaluaciones: IEvaDocente[],
     habilidades: IHabilidadesData[],
     horarios: IHorarioData[],
+    publicaciones: IPublicaciones[],
     recomendaciones: IRecomendaciones[],
     instruccionFormals: InstruccionFormalData[],
     experiencias: IExperiencia[]

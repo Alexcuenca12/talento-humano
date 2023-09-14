@@ -7,6 +7,14 @@ export class PublicacionesService {
     getAll() {
     return axios.get(this.baseUrl + "read").then((res) => res.data);
   }
+
+  getAllByPublicacion(id: number) {
+    return axios.get(`${this.baseUrl}readPublicaciones/${id}`).then((res) => res.data);
+  }
+
+  getAllByPersona(id: number) {
+    return axios.get(`${this.baseUrl}readPublicacionesPersona/${id}`).then((res) => res.data);
+  }
     //Crear
     save(publicacion: any) {
         return axios.post(this.baseUrl + "create", publicacion).then((res) => res.data);
