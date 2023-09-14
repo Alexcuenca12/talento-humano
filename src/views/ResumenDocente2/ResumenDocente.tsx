@@ -17,7 +17,8 @@ import { IRecomendaciones } from "../../interfaces/Primary/Recomendaciones";
 import { IExperiencia } from "../../interfaces/Primary/IExperiencia";
 import { InstruccionFormalData } from "../../interfaces/Primary/IInstrucc_Formal";
 import { useParams } from "react-router-dom";
-import swal from "sweetalert";
+import { useHistory } from "react-router-dom";
+
 interface Params {
   codigoDocente: string;
 }
@@ -37,41 +38,17 @@ function ResumenDocente() {
     []
   );
   const [experiencias, setExperiencias] = useState<IExperiencia[]>([]);
+  const history = useHistory();
+  const [selectedContrato, setSelectedContrato] = useState<string | null>(null);
   const [instruccionFormals, setinstruccionFormals] = useState<
     InstruccionFormalData[]
   >([]);
 
-  const decodeBase64 = (base64Data: string) => {
-    try {
-      // Eliminar encabezados o metadatos de la cadena base64
-      const base64WithoutHeader = base64Data.replace(/^data:.*,/, "");
-
-      const decodedData = atob(base64WithoutHeader); // Decodificar la cadena base64
-      const byteCharacters = new Uint8Array(decodedData.length);
-
-      for (let i = 0; i < decodedData.length; i++) {
-        byteCharacters[i] = decodedData.charCodeAt(i);
-      }
-
-      const byteArray = new Blob([byteCharacters], { type: "application/pdf" });
-      const fileUrl = URL.createObjectURL(byteArray);
-
-      const link = document.createElement("a");
-      link.href = fileUrl;
-      link.download = "Evidencias Capacitaciones.pdf";
-      link.click();
-      swal({
-        title: "Publicación",
-        text: "Descargando pdf....",
-        icon: "success",
-        timer: 1000,
-      });
-      console.log("pdf descargado...");
-
-      URL.revokeObjectURL(fileUrl);
-    } catch (error) {
-      console.error("Error al decodificar la cadena base64:", error);
-    }
+  // Manejar el clic en el botón para establecer el docente seleccionado
+  const handleDocenteClick = (codigoContrato: string) => {
+    setSelectedContrato(codigoContrato);
+    // Redirigir a la ruta /resumendoc con el código de docente como parámetro
+    history.push(`/contratoDes/${codigoContrato}`);
   };
 
   useEffect(() => {
@@ -230,7 +207,7 @@ function ResumenDocente() {
     );
   };
 
-  const btnacciones = () => {
+  const btnacciones = (rowData: IContratoData) => {
     return (
       <Button
         type="button"
@@ -244,7 +221,12 @@ function ResumenDocente() {
           color: "black",
           justifyContent: "center",
         }}
-        // Agrega el evento onClick para la operación de eliminar
+        onClick={() => {
+          if (rowData && rowData.id_contrato) {
+            handleDocenteClick(rowData.id_contrato.toString());
+          }
+        }}
+        
       />
     );
   };
@@ -404,7 +386,6 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
-                      body={btnacciones}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -436,6 +417,7 @@ function ResumenDocente() {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      body={btnacciones}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",

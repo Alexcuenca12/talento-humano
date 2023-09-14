@@ -7,7 +7,6 @@ import { Divider } from "primereact/divider";
 import { VDocentes } from "../../interfaces/Secondary/VDocentes";
 import { vDocenteService } from "../../services/VDocentesService";
 import { useHistory } from "react-router-dom";
-import ResumenDocente from "../ResumenDocente2/ResumenDocente";
 
 function DocenteContext() {
   const [docentes, setDocentes] = useState<VDocentes[]>([]);
