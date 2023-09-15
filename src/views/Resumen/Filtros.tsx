@@ -3,6 +3,7 @@ import { DataTable } from "primereact/datatable";
 import { Column } from "primereact/column";
 import { Dropdown } from "primereact/dropdown";
 import { InputText } from "primereact/inputtext";
+import { Calendar } from "primereact/calendar";
 
 function Filtros() {
     const [filters, setFilters] = useState({
@@ -10,7 +11,9 @@ function Filtros() {
         discapacidad: "",
         sp: "",
         genero: "",
+        fechaInicio: null,
     });
+
 
     const [data, setData] = useState([
         {
@@ -59,31 +62,15 @@ function Filtros() {
         },
     ]);
 
+
+    const [selectedFechaInicio, setSelectedFechaInicio] = useState<Date | null>(null);
+
     const [filteredData, setFilteredData] = useState(data);
 
     // Aplicar los filtros cuando cambian
     useEffect(() => {
-        const filtered = data.filter((item) => {
-            const hoy = new Date();
-            const fechaInicio = new Date(item.fechaInicio);
-            const tiempoTranscurrido = hoy.getFullYear() - fechaInicio.getFullYear();
-            const contratoNoVigente = item.contratoVigente === "NO";
-            const trabajadoMasDe5Anios = tiempoTranscurrido >= 5;
-
-            return (
-                (filters.contratoVigente === "" ||
-                    (filters.contratoVigente === "SI" && !contratoNoVigente) ||
-                    (filters.contratoVigente === "NO" &&
-                        (contratoNoVigente || !trabajadoMasDe5Anios))) &&
-                (filters.discapacidad === "" ||
-                    item.discapacidad.toLowerCase().includes(filters.discapacidad.toLowerCase())) &&
-                (filters.sp === "" || item.sp === filters.sp) &&
-                (filters.genero === "" || item.genero === filters.genero)
-            );
-        });
-
-        setFilteredData(filtered);
-    }, [data, filters]);
+        applyFilters();
+    }, [filters]);
 
     const handleFilterChange = (e: any) => {
         const { name, value } = e.target;
@@ -96,8 +83,34 @@ function Filtros() {
             discapacidad: "",
             sp: "",
             genero: "",
+            fechaInicio: null,
         });
     };
+
+    const applyFilters = () => {
+        const filtered = data.filter((item) => {
+            const fechaInicio = new Date(item.fechaInicio);
+            const contratoNoVigente = item.contratoVigente === "NO";
+            const trabajadoMasDe5Anios = new Date().getFullYear() - fechaInicio.getFullYear() >= 5;
+
+            return (
+                (filters.contratoVigente === "" ||
+                    (filters.contratoVigente === "SI" && !contratoNoVigente) ||
+                    (filters.contratoVigente === "NO" &&
+                        (contratoNoVigente || !trabajadoMasDe5Anios))) &&
+                (filters.discapacidad === "" ||
+                    item.discapacidad.toLowerCase().includes(filters.discapacidad.toLowerCase())) &&
+                (filters.sp === "" || item.sp === filters.sp) &&
+                (filters.genero === "" || item.genero === filters.genero) &&
+                (!filters.fechaInicio || fechaInicio >= filters.fechaInicio)
+            );
+        });
+
+        setFilteredData(filtered);
+    };
+
+
+
 
     const discapacidadFilter = (
         <InputText
@@ -154,6 +167,17 @@ function Filtros() {
         />
     );
 
+    const fechaInicioFilter = (
+        <Calendar
+            name="fechaInicio"
+            value={selectedFechaInicio}
+           
+            onChange={(e) => setSelectedFechaInicio(e.value as Date | null)}
+            placeholder="Filtrar por Fecha de Inicio"
+        />
+    );
+
+
     return (
         <div>
             <h1>Tabla de Empleados</h1>
@@ -172,7 +196,13 @@ function Filtros() {
                 <label>Genero:</label>
                 {generoFilter}
             </div>
-            {/* Repite este patrón para otros filtros */}
+            <div>
+                <label>Fecha de Inicio:</label>
+                {fechaInicioFilter}
+            </div>
+
+            <button onClick={handleClearFilter}>Limpiar Filtros</button>
+
             <DataTable value={filteredData}>
                 <Column field="nombre" header="Nombre"></Column>
                 <Column field="apellido" header="Apellido"></Column>
@@ -184,7 +214,6 @@ function Filtros() {
                 <Column field="salario" header="Salario"></Column>
                 <Column field="genero" header="Género"></Column>
             </DataTable>
-            <button onClick={handleClearFilter}>Limpiar Filtros</button>
         </div>
     );
 }
