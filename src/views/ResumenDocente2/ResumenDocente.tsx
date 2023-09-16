@@ -13,6 +13,8 @@ import { PersonaService } from '../../services/PersonaService'
 import swal from 'sweetalert';
 import { PDFDownloadLink, Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
 import { FaPhone } from "react-icons/fa";
+import '../../styles/ResumenDocente.css';
+
 
 
 function formatDate(date: Date | undefined): string | null {
@@ -63,7 +65,7 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
         primer_apellido: string
         correo: string;
 
-        
+
     };
     type CapacitacionData = {
         area_estudioCapacitacion: string
@@ -74,7 +76,7 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
     };
 
     type HabilidadesData = {
-        descripcion : string
+        descripcion: string
     };
 
 
@@ -125,13 +127,13 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
             primer_nombre: recomendacion.primer_nombre,
             primer_apellido: recomendacion.primer_apellido,
             correo: recomendacion.correo
-            
+
         })) : [];
-        
+
         const habilidades: HabilidadesData[] = data.habilidades ? data.habilidades.map((habilidad) => ({
             descripcion: habilidad.descripcion,
-            
-            
+
+
         })) : [];
 
 
@@ -157,7 +159,7 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
             edad: data.persona.edad,
             estadocivil: data.persona.estado_civil,
             idioma_raiz: data.persona.idioma_raiz,
-            idioma_secundario : data.persona.idioma_secundario,
+            idioma_secundario: data.persona.idioma_secundario,
             descripcionHabilidad: descriHabi,
             areaestudio: area,
             experiencia: experiencias,
@@ -179,7 +181,7 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
                 padding: 20,
             },
             margin: {
-                
+
                 padding: 20,
             },
             title: {
@@ -241,12 +243,12 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
                 fontSize: 12,
                 marginBottom: 5,
             },
-            
+
             column: {
                 flex: 1,
                 marginLeft: 10,  // Ajusta este valor para controlar el espacio entre las columnas
             },
-           
+
             listContainer: {
                 marginTop: 10,
             },
@@ -327,7 +329,7 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
                                 {index !== data.capacitacion.length - 1}
                             </View>
                         ))}
-                        
+
 
 
                         <Text style={styles.sectionTitle}>Referencias</Text>
@@ -338,7 +340,7 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
                                 <Text style={styles.sectionContent}>Nombre: {referencia.primer_nombre}</Text>
                                 <Text style={styles.sectionContent}>Apellido: {referencia.primer_apellido}</Text>
                                 <Text style={styles.sectionContent}>Correo: {referencia.correo}</Text>
-                                
+
                                 {index !== data.referencia.length - 1}
                             </View>
                         ))}
@@ -349,8 +351,8 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
                         {data.habilidad.map((habilidad, index) => (
                             <View key={index} style={styles.sectionContent}>
                                 <Text style={styles.sectionContent}>Descripción: {habilidad.descripcion}</Text>
-                                
-                                
+
+
                                 {index !== data.referencia.length - 1}
                             </View>
                         ))}
@@ -361,11 +363,11 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
                         <View style={styles.tableRow}>
                             <View style={styles.leftColumn}>
                                 <Text style={styles.sectionContent}>{data.idioma_raiz} , {data.idioma_secundario}</Text>
-                                
+
                             </View>
-                            
+
                         </View>
-                        
+
 
 
                     </View>
@@ -388,26 +390,21 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
     };
 
     return (
-        <div
-            className="flex align-items-center justify-content-center w-auto min-w-min">
-            <Button
+        <div className="flex align-items-center justify-content-center w-auto min-w-min">
+            <button
                 type="button"
-                className="w-30 text-3xl min-w-min"
-                label="Generar HOJA DE VIDA"
-                style={{
-                    background: '#ff0000',
-                    borderRadius: '20%',
-                    fontSize: '50px',
-                    width: '100px',
-                    height: '80px',
-                    color: "black",
-                    justifyContent: 'center'
-                }}
+                className="button" // Agrega la clase "button"
                 onClick={handleGeneratePDF}
-            />
+            >
+                <span className="hoverEffect"> {/* Agrega la clase "hoverEffect" */}
+                    <div></div>
+                </span>
+                Hoja De Vida
+            </button>
             {pdfContent}
-
         </div>
+
+
 
     )
 

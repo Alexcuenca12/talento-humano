@@ -1,7 +1,7 @@
 
 import React from "react";
 import LoginContext from "../views/Login/LoginContext";
-import Ficha from "../views/Persona/PersonaCombinada";
+import Ficha from "../views/ResumenDocente2/ResumenDocente";
 import Inst from "../views/Instruc_Formal/Instrucc_FormalContext";
 import { useContext } from "react";
 import {
