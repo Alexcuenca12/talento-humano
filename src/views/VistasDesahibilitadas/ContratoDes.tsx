@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, ChangeEvent } from "react";
 import { InputText } from "primereact/inputtext";
 import { FileUpload, FileUploadSelectEvent } from "primereact/fileupload";
 import { Button } from "primereact/button";
@@ -12,13 +12,23 @@ import { IContratoData } from "../../interfaces/Primary/IContrato";
 import { ContratoService } from "../../services/ContratoService";
 import swal from "sweetalert";
 import { Dropdown } from "primereact/dropdown";
+import { useParams } from "react-router-dom";
 
-function ContratoContext() {
+interface Params {
+  codigoContrato: string;
+}
+
+function ContratoContextDes() {
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
 
   const [contra1, setcontra1] = useState<IContratoData[]>([]);
+  const { codigoContrato } = useParams<Params>();
+  const codigoContratoNumber = Number(codigoContrato);
+
+  const [formDisabled, setFormDisabled] = useState(false);
+
   const [formData, setFormData] = useState<IContratoData>({
     id_contrato: 0,
     fecha_inicio: "",
@@ -31,7 +41,7 @@ function ContratoContext() {
     tiempo_dedicacion: "",
     salario_publico: "",
     contrato_vigente: false,
-   persona: { id_persona: idPersona },
+    persona: { id_persona: idPersona },
   });
 
   const fileUploadRef = useRef<FileUpload>(null);
@@ -39,6 +49,7 @@ function ContratoContext() {
   const [editMode, setEditMode] = useState(false);
   const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
   const contratService = new ContratoService();
+
   const tiempoDedicacionOptions = [
     { label: "Tiempo completo", value: "Tiempo Completo" },
     { label: "Medio tiempo", value: "Medio Tiempo" },
@@ -54,31 +65,57 @@ function ContratoContext() {
     { label: "NJS 1", value: "NJS1" },
     { label: "NJS 2", value: "NJS2" },
   ];
+
   const [contratoVigente, setContratoVigente] = useState<boolean>(false);
 
   const handleContratoVigenteToggle = () => {
     setContratoVigente((prevValue) => !prevValue);
     setFormData({ ...formData, contrato_vigente: !contratoVigente });
   };
+
   const getContratoVigenteText = (contrato_vigente: boolean) => {
     return contrato_vigente ? "Por terminar" : "Finalizado";
   };
 
   useEffect(() => {
     contratService
-      .getAllByPersona(idPersona)
+      .getAllByContrato(codigoContratoNumber)
       .then((data) => {
-        setcontra1(data);
+        if (data.length > 0) {
+          const contratoData = data[0];
+          setFormDisabled(true);
+          // Actualiza el estado local aquí
+          setFormData({
+            ...formData,
+            fecha_inicio: contratoData.fecha_inicio,
+            fecha_fin: contratoData.fecha_fin,
+            anio_duracion: contratoData.anio_duracion.toString(),
+            horas_diarias: contratoData.horas_diarias.toString(),
+            cargo: contratoData.cargo,
+            salario: contratoData.salario.toString(),
+            tiempo_dedicacion: contratoData.tiempo_dedicacion,
+            salario_publico: contratoData.salario_publico,
+            contrato_vigente: contratoData.contrato_vigente,
+          });
+          setcontra1(data);
+        }
       })
       .catch((error) => {
         console.error("Error al obtener los datos:", error);
       });
-    if (!formData.contrato_vigente) {
-      setFormData((prevFormData) => ({ ...prevFormData, fecha_fin: "" }));
-    }
-  }, [formData.contrato_vigente]);
+  }, []);
 
-  const customBytesUploader = (event: FileUploadSelectEvent) => {
+  interface FileUploadSelectEvent {
+    originalEvent?: ChangeEvent<HTMLInputElement> | DragEvent | undefined;
+    files: File[];
+  }
+
+  const customBytesUploader = (eventData: { files: File[] }) => {
+    const event: FileUploadSelectEvent = {
+      originalEvent: undefined, // Cambia null a undefined
+      files: eventData.files,
+    };
+
     if (event.files && event.files.length > 0) {
       const file = event.files[0];
       const reader = new FileReader();
@@ -86,8 +123,6 @@ function ContratoContext() {
       reader.onloadend = function () {
         const base64data = reader.result as string;
         setFormData({ ...formData, evidencia: base64data });
-
-        console.log("pdf guardado....");
       };
 
       reader.onerror = (error) => {
@@ -127,11 +162,27 @@ function ContratoContext() {
         icon: "success",
         timer: 1000,
       });
-      console.log("pdf descargado...");
-
-      URL.revokeObjectURL(fileUrl);
+      link.remove();
     } catch (error) {
       console.error("Error al decodificar la cadena base64:", error);
+    }
+  };
+
+  const onDownloadEvidencia = () => {
+    if (formData.evidencia) {
+      decodeBase64(formData.evidencia);
+    } else {
+      swal({
+        title: "Error",
+        text: "No hay evidencia adjunta para descargar",
+        icon: "error",
+        buttons: {
+          confirm: {
+            text: "OK",
+            className: "swal-button--ok",
+          },
+        },
+      });
     }
   };
 
@@ -202,9 +253,10 @@ function ContratoContext() {
         swal("Contrato", "Datos Guardados Correctamente", "success");
 
         contratService
-          .getAllByPersona(idPersona)
+          .getAllByContrato(codigoContratoNumber)
           .then((data) => {
             setcontra1(data);
+            console.log(data);
             resetForm();
             if (fileUploadRef.current) {
               fileUploadRef.current.clear();
@@ -381,6 +433,7 @@ function ContratoContext() {
                       required
                       dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
                       showIcon
+                      disabled={formDisabled}
                       maxDate={new Date()}
                       onChange={(e) => {
                         const selectedDate =
@@ -412,7 +465,7 @@ function ContratoContext() {
                       className="text-2xl"
                       id="fin"
                       name="fin"
-                      disabled={formData.contrato_vigente}
+                      disabled={formDisabled }
                       required
                       dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
                       showIcon
@@ -444,6 +497,7 @@ function ContratoContext() {
                       className="text-2xl"
                       id="anios"
                       required
+                      disabled={formDisabled}
                       name="anios"
                       onChange={(e) =>
                         setFormData({
@@ -464,6 +518,7 @@ function ContratoContext() {
                     <InputText
                       className="text-2xl"
                       id="horas"
+                      disabled={formDisabled}
                       name="horas"
                       onChange={(e) =>
                         setFormData({
@@ -484,6 +539,7 @@ function ContratoContext() {
                     <InputText
                       className="text-2xl"
                       id="cargo"
+                      disabled={formDisabled}
                       name="cargo"
                       onChange={(e) =>
                         setFormData({
@@ -505,6 +561,7 @@ function ContratoContext() {
                       className="text-2xl"
                       id="salario"
                       name="salario"
+                      disabled={formDisabled}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
@@ -524,6 +581,7 @@ function ContratoContext() {
                     <Dropdown
                       className="text-2xl"
                       id="tiempo_dedicacion"
+                      disabled={formDisabled}
                       name="tiempo_dedicacion"
                       options={tiempoDedicacionOptions}
                       onChange={(e) =>
@@ -545,6 +603,7 @@ function ContratoContext() {
                     <Dropdown
                       className="text-2xl"
                       id="salario_publico"
+                      disabled={formDisabled}
                       name="salario_publico"
                       options={salariopublicoOptions}
                       onChange={(e) =>
@@ -567,50 +626,14 @@ function ContratoContext() {
                       <input
                         type="checkbox"
                         id="contratoVigente"
+                        disabled={formDisabled}
                         checked={formData.contrato_vigente}
                         onChange={handleContratoVigenteToggle}
                       />
                       <span className="slider"></span>
                     </label>
                   </div>
-
-                  <div className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
-                    <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                      <Button
-                        type="submit"
-                        label={editMode ? "Actualizar" : "Guardar"}
-                        className="w-full text-3xl min-w-min "
-                        rounded
-                        onClick={editMode ? handleUpdate : handleSubmit}
-                      />
-                    </div>
-                    <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                      <Button
-                        type="button"
-                        label="Cancelar"
-                        className="w-full text-3xl min-w-min"
-                        rounded
-                        onClick={resetForm}
-                      />
-                    </div>
-                  </div>
                 </div>
-              </div>
-              <div className="flex flex-column align-items-center justify-content-center ml-4">
-                <FileUpload
-                  name="pdf"
-                  chooseLabel="Escoger"
-                  uploadLabel="Cargar"
-                  cancelLabel="Cancelar"
-                  emptyTemplate={
-                    <p className="m-0 p-button-rounded">
-                      Arrastre y suelte los archivos aquí para cargarlos.
-                    </p>
-                  }
-                  customUpload
-                  onSelect={customBytesUploader}
-                  accept="application/pdf"
-                />
               </div>
             </div>
           </form>
@@ -630,7 +653,6 @@ function ContratoContext() {
               <th>Tiempo de Dedicación</th>
               <th>Salario Público</th>
               <th>Contrato Vigente</th>
-              <th>Operaciones</th>
               <th>Evidencia</th>
             </tr>
           </thead>
@@ -668,41 +690,7 @@ function ContratoContext() {
                 <td>{contrato.tiempo_dedicacion}</td>
                 <td>{contrato.salario_publico}</td>
                 <td>{getContratoVigenteText(contrato.contrato_vigente)}</td>
-                <td>
-                  <Button
-                    type="button"
-                    className=""
-                    label="✎"
-                    style={{
-                      background: "#ff9800",
-                      borderRadius: "5%",
-                      fontSize: "25px",
-                      width: "50px",
-                      color: "black",
-                      justifyContent: "center",
-                      marginRight: "8px", // Espacio entre los botones
-                    }}
-                    onClick={() => handleEdit(contrato.id_contrato?.valueOf())}
-                    // Agrega el evento onClick para la operación de editar
-                  />
-                  <Button
-                    type="button"
-                    className=""
-                    label="✘"
-                    style={{
-                      background: "#ff0000",
-                      borderRadius: "10%",
-                      fontSize: "25px",
-                      width: "50px",
-                      color: "black",
-                      justifyContent: "center",
-                    }}
-                    onClick={() =>
-                      handleDelete(contrato.id_contrato?.valueOf())
-                    }
-                    // Agrega el evento onClick para la operación de eliminar
-                  />
-                </td>
+
                 <td>
                   {contrato.evidencia ? (
                     <Button
@@ -731,4 +719,4 @@ function ContratoContext() {
   );
 }
 
-export default ContratoContext;
+export default ContratoContextDes;
