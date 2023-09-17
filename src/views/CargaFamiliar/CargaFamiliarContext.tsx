@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, ChangeEvent } from "react";
 import { InputText } from "primereact/inputtext";
 import { FileUpload, FileUploadSelectEvent } from "primereact/fileupload";
 import { Button } from "primereact/button";
@@ -28,6 +28,10 @@ function CargaFamiliarContext() {
     evidencia: "",
     persona: { id_persona: idPersona },
   });
+
+
+  //Datos normales
+
 
   const fileUploadRef = useRef<FileUpload>(null);
   const [dataLoaded, setDataLoaded] = useState(false);
@@ -251,7 +255,11 @@ function CargaFamiliarContext() {
     return <div>Cargando datos...</div>;
   }
 
+
+
+
   return (
+
     <Fieldset className="fgrid col-fixed ">
       <Card
         header={cardHeader}
@@ -538,7 +546,12 @@ function CargaFamiliarContext() {
             ))}
           </tbody>
         </table>
+
+
+
       </Card>
+
+
     </Fieldset>
   );
 }

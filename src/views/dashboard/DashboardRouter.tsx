@@ -32,6 +32,7 @@ import HorarioContextDes from "../VistasDesahibilitadas/HorarioDes";
 import InstruccionContextDes from "../VistasDesahibilitadas/InstruccionDes";
 import RecomendacionContextDes from "../VistasDesahibilitadas/RecomendacionDes";
 import PersonaContextDes from "../VistasDesahibilitadas/PersonaDes";
+import Filtros from "../Resumen/Filtros";
 
 export const DashboardRouter = () => {
   //Datos del sessionStorage
@@ -150,8 +151,8 @@ export const DashboardRouter = () => {
               <Route path="/carga">
                 {rol === 1 ? (
                   <>
-                    <NavBar />
-                    <CargaFamiliarContext />
+                    <NavBarDoc />
+                    <CargaFamiliarContext/>
                   </>
                 ) : rol === 2 ? (
                   <>
