@@ -12,6 +12,7 @@ import {IExperiencia} from "../../interfaces/Primary/IExperiencia";
 import {ExperienciaService} from "../../services/ExperienciaService";
 import swal from "sweetalert";
 import {ReportBar} from "../../shared/ReportBar";
+import {IExcelReportParams, IHeaderItem} from "../../interfaces/Secondary/IExcelReportParams";
 
 function Experiencia() {
     //Session Storage
@@ -33,6 +34,8 @@ function Experiencia() {
         persona: {id_persona: idPersona},
     });
 
+    const [excelReportData, setExcelReportData] = useState<IExcelReportParams | null>(null);
+
     const areaTrabajoOptions = [
         {label: "Administrativo", value: "Administrativo"},
         {label: "Docencia", value: "Docencia"},
@@ -51,7 +54,8 @@ function Experiencia() {
             .getAllByPersona(idPersona)
             .then((data) => {
                 setexp1(data);
-                setDataLoaded(true); // Marcar los datos como cargados
+                setDataLoaded(true);// Marcar los datos como cargados
+                loadExcelReportData(data);
             })
             .catch((error) => {
                 console.error("Error al obtener los datos:", error);
@@ -266,6 +270,42 @@ function Experiencia() {
     };
     if (!dataLoaded) {
         return <div>Cargando datos...</div>;
+    }
+
+    function loadExcelReportData(data: IExperiencia[]) {
+        const reportName = "Experiencia"
+        const rowData = data.map((item) => (
+            {
+                institucion: item.institucion,
+                puesto: item.puesto,
+                area_trabajo: item.area_trabajo,
+                actividades: item.actividades,
+                fecha_inicio: new Date(item.fecha_inicio!).toLocaleDateString("es-ES", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                }),
+                fecha_fin: new Date(item.fecha_fin!).toLocaleDateString("es-ES", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                }),
+            }
+        ));
+        const headerItems: IHeaderItem[] = [
+            {header: "INSTITUCION"},
+            {header: "PUESTO"},
+            {header: "AREA DE TRABAJO"},
+            {header: "ACTIVIDADES"},
+            {header: "FECHA DE INICIO"},
+            {header: "FECHA DE FIN"},
+        ]
+        setExcelReportData({
+                reportName,
+                headerItems,
+                rowData
+            }
+        )
     }
 
     return (
@@ -529,23 +569,10 @@ function Experiencia() {
                     </form>
                 </div>
                 <ReportBar
-                    reportName="Experiencia"
-                    reportData={exp1.map((experiencia) => ({
-                        institucion: experiencia.institucion,
-                        puesto: experiencia.puesto,
-                        area_trabajo: experiencia.area_trabajo,
-                        actividades: experiencia.actividades,
-                        fecha_inicio: experiencia.fecha_inicio,
-                        fecha_fin: experiencia.fecha_fin
-                    }))
-                    }
-                    columnNames={["INSTITUCION",
-                        "PUESTO",
-                        "AREA DE TRABAJO",
-                        "ACTIVIDADES",
-                        "FECHA DE INICIO",
-                        "FECHA DE FIN",
-                    ]}/>
+                    reportName={excelReportData?.reportName!}
+                    headerItems={excelReportData?.headerItems!}
+                    rowData={excelReportData?.rowData!}
+                />
                 <table
                     style={{minWidth: "40rem"}}
                     className="mt-4  w-full h-full text-3xl font-large"
