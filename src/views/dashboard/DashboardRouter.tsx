@@ -151,7 +151,7 @@ export const DashboardRouter = () => {
               <Route path="/carga">
                 {rol === 1 ? (
                   <>
-                    <NavBarDoc />
+                    <NavBar />
                     <CargaFamiliarContext/>
                   </>
                 ) : rol === 2 ? (
@@ -238,7 +238,8 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBar />
-                    <PublicacionesContext />
+                    {/*<PublicacionesContext />*/}
+                    <Filtros />
                     <Footer />
                   </>
                 ) : rol === 2 ? (

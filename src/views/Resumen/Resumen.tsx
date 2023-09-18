@@ -72,33 +72,68 @@ const Resumen = () => {
         console.error(error);
       });
   };
+  const personaArray: IPersona[] = persona ? [persona] : [];
+  const personasBody = (rowData: IPersona) => {
+    return (
+      <div className="flex">
+        <div className="mr-4">
+          <h2 className="text-3xl">Apellido: </h2>
+          <p className="text-2xl">{rowData.apellido_paterno}</p>
+        </div>
+        <div className="mr-4">
+          <h2 className="text-3xl">Nombre: </h2>
+          <p className="text-2xl">{rowData.primer_nombre}</p>
+        </div>
+        <div className="mr-4 ">
+          <h2 className="text-3xl">Cédula: </h2>
+          <p className="text-2xl">{rowData.cedula}</p>
+        </div>
+        <div className="mr-4 ">
+          <h2 className="text-3xl">Celular: </h2>
+          <p className="text-2xl">{rowData.celular}</p>
+        </div>
+        <div className="mr-4 ">
+          <h2 className="text-3xl">Estado Civil: </h2>
+          <p className="text-2xl">{rowData.estado_civil}</p>
+        </div>
+        <div className=" mr-4">
+          <h2 className="text-3xl">Edad: </h2>
+          <p className="text-2xl">{rowData.edad}</p>
+        </div>
+      </div>
+    );
+  };
 
   const contratoBody = (rowData: IContratoData) => {
     return (
       <div className="flex">
         <div className="mr-4">
           <h2 className="text-3xl">Fecha Inicio: </h2>
-          <p className="text-2xl">{String(rowData.fecha_inicio? new Date(rowData.fecha_inicio).toLocaleDateString(
-                        "es-ES",
-                        {
-                          year: "numeric",
-                          month: "2-digit",
-                          day: "2-digit",
-                        }
-                      )
-                    : "")}</p>
+          <p className="text-2xl">
+            {String(
+              rowData.fecha_inicio
+                ? new Date(rowData.fecha_inicio).toLocaleDateString("es-ES", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  })
+                : ""
+            )}
+          </p>
         </div>
         <div className="mr-4">
           <h2 className="text-3xl">Fecha Fin: </h2>
-          <p className="text-2xl">{String(rowData.fecha_fin? new Date(rowData.fecha_fin).toLocaleDateString(
-                        "es-ES",
-                        {
-                          year: "numeric",
-                          month: "2-digit",
-                          day: "2-digit",
-                        }
-                      )
-                    : "")}</p>
+          <p className="text-2xl">
+            {String(
+              rowData.fecha_fin
+                ? new Date(rowData.fecha_fin).toLocaleDateString("es-ES", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  })
+                : ""
+            )}
+          </p>
         </div>
         <div className="mr-4 ">
           <h2 className="text-3xl">Cargo: </h2>
@@ -175,7 +210,7 @@ const Resumen = () => {
         <div className="mr-4">
           <h2 className="text-3xl">Nombres: </h2>
           <p className="text-2xl">
-            {rowData.primer_nombre +' '+ rowData.primer_apellido}
+            {rowData.primer_nombre + " " + rowData.primer_apellido}
           </p>
         </div>
         <div className="mr-4">
@@ -280,11 +315,65 @@ const Resumen = () => {
             Resumen de Perfil Profesional
           </h1>
         </Divider>
-
+        <div
+          className="flex align-content-center w-auto max-w-full"
+          style={{ marginLeft: "16%" }}
+        >
+          <p
+            style={{ width: "80%", fontStyle: "italic", textAlign: "justify" }}
+          >
+            {persona?.descripcion_perfil}
+          </p>
+          {persona?.foto && (
+            <img
+              src={persona.foto}
+              alt="FotoNNA"
+              style={{
+                width: "100px",
+                height: "100px",
+                borderRadius: "20%", // Borde redondeado
+                marginLeft: "5%",
+              }}
+            />
+          )}
+        </div>
         <Card className="flex justify-content-center flex-wrap">
           <div className="flex flex-wrap flex-row">
             <div className="flex align-items-center justify-content-center">
               <div className="flex flex-column align-content-center">
+                <div
+                  className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
+                  style={{ marginLeft: "15%" }}
+                >
+                  <DataTable
+                    value={personaArray}
+                    dataKey="id_persona"
+                    tableStyle={{ minWidth: "60rem", width: "79rem" }}
+                    scrollable
+                    scrollHeight="500px"
+                    className="mt-5  w-full h-full text-3xl font-medium"
+                  >
+                    <Column
+                      field="Persona"
+                      header="Persona "
+                      body={personasBody}
+                      headerStyle={{
+                        backgroundColor: "#0C3255",
+                        color: "white",
+                      }}
+                    ></Column>
+                    <Column
+                      field="Acciones"
+                      header="Acciones"
+                      frozen
+                      style={{ width: "50px" }}
+                      headerStyle={{
+                        backgroundColor: "#0C3255",
+                        color: "white",
+                      }}
+                    ></Column>
+                  </DataTable>
+                </div>
                 <div
                   className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
                   style={{ marginLeft: "15%" }}
@@ -309,6 +398,7 @@ const Resumen = () => {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      style={{ width: "50px" }}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -341,6 +431,7 @@ const Resumen = () => {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      style={{ width: "50px" }}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -372,6 +463,7 @@ const Resumen = () => {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      style={{ width: "50px" }}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -403,6 +495,7 @@ const Resumen = () => {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      style={{ width: "50px" }}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -434,6 +527,7 @@ const Resumen = () => {
                     <Column
                       field="Acciones"
                       header="Acciones"
+                      style={{ width: "50px" }}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -442,116 +536,137 @@ const Resumen = () => {
                   </DataTable>
                 </div>
                 <div
-                className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6"
-                style={{ marginLeft: "15%" }}
-              >
-                <DataTable
-                  value={instruccionFormals}
-                  dataKey="id_instruccion"
-                  tableStyle={{ minWidth: "50rem", width: "79rem" }}
-                  scrollable
-                  scrollHeight="400px"
-                  className="mt-5  w-full h-full text-3xl font-medium"
+                  className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6"
+                  style={{ marginLeft: "15%" }}
                 >
-                  <Column
-                    field="Instruccion Formal"
-                    header="Instruccion Formal"
-                    body={instruccionFBody} //
-                    headerStyle={{
-                      backgroundColor: "#0C3255",
-                      color: "white",
-                    }}
-                  ></Column>
-                  <Column
-                    field="Acciones"
-                    header="Acciones"
-                    headerStyle={{
-                      backgroundColor: "#0C3255",
-                      color: "white",
-                    }}
-                  ></Column>
-                </DataTable>
-              </div>
-              <div
-                className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6"
-                style={{ marginLeft: "15%" }}
-              >
-                <DataTable
-                  value={cargaFamiliar}
-                  dataKey="id_cargaFamiliar"
-                  tableStyle={{ minWidth: "50rem" }}
-                  scrollable
-                  scrollHeight="400px"
-                  className="mt-5  w-full h-full text-3xl font-medium"
+                  <DataTable
+                    value={instruccionFormals}
+                    dataKey="id_instruccion"
+                    tableStyle={{ minWidth: "50rem", width: "79rem" }}
+                    scrollable
+                    scrollHeight="400px"
+                    className="mt-5  w-full h-full text-3xl font-medium"
+                  >
+                    <Column
+                      field="Instruccion Formal"
+                      header="Instruccion Formal"
+                      body={instruccionFBody} //
+                      headerStyle={{
+                        backgroundColor: "#0C3255",
+                        color: "white",
+                      }}
+                    ></Column>
+                    <Column
+                      field="Acciones"
+                      header="Acciones"
+                      style={{ width: "50px" }}
+                      headerStyle={{
+                        backgroundColor: "#0C3255",
+                        color: "white",
+                      }}
+                    ></Column>
+                  </DataTable>
+                </div>
+                <div
+                  className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6"
+                  style={{ marginLeft: "15%" }}
                 >
-                  <Column
-                    field="Carga Familiar"
-                    header="Carga Familiar"
-                    body={cargaFBody}
-                    headerStyle={{ backgroundColor: "#0C3255", color: "white" }}
-                  ></Column>
-                  <Column
-                    field="Acciones"
-                    header="Acciones"
-                    headerStyle={{ backgroundColor: "#0C3255", color: "white" }}
-                  ></Column>
-                </DataTable>
-              </div>
-              <div
-                className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6"
-                style={{ marginLeft: "15%" }}
-              >
-                <DataTable
-                  value={experiencias}
-                  dataKey="id_experiencia"
-                  scrollable
-                  scrollHeight="400px"
-                  tableStyle={{ minWidth: "50rem" }}
-                  className="mt-5  w-full h-full text-3xl font-medium"
+                  <DataTable
+                    value={cargaFamiliar}
+                    dataKey="id_cargaFamiliar"
+                    tableStyle={{ minWidth: "50rem" }}
+                    scrollable
+                    scrollHeight="400px"
+                    className="mt-5  w-full h-full text-3xl font-medium"
+                  >
+                    <Column
+                      field="Carga Familiar"
+                      header="Carga Familiar"
+                      body={cargaFBody}
+                      headerStyle={{
+                        backgroundColor: "#0C3255",
+                        color: "white",
+                      }}
+                    ></Column>
+                    <Column
+                      field="Acciones"
+                      header="Acciones"
+                      style={{ width: "50px" }}
+                      headerStyle={{
+                        backgroundColor: "#0C3255",
+                        color: "white",
+                      }}
+                    ></Column>
+                  </DataTable>
+                </div>
+                <div
+                  className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6"
+                  style={{ marginLeft: "15%" }}
                 >
-                  <Column
-                    field="Experiencia"
-                    header="Experiencia"
-                    body={experienciaBody}
-                    headerStyle={{ backgroundColor: "#0C3255", color: "white" }}
-                  ></Column>
-                  <Column
-                    field="Acciones"
-                    header="Acciones"
-                    headerStyle={{ backgroundColor: "#0C3255", color: "white" }}
-                  ></Column>
-                </DataTable>
-              </div>
-              <div
-                className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6"
-                style={{ marginLeft: "15%" }}
-              >
-                <DataTable
-                  value={habilidades}
-                  dataKey="id_habilidades"
-                  tableStyle={{ minWidth: "50rem" }}
-                  scrollable
-                  scrollHeight="400px"
-                  className="mt-5  w-full h-full text-3xl font-medium"
+                  <DataTable
+                    value={experiencias}
+                    dataKey="id_experiencia"
+                    scrollable
+                    scrollHeight="400px"
+                    tableStyle={{ minWidth: "50rem" }}
+                    className="mt-5  w-full h-full text-3xl font-medium"
+                  >
+                    <Column
+                      field="Experiencia"
+                      header="Experiencia"
+                      body={experienciaBody}
+                      headerStyle={{
+                        backgroundColor: "#0C3255",
+                        color: "white",
+                      }}
+                    ></Column>
+                    <Column
+                      field="Acciones"
+                      header="Acciones"
+                      style={{ width: "50px" }}
+                      headerStyle={{
+                        backgroundColor: "#0C3255",
+                        color: "white",
+                      }}
+                    ></Column>
+                  </DataTable>
+                </div>
+                <div
+                  className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6"
+                  style={{ marginLeft: "15%" }}
                 >
-                  <Column
-                    field="descripcion"
-                    header="Habilidades"
-                    body={habilidadesBody}
-                    headerStyle={{ backgroundColor: "#0C3255", color: "white" }}
-                  ></Column>
-                  <Column
-                    field="Acciones"
-                    header="Acciones"
-                    headerStyle={{ backgroundColor: "#0C3255", color: "white" }}
-                  ></Column>
-                </DataTable>
-              </div>
+                  <DataTable
+                    value={habilidades}
+                    dataKey="id_habilidades"
+                    tableStyle={{ minWidth: "50rem" }}
+                    scrollable
+                    scrollHeight="400px"
+                    className="mt-5  w-full h-full text-3xl font-medium"
+                  >
+                    <Column
+                      field="descripcion"
+                      header="Habilidades"
+                      body={habilidadesBody}
+                      headerStyle={{
+                        backgroundColor: "#0C3255",
+                        color: "white",
+                      }}
+                    ></Column>
+                    <Column
+                      field="Acciones"
+                      header="Acciones"
+                      style={{ width: "50px" }}
+                      headerStyle={{
+                        backgroundColor: "#0C3255",
+                        color: "white",
+                      }}
+                    ></Column>
+                  </DataTable>
+                </div>
               </div>
             </div>
           </div>
         </Card>
-        
       </Card>
     </Card>
   );

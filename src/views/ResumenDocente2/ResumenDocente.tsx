@@ -119,7 +119,6 @@ function ResumenDocente() {
 
   const handlePublicacionClick = (codigoPublicacion: string) => {
     setSelectedPublicacion(codigoPublicacion);
-    // Redirigir a la ruta /resumendoc con el código de docente como parámetro
     history.push(`/publicacionDes/${codigoPublicacion}`);
   };
 
@@ -748,14 +747,35 @@ function ResumenDocente() {
             Resumen de Perfil Profesional
           </h1>
         </Divider>
-
+        <div
+          className="flex align-content-center w-auto max-w-full"
+          style={{ marginLeft: "16%" }}
+        >
+          <p
+            style={{ width: "80%", fontStyle: "italic", textAlign: "justify" }}
+          >
+            {persona?.descripcion_perfil}
+          </p>
+          {persona?.foto && (
+            <img
+              src={persona.foto}
+              alt="FotoNNA"
+              style={{
+                width: "100px",
+                height: "100px",
+                borderRadius: "20%", // Borde redondeado
+                marginLeft: "5%"
+              }}
+            />
+          )}
+        </div>
         <Card className="flex justify-content-center flex-wrap">
           <div className="flex flex-wrap flex-row">
             <div className="flex align-items-center justify-content-center">
               <div className="flex flex-column align-content-center">
                 <div
                   className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
-                  style={{ marginLeft: "15%" }}
+                  style={{ marginLeft: "5%" }}
                 >
                   <DataTable
                     value={personaArray}
@@ -789,7 +809,7 @@ function ResumenDocente() {
                 </div>
                 <div
                   className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
-                  style={{ marginLeft: "15%" }}
+                  style={{ marginLeft: "5%" }}
                 >
                   <DataTable
                     value={contratos}
@@ -824,7 +844,7 @@ function ResumenDocente() {
 
                 <div
                   className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
-                  style={{ marginLeft: "15%" }}
+                  style={{ marginLeft: "5%" }}
                 >
                   <DataTable
                     value={horarios}
@@ -859,7 +879,7 @@ function ResumenDocente() {
 
                 <div
                   className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
-                  style={{ marginLeft: "15%" }}
+                  style={{ marginLeft: "5%" }}
                 >
                   <DataTable
                     value={capacitaciones}
@@ -893,7 +913,7 @@ function ResumenDocente() {
                 </div>
                 <div
                   className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
-                  style={{ marginLeft: "15%" }}
+                  style={{ marginLeft: "5%" }}
                 >
                   <DataTable
                     value={evaluaciones}
@@ -928,7 +948,7 @@ function ResumenDocente() {
 
                 <div
                   className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
-                  style={{ marginLeft: "15%" }}
+                  style={{ marginLeft: "5%" }}
                 >
                   <DataTable
                     value={publicaciones}
@@ -962,7 +982,7 @@ function ResumenDocente() {
                 </div>
                 <div
                   className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
-                  style={{ marginLeft: "15%" }}
+                  style={{ marginLeft: "5%" }}
                 >
                   <DataTable
                     value={recomendaciones}
@@ -996,7 +1016,7 @@ function ResumenDocente() {
                 </div>
                 <div
                   className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6"
-                  style={{ marginLeft: "15%" }}
+                  style={{ marginLeft: "5%" }}
                 >
                   <DataTable
                     value={instruccionFormals}
@@ -1030,7 +1050,7 @@ function ResumenDocente() {
                 </div>
                 <div
                   className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6"
-                  style={{ marginLeft: "15%" }}
+                  style={{ marginLeft: "5%" }}
                 >
                   <DataTable
                     value={cargaFamiliar}
@@ -1064,7 +1084,7 @@ function ResumenDocente() {
                 </div>
                 <div
                   className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6"
-                  style={{ marginLeft: "15%" }}
+                  style={{ marginLeft: "5%" }}
                 >
                   <DataTable
                     value={experiencias}
@@ -1098,7 +1118,7 @@ function ResumenDocente() {
                 </div>
                 <div
                   className="flex flex-row flex-wrap w-full h-full  justify-content-center  flex-grow-1  row-gap-8 gap-8  mt-6"
-                  style={{ marginLeft: "15%" }}
+                  style={{ marginLeft: "5%" }}
                 >
                   <DataTable
                     value={habilidades}
