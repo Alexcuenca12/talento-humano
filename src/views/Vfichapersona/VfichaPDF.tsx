@@ -1,17 +1,8 @@
-import { Card } from "primereact/card";
-import { Fieldset } from "primereact/fieldset";
-import { Badge } from "primereact/badge";
 import { Button } from "primereact/button";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
-import cardHeader from "../../shared/CardHeader";
-import { InputTextarea } from "primereact/inputtextarea";
 import React, { useEffect, useState } from "react";
-import { Divider } from "primereact/divider";
 import { Ivficahapersona } from '../../interfaces/Primary/Ivfichapersona';
 import { VfichapersonaService } from '../../services/VfichapersonaService'
-import swal from 'sweetalert';
-import { PDFDownloadLink, Page, Text, View, Document, StyleSheet, Image } from '@react-pdf/renderer';
+import { PDFDownloadLink, Page, Text, View, Document, StyleSheet,  } from '@react-pdf/renderer';
 
 function VfichaPDF() {
     const [habi1, sethabi1] = useState<Ivficahapersona[]>([]);
@@ -36,10 +27,7 @@ function VfichaPDF() {
 
     useEffect(() => {
         vfichapersonaService.getAll()
-
             .then((data) => {
-                console.log("Data fetched from API:", data);
-                console.log("Datos obtenidos: ", vfichapersonaService.getAll());
                 sethabi1(data);
             })
             .catch((error) => {
@@ -51,9 +39,6 @@ function VfichaPDF() {
 
 
     const generatePdfContent = () => {
-
-        const filteredData = habi1.filter((ficha) => ficha.id_persona === 1);
-
         const ficedula = habi1.map((ficha) => ficha.persona_cedula);
         const ficargo = habi1.map((ficha) => ficha.con_cargo);
         const fiperidodo = habi1.map((ficha) => ficha.ho_periodo);
@@ -74,9 +59,6 @@ function VfichaPDF() {
 
     const handleGeneratePDF = () => {
         const pdfData = generatePdfContent();
-
-        console.log(pdfData)
-
         const styles = StyleSheet.create({
             page: {
                 padding: 20,

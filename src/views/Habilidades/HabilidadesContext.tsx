@@ -69,13 +69,11 @@ function HabilidadesContext() {
       .save(formData)
       .then((response) => {
         resetForm();
-        console.log("guardado: ", formData);
         swal("Habilidad", "Datos Guardados Correctamente", "success");
         habilidadService
           .getAllByPersona(idPersona)
           .then((data) => {
             sethabi1(data);
-            console.log("datos son: ", data);
           })
           .catch((error) => {
             console.error("Error al obtener los datos:", error);

@@ -7,7 +7,7 @@ import { NavBarUserDisabled } from "../../common/NavBarUserDisabled";
 import { NavBar } from "../../common/NavBar";
 import PersonaContext from "../Persona/PersonaContext";
 import ContratoContext from "../Contrato/ContratoContext";
-import Instrucc_FormalContext from "../Instruc_Formal/Instrucc_FormalContext";
+import InstruccFormalContext from "../Instruc_Formal/Instrucc_FormalContext";
 import HorarioContext from "../Horario/HorarioContext";
 import CapacitacionesContext from "../Capacitaciones/CapacitacionesContext";
 import EvaDocente from "../Eva_Docente/EvaDocente";
@@ -20,7 +20,6 @@ import Footer from "../../common/Footer";
 import Recomendaciones from "../Recomendaciones/RecomendacionesContext";
 import VDocentes from "../VDocentes/VDocentes";
 import Resumen from "../Resumen/Resumen";
-import PersonaCombinada from "../Persona/PersonaCombinada";
 import ContratoDes from "../VistasDesahibilitadas/ContratoDes";
 import PublicacionesDes from "../VistasDesahibilitadas/PublicacionesDes";
 import CargaContextDes from "../VistasDesahibilitadas/CargaFamiliarDes";
@@ -39,18 +38,8 @@ export const DashboardRouter = () => {
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const rol = userObj.rol;
-  const userId = userObj.id as number;
   const toast = useRef<Toast>(null);
 
-  //Se utiliza a travez de Toast para mostrar mensajes de confirmacion/error.
-  const showError = (errorPrincipal: string, detalleError: string) => {
-    toast.current?.show({
-      severity: "error",
-      summary: errorPrincipal,
-      detail: detalleError,
-      life: 3000,
-    });
-  };
 
   return (
     <>
@@ -123,7 +112,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBar />
-                    <Instrucc_FormalContext />
+                    <InstruccFormalContext />
                   </>
                 ) : rol === 2 ? (
                   <>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, ChangeEvent } from "react";
+import React, { useEffect, useState, useRef, } from "react";
 import { InputText } from "primereact/inputtext";
 import { FileUpload } from "primereact/fileupload";
 import { Button } from "primereact/button";
@@ -42,11 +42,8 @@ function HorarioContextDes() {
   const [selectedCarrera, setSelectedCarrera] = useState<string | null>(null);
   const [selectedPeriodo, setSelectedPeriodo] = useState<string | null>(null);
 
-  const fileUploadRef = useRef<FileUpload>(null);
   const [dataLoaded, setDataLoaded] = useState(false);
 
-  const [editMode, setEditMode] = useState(false);
-  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
 
   const tipoJornadaOptions = [
     { label: "Seleccione Una", value: "N/A" },
@@ -101,6 +98,7 @@ function HorarioContextDes() {
     };
     loadPeriodo();
   }, []);
+
   useEffect(() => {
     horarioService
       .getAllByHorario(codigoHorarioNumber)
@@ -155,92 +153,6 @@ function HorarioContextDes() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !formData.periodoAcademico ||
-      !formData.horasSemanalesHorario ||
-      !formData.carreraHorario ||
-      !formData.jornadaHorario ||
-      !formData.distributivo
-    ) {
-      swal("Advertencia", "Por favor, complete todos los campos", "warning");
-      return;
-    }
-
-    horarioService
-      .save(formData)
-      .then((response) => {
-        resetForm();
-        swal("Publicacion", "Datos Guardados Correctamente", "success");
-
-        horarioService
-          .getAll()
-          .then((data) => {
-            sethorario1(data);
-            resetForm();
-            if (fileUploadRef.current) {
-              fileUploadRef.current.clear();
-            }
-          })
-          .catch((error) => {
-            console.error("Error al obtener los datos:", error);
-          });
-      })
-      .catch((error) => {
-        console.error("Error al enviar el formulario:", error);
-      });
-  };
-
-  const handleUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editItemId !== undefined) {
-      horarioService
-        .update(Number(editItemId), formData as IHorarioData)
-        .then((response) => {
-          swal({
-            title: "Publicaciones",
-            text: "Datos actualizados correctamente",
-            icon: "success",
-          });
-          setFormData({
-            periodoAcademico: "",
-            jornadaHorario: "",
-            horasSemanalesHorario: "",
-            carreraHorario: "",
-            distributivo: "",
-            persona: null,
-          });
-          sethorario1(
-            horario1.map((contra) =>
-              contra.id_horario === editItemId ? response : contra
-            )
-          );
-          setEditMode(false);
-          setEditItemId(undefined);
-        })
-        .catch((error) => {
-          console.error("Error al actualizar el formulario:", error);
-        });
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      periodoAcademico: "",
-      jornadaHorario: "",
-      horasSemanalesHorario: "",
-      carreraHorario: "",
-      distributivo: "",
-      persona: null,
-    });
-    setEditMode(false);
-    setEditItemId(undefined);
-    if (fileUploadRef.current) {
-      fileUploadRef.current.clear(); // Limpiar el campo FileUpload
-    }
-  };
   if (!dataLoaded) {
     return <div>Cargando datos...</div>;
   }
@@ -261,7 +173,6 @@ function HorarioContextDes() {
 
         <div className="flex justify-content-center flex-wrap">
           <form
-            onSubmit={editMode ? handleUpdate : handleSubmit}
             encType="multipart/form-data"
           >
             <div className="flex flex-wrap flex-row">

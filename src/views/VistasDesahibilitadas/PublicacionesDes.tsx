@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useRef, ChangeEvent } from "react";
+import React, { useEffect, useState, } from "react";
 import { InputText } from "primereact/inputtext";
-import { FileUpload } from "primereact/fileupload";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import { Fieldset } from "primereact/fieldset";
@@ -43,12 +42,7 @@ function PublicacionesContextDes() {
     persona: { id_persona: idPersona },
   });
 
-  const fileUploadRef = useRef<FileUpload>(null);
-
-  const [editMode, setEditMode] = useState(false);
-  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
   const publiService = new PublicacionesService();
-  
 
   useEffect(() => {
     publiService
@@ -79,37 +73,6 @@ function PublicacionesContextDes() {
       });
   }, []);
 
-  interface FileUploadSelectEvent {
-    originalEvent?: ChangeEvent<HTMLInputElement> | DragEvent | undefined;
-    files: File[];
-  }
-
-  const customBytesUploader = (eventData: { files: File[] }) => {
-    const event: FileUploadSelectEvent = {
-      originalEvent: undefined, // Cambia null a undefined
-      files: eventData.files,
-    };
-
-    if (event.files && event.files.length > 0) {
-      const file = event.files[0];
-      const reader = new FileReader();
-
-      reader.onloadend = function () {
-        const base64data = reader.result as string;
-        setFormData({ ...formData, publicacion: base64data });
-      };
-
-      reader.onerror = (error) => {
-        console.error("Error al leer el archivo:", error);
-      };
-
-      reader.readAsDataURL(file);
-
-      if (fileUploadRef.current) {
-        fileUploadRef.current.clear();
-      }
-    }
-  };
 
   const decodeBase64 = (base64Data: string) => {
     try {
@@ -142,130 +105,6 @@ function PublicacionesContextDes() {
     }
   };
 
- 
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !formData.titulo_publi ||
-      !formData.autores_publi ||
-      !formData.filiacion_publi ||
-      !formData.lugar_publi ||
-      !formData.fecha_publi ||
-      !formData.fecha_evento ||
-      !formData.editorial_publi ||
-      !formData.isbn_publi ||
-      !formData.issn_publi ||
-      !formData.doi_publi
-    ) {
-      swal("Advertencia", "Por favor, complete todos los campos", "warning");
-      return;
-    }
-
-
-    publiService
-      .save(formData)
-      .then((response) => {
-        resetForm();
-        swal("publicacion", "Datos Guardados Correctamente", "success");
-
-        publiService
-          .getAllByPublicacion(codigoPublicacionNumber)
-          .then((data) => {
-            setPubli1(data);
-            console.log(data);
-            resetForm();
-            if (fileUploadRef.current) {
-              fileUploadRef.current.clear();
-            }
-          })
-          .catch((error) => {
-            console.error("Error al obtener los datos:", error);
-          });
-      })
-      .catch((error) => {
-        console.error("Error al enviar el formulario:", error);
-      });
-  };
-
-  const handleEdit = (id: number | undefined) => {
-    if (id !== undefined) {
-      const editItem = publi1.find((contra) => contra.id_publi === id);
-      if (editItem) {
-        setFormData(editItem);
-
-        setEditMode(true);
-        setEditItemId(id);
-      }
-    }
-  };
-
-  const handleUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editItemId !== undefined) {
-      // Validating "Fecha Inicio" and "Fecha Fin"
-      
-      publiService
-        .update(Number(editItemId), formData as IPublicaciones )
-        .then((response) => {
-          swal({
-            title: "publicacion",
-            text: "Datos actualizados correctamente",
-            icon: "success",
-          });
-          setFormData({
-            id_publi: 0,
-            titulo_publi: "",
-            autores_publi: "",
-            filiacion_publi: "",
-            lugar_publi: "",
-            fecha_publi: "",
-            fecha_evento: "",
-            editorial_publi: "",
-            isbn_publi: "",
-            issn_publi: "",
-            doi_publi: "",
-            publicacion: "",
-            persona: null,
-          });
-          setPubli1(
-            publi1.map((contra) =>
-              contra.id_publi === editItemId ? response : contra
-            )
-          );
-          setEditMode(false);
-          setEditItemId(undefined);
-        })
-        .catch((error) => {
-          console.error("Error al actualizar el formulario:", error);
-        });
-    }
-  };
-
-
-  const resetForm = () => {
-    setFormData({
-    id_publi: 0,
-    titulo_publi: "",
-    autores_publi: "",
-    filiacion_publi: "",
-    lugar_publi: "",
-    fecha_publi: "",
-    fecha_evento: "",
-    editorial_publi: "",
-    isbn_publi: "",
-    issn_publi: "",
-    doi_publi: "",
-    publicacion: "",
-    persona: { id_persona: idPersona },
-    });
-    setEditMode(false);
-    setEditItemId(undefined);
-    if (fileUploadRef.current) {
-      fileUploadRef.current.clear(); // Limpiar el campo FileUpload
-    }
-  };
   return (
     <Fieldset className="fgrid col-fixed ">
       <Card
@@ -282,7 +121,6 @@ function PublicacionesContextDes() {
 
         <div className="flex justify-content-center flex-wrap">
           <form
-            onSubmit={editMode ? handleUpdate : handleSubmit}
             encType="multipart/form-data"
           >
             <div className="flex flex-wrap flex-row">

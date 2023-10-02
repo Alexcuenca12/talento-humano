@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { InputText } from "primereact/inputtext";
 import { FileUpload, FileUploadSelectEvent } from "primereact/fileupload";
 import { Button } from "primereact/button";
-import "../../styles/Recomendaciones.css";
+import "../../styles/Contrato.css";
 import { Fieldset } from "primereact/fieldset";
 import { Card } from "primereact/card";
 import cardHeader from "../../shared/CardHeader";
@@ -128,7 +128,6 @@ function PublicacionesContext() {
         icon: "success",
         timer: 1000,
       });
-      console.log("pdf descargado...");
 
       URL.revokeObjectURL(fileUrl);
     } catch (error) {

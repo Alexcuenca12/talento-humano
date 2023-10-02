@@ -3,12 +3,12 @@
   background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.4)),
     url("https://scontent.fcue2-1.fna.fbcdn.net/v/t31.18172-8/23334003_154662231945198_5427104124420433423_o.jpg?_nc_cat=105&ccb=1-7&_nc_sid=e3f864&_nc_eui2=AeFxJU1iCnrhxk0LS_NmFc1GI_WDfns1-sIj9YN-ezX6wh-lUJirpRRCZXMdab5UUnzGdah3Avfxbk1DPpw9e21A&_nc_ohc=rjgVbgZjr-IAX_pLIub&_nc_ht=scontent.fcue2-1.fna&oh=00_AfAj8pU3dLe9Jxz3aHoCK9Z-D5h-Ghv-_5V-zNNQ9GtBtw&oe=652617A5") center/cover no-repeat;
   justify-content: stretch;
-  position: fixed; /* Agregado */
-  top: 0; /* Agregado */
-  left: 0; /* Agregado */
-  right: 0; /* Agregado */
-  bottom: 0; /* Agregado */
-  z-index: -1; /* Agregado */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: -1;
 }
 
 .header>.container {

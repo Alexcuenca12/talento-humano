@@ -153,7 +153,6 @@ function PublicacionesContext() {
         icon: "success",
         timer: 1000,
       });
-      console.log("pdf descargado...");
 
       URL.revokeObjectURL(fileUrl);
     } catch (error) {
@@ -373,6 +372,7 @@ function PublicacionesContext() {
                       id="inicio"
                       name="inicio"
                       required
+                      placeholder="Ingresa la Fecha de Publicación"
                       dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
                       showIcon
                       maxDate={new Date()}
@@ -506,6 +506,7 @@ function PublicacionesContext() {
                       required
                       dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
                       showIcon
+                      placeholder="Ingresa la Fecha de Evento"
                       maxDate={new Date()}
                       onChange={(e) => {
                         const selectedDate =
@@ -748,7 +749,6 @@ function PublicacionesContext() {
                       justifyContent: "center",
                     }}
                     onClick={() => handleDelete(contrato.id_publi?.valueOf())}
-                    // Agrega el evento onClick para la operación de eliminar
                   />
                 </td>
                 <td>

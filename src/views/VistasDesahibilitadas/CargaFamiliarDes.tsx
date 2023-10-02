@@ -38,10 +38,6 @@ function CargaContextDes() {
     persona: { id_persona: idPersona },
   });
 
-  const fileUploadRef = useRef<FileUpload>(null);
-
-  const [editMode, setEditMode] = useState(false);
-  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
   const cargaService = new CargaFamiliarService();
 
   useEffect(() => {
@@ -98,92 +94,6 @@ function CargaContextDes() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !formData.cedula ||
-      !formData.nombre_pariente ||
-      !formData.apellido_pariente ||
-      !formData.fecha_nacimiento ||
-      !formData.evidencia
-    ) {
-      swal("Advertencia", "Por favor, complete todos los campos", "warning");
-      return;
-    }
-
-    cargaService
-      .saveCarga(formData)
-      .then((response) => {
-        resetForm();
-        swal("Publicacion", "Datos Guardados Correctamente", "success");
-
-        cargaService
-          .getAll()
-          .then((data) => {
-            setcarga1(data);
-            resetForm();
-            if (fileUploadRef.current) {
-              fileUploadRef.current.clear();
-            }
-          })
-          .catch((error) => {
-            console.error("Error al obtener los datos:", error);
-          });
-      })
-      .catch((error) => {
-        console.error("Error al enviar el formulario:", error);
-      });
-  };
-
-  const handleUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editItemId !== undefined) {
-      cargaService
-        .updateCarga(Number(editItemId), formData as ICargaFamiliar)
-        .then((response) => {
-          swal({
-            title: "Publicaciones",
-            text: "Datos actualizados correctamente",
-            icon: "success",
-          });
-          setFormData({
-            cedula: "",
-            nombre_pariente: "",
-            apellido_pariente: "",
-            fecha_nacimiento: "",
-            evidencia: "",
-            persona: null,
-          });
-          setcarga1(
-            carga1.map((contra) =>
-              contra.id_cargaFamiliar === editItemId ? response : contra
-            )
-          );
-          setEditMode(false);
-          setEditItemId(undefined);
-        })
-        .catch((error) => {
-          console.error("Error al actualizar el formulario:", error);
-        });
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      cedula: "",
-      nombre_pariente: "",
-      apellido_pariente: "",
-      fecha_nacimiento: "",
-      evidencia: "",
-      persona: null,
-    });
-    setEditMode(false);
-    setEditItemId(undefined);
-    if (fileUploadRef.current) {
-      fileUploadRef.current.clear(); // Limpiar el campo FileUpload
-    }
-  };
 
   return (
     <Fieldset className="fgrid col-fixed ">
@@ -200,10 +110,7 @@ function CargaContextDes() {
         </div>
 
         <div className="flex justify-content-center flex-wrap">
-          <form
-            onSubmit={editMode ? handleUpdate : handleSubmit}
-            encType="multipart/form-data"
-          >
+          <form encType="multipart/form-data">
             <div className="flex flex-wrap flex-row">
               <div className="flex align-items-center justify-content-center">
                 <div

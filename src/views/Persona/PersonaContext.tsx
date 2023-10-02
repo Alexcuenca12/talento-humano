@@ -127,6 +127,26 @@ const Persona = () => {
       fileUploadRef.current.clear();
     }
   };
+  const customBytesUploaderMecanizado = async (event: FileUploadHandlerEvent) => {
+    fileConverter(event.files[0])
+      .then((data) => {
+        formik.setFieldValue("mecanizado_iess", data);
+        setMessage({ severity: "info", detail: "Archivo Cargado" });
+      })
+      .catch((error) => {
+        console.error(error);
+        setMessage({
+          severity: "error",
+          summary: "Error",
+          detail: error.message,
+        });
+      });
+
+    if (fileUploadRef.current) {
+      // clean the file uploaded
+      fileUploadRef.current.clear();
+    }
+  };
 
   const decodeBase64 = (base64Data: string) => {
     try {
@@ -140,7 +160,7 @@ const Persona = () => {
       const fileUrl = URL.createObjectURL(byteArray);
       const link = document.createElement("a");
       link.href = fileUrl;
-      link.download = "Evidencia CV Socioempleo.pdf";
+      link.download = "Evidencia.pdf";
       link.click();
       swal({
         title: "Publicación",
@@ -148,7 +168,6 @@ const Persona = () => {
         icon: "success",
         timer: 1000,
       });
-      console.log("pdf descargado...");
 
       URL.revokeObjectURL(fileUrl);
     } catch (error) {
@@ -175,6 +194,7 @@ const Persona = () => {
       idioma_secundario: "",
       foto: null,
       cv_socioempleo: null,
+      mecanizado_iess: null,
       descripcion_perfil: "",
       pais_residencia: "",
       provincia_residencia: "",
@@ -195,7 +215,6 @@ const Persona = () => {
       foto_carnet: null,
     },
     onSubmit: (values) => {
-      console.log(values);
       handleSubmit(values);
       formik.resetForm();
     },
@@ -291,6 +310,9 @@ const Persona = () => {
       if (!values.cv_socioempleo) {
         errors.cv_socioempleo = "El Curriculum Vitae es requerido";
       }
+      if (!values.mecanizado_iess) {
+        errors.mecanizado_iess = "El Mecanizado del IESS es requerido";
+      }
       return errors;
     },
   });
@@ -321,6 +343,7 @@ const Persona = () => {
       // Puedes establecer un mensaje de error o realizar alguna otra acción apropiada aquí
     }
   };
+
   function loadExcelReportData(data: IPersona[]) {
     const reportName = "Persona";
     const rowData = data.map((item) => ({
@@ -390,12 +413,12 @@ const Persona = () => {
       rowData,
     });
   }
+
   useEffect(() => {
-    if (formik.values.cedula.length == 10) {
+    if (formik.values.cedula.length === 10) {
       apiViewService
         .getByCedula(formik.values.cedula)
         .then((response) => {
-          console.log(response);
           const persona = response[0] as IPersona;
           formik.setFieldValue("apellido_paterno", persona.apellido_paterno);
           formik.setFieldValue("apellido_materno", persona.apellido_materno);
@@ -414,14 +437,14 @@ const Persona = () => {
           } else {
             console.error("Fecha de nacimiento vacía o null");
           }
-          if (persona.pais_natal == "CUENCA") {
+          if (persona.pais_natal === "CUENCA") {
             formik.setFieldValue("pais_natal", "ECUADOR");
           } else {
             formik.setFieldValue("pais_natal", persona.pais_natal);
           }
-          if (persona.sexo == "H") {
+          if (persona.sexo === "H") {
             formik.setFieldValue("sexo", "HOMBRE");
-          } else if (persona.sexo == "M") {
+          } else if (persona.sexo === "M") {
             formik.setFieldValue("sexo", "MUJER");
           }
           formik.setFieldValue("genero", persona.genero);
@@ -446,7 +469,7 @@ const Persona = () => {
             );
           }
           formik.setFieldValue("calles", persona.calles);
-          if (persona.numero_casa == "0") {
+          if (persona.numero_casa === "0") {
             formik.setFieldValue("numero_casa", "S/N");
           } else {
             formik.setFieldValue("numero_casa", persona.numero_casa);
@@ -455,7 +478,7 @@ const Persona = () => {
           formik.setFieldValue("referencia", persona.referencia);
 
           formik.setFieldValue("celular", persona.celular);
-          if (persona.telefono == "") {
+          if (persona.telefono === "") {
             formik.setFieldValue("telefono", "S/N");
           } else {
             formik.setFieldValue("telefono", persona.telefono);
@@ -466,12 +489,12 @@ const Persona = () => {
             persona.correo_institucional
           );
           const discapacidadString = persona.discapacidad;
-          if (discapacidadString == "f") {
+          if (discapacidadString === "f") {
             formik.setFieldValue("discapacidad", "SIN DISCAPACIDAD");
             formik.setFieldValue("tipo_discapacidad", "NINGUNA");
             formik.setFieldValue("porcentaje_discapacidad", "0%");
             formik.setFieldValue("carnet_conadis", "NO TIENE");
-          } else if (discapacidadString == "t") {
+          } else if (discapacidadString === "t") {
             formik.setFieldValue("discapacidad", "CON DISCAPACIDAD");
             formik.setFieldValue(
               "tipo_discapacidad",
@@ -483,7 +506,7 @@ const Persona = () => {
             );
             formik.setFieldValue("carnet_conadis", persona.carnet_conadis);
           }
-          if (persona.discapacidad == "f") {
+          if (persona.discapacidad === "f") {
             formik.setFieldValue("numero_casa", "S/N");
           }
           setMessage({ severity: "success", detail: "Registro actualizado" });
@@ -503,7 +526,6 @@ const Persona = () => {
       await apiService
         .update(selectedItem.id_persona!, data)
         .then((response) => {
-          console.log(response);
           setMessage({ severity: "success", detail: "Registro actualizado" });
         });
       setSelectedItem(null);
@@ -511,7 +533,6 @@ const Persona = () => {
       await apiService
         .save(data)
         .then((response) => {
-          console.log(response);
           setMessage({ severity: "success", detail: "Registro creado" });
         })
         .catch((error) => {
@@ -881,16 +902,43 @@ const Persona = () => {
               {formik.touched.cv_socioempleo && formik.errors.cv_socioempleo}
             </small>
           </div>
+          <div className="field col-4 flex flex-column">
+            <label className="font-medium" htmlFor="mecanizado_iess">
+              Mecanizado del IESS
+            </label>
+            <FileUpload
+              id="mecanizado_iess"
+              ref={fileUploadRef}
+              mode="advanced"
+              name="file"
+              accept=".pdf"
+              customUpload
+              uploadHandler={customBytesUploaderMecanizado}
+              chooseLabel="Seleccionar"
+              uploadLabel="Subir"
+              cancelLabel="Cancelar"
+              emptyTemplate={
+                <p className="m-0">
+                  {formik.values.mecanizado_iess
+                    ? "Archivo Cargado Correctamente"
+                    : "Seleccione un Documento"}
+                </p>
+              }
+            />
+            <small className="p-error w-full">
+              {formik.touched.mecanizado_iess && formik.errors.mecanizado_iess}
+            </small>
+          </div>
 
           <div className="field col-1">
             <label className="font-medium"></label>
           </div>
 
-          <div className="field  flex flex-column">
+          <div className="field  flex flex-column" style={{marginLeft:"35%"}}>
             <label className="font-medium" htmlFor="foto">
               Foto Personal
             </label>
-            <img src={imageUrl} height={200} width={200} />
+            <img src={imageUrl} height={200} width={200} alt="" />
             <label className="font-medium" htmlFor="foto"></label>
             <FileUpload
               id="foto"
@@ -910,9 +958,6 @@ const Persona = () => {
                 </p>
               }
             />
-          </div>
-          <div className="field col-4">
-            <label className="font-medium"></label>
           </div>
 
           <Divider align="center">
@@ -1216,14 +1261,12 @@ const Persona = () => {
               type="submit"
               label={selectedItem ? "Actualizar" : "Guardar"}
               severity={selectedItem ? "warning" : "success"}
-              style={{ marginTop: "55px" }}
               rounded
             />
             <Button
               type="button"
               label="Cancelar"
               severity="secondary"
-              style={{ marginTop: "55px" }}
               rounded
               onClick={() => {
                 formik.resetForm();
@@ -1251,7 +1294,8 @@ const Persona = () => {
               <th>Correo</th>
               <th>Discapacidad</th>
               <th>Operaciones</th>
-              <th>Evidencia</th>
+              <th>Curriculum Vitae</th>
+              <th>Mecanizado IESS</th>
             </tr>
           </thead>
           <tbody>
@@ -1310,6 +1354,25 @@ const Persona = () => {
                         justifyContent: "center",
                       }}
                       onClick={() => decodeBase64(per.cv_socioempleo!)}
+                    />
+                  ) : (
+                    <span>Sin evidencia</span>
+                  )}
+                </td>
+                <td>
+                  {per.mecanizado_iess ? (
+                    <Button
+                      type="button"
+                      className=""
+                      label="Descargar PDF"
+                      style={{
+                        background: "#009688",
+                        borderRadius: "10%",
+                        fontSize: "12px",
+                        color: "black",
+                        justifyContent: "center",
+                      }}
+                      onClick={() => decodeBase64(per.mecanizado_iess!)}
                     />
                   ) : (
                     <span>Sin evidencia</span>

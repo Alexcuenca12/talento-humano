@@ -61,13 +61,6 @@ const Bienvenida = () => {
           </div>
         </div>
       </div>
-      {/* <UserForm
-        isVisible={isVisible}
-        setIsVisible={setIsVisible}
-        seleccion={seleccion}
-        setSeleccion={setSeleccion}
-        toast={toast}
-      /> */}
     </>
   );
 };

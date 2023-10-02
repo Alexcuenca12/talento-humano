@@ -1,9 +1,9 @@
 .home {
     min-height: 92.5vh;
     background: linear-gradient(rgba(255, 255, 255, 0.363), rgba(0, 0, 0, 0.1)),
-    url("https://lh5.googleusercontent.com/p/AF1QipNL__87iHlsOXHOdtLSpjSj9Osd7yjbK3Tv0Z8-=w1080-k-no") center/cover no-repeat;
-  
+        url("https://lh5.googleusercontent.com/p/AF1QipNL__87iHlsOXHOdtLSpjSj9Osd7yjbK3Tv0Z8-=w1080-k-no") center/cover no-repeat;
 }
+
 .welcome {
     text-align: center;
     padding: 50px;

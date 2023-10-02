@@ -23,6 +23,8 @@ function ContratoContext() {
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
 
+  
+
   const [excelReportData, setExcelReportData] =
     useState<IExcelReportParams | null>(null);
 
@@ -427,6 +429,7 @@ function ContratoContext() {
                       id="inicio"
                       name="inicio"
                       required
+                      placeholder="Ingresa la Fecha de Inicio"
                       dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
                       showIcon
                       maxDate={new Date()}
@@ -460,6 +463,7 @@ function ContratoContext() {
                       className="text-2xl"
                       id="fin"
                       name="fin"
+                      placeholder="Ingresa la Fecha de Fin"
                       disabled={formData.contrato_vigente}
                       required
                       dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
@@ -492,6 +496,7 @@ function ContratoContext() {
                       className="text-2xl"
                       id="anios"
                       required
+                      placeholder="Ingresa los años de duracion"
                       name="anios"
                       onChange={(e) =>
                         setFormData({
@@ -518,6 +523,7 @@ function ContratoContext() {
                       className="text-2xl"
                       id="horas"
                       name="horas"
+                      placeholder="Ingresa las Horas"
                       onChange={(e) =>
                         setFormData({
                           ...formData,
@@ -537,6 +543,7 @@ function ContratoContext() {
                     <InputText
                       className="text-2xl"
                       id="cargo"
+                      placeholder="Ingresa el Cargo"
                       name="cargo"
                       onChange={(e) =>
                         setFormData({
@@ -558,6 +565,7 @@ function ContratoContext() {
                       className="text-2xl"
                       id="salario"
                       name="salario"
+                      placeholder="Ingresa el Salario"
                       onChange={(e) =>
                         setFormData({
                           ...formData,

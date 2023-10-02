@@ -113,101 +113,6 @@ function CargaContextDes() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !formData.institucion ||
-      !formData.puesto ||
-      !formData.area_trabajo ||
-      !formData.fecha_inicio ||
-      !formData.fecha_fin ||
-      !formData.actividades ||
-      !formData.certificado_trabajo
-    ) {
-      swal("Advertencia", "Por favor, complete todos los campos", "warning");
-      return;
-    }
-
-    expService
-      .createItem(formData)
-      .then((response) => {
-        resetForm();
-        swal("Publicacion", "Datos Guardados Correctamente", "success");
-
-        expService
-          .getAllItems()
-          .then((data) => {
-            setexp1(data);
-            resetForm();
-            if (fileUploadRef.current) {
-              fileUploadRef.current.clear();
-            }
-          })
-          .catch((error) => {
-            console.error("Error al obtener los datos:", error);
-          });
-      })
-      .catch((error) => {
-        console.error("Error al enviar el formulario:", error);
-      });
-  };
-
-  const handleUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editItemId !== undefined) {
-      expService
-        .updateItem(Number(editItemId), formData as IExperiencia)
-        .then((response) => {
-          swal({
-            title: "Publicaciones",
-            text: "Datos actualizados correctamente",
-            icon: "success",
-          });
-          setFormData({
-            institucion: "",
-            puesto: "",
-            area_trabajo: "",
-            fecha_inicio: "",
-            fecha_fin: "",
-            actividades: "",
-            estado: false,
-            certificado_trabajo: "",
-            persona: null,
-          });
-          setexp1(
-            exp1.map((exp) =>
-              exp.id_experiencia === editItemId ? response : exp
-            )
-          );
-          setEditMode(false);
-          setEditItemId(undefined);
-        })
-        .catch((error) => {
-          console.error("Error al actualizar el formulario:", error);
-        });
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      institucion: "",
-      puesto: "",
-      area_trabajo: "",
-      fecha_inicio: "",
-      fecha_fin: "",
-      actividades: "",
-      estado: false,
-      certificado_trabajo: "",
-      persona: null,
-    });
-    setEditMode(false);
-    setEditItemId(undefined);
-    if (fileUploadRef.current) {
-      fileUploadRef.current.clear(); // Limpiar el campo FileUpload
-    }
-  };
-
   return (
     <Fieldset className="fgrid col-fixed ">
       <Card
@@ -227,7 +132,6 @@ function CargaContextDes() {
           style={{ marginLeft: "60px" }}
         >
           <form
-            onSubmit={editMode ? handleUpdate : handleSubmit}
             encType="multipart/form-data"
           >
             <div className="flex flex-wrap flex-row">

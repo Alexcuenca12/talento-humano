@@ -57,70 +57,6 @@ function HabilidadContextDes() {
       });
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!formData.descripcion) {
-      swal("Advertencia", "Por favor, complete todos los campos", "warning");
-      return;
-    }
-
-    habilidadService
-      .save(formData)
-      .then((response) => {
-        resetForm();
-        console.log("guardado: ", formData);
-        swal("Habilidad", "Datos Guardados Correctamente", "success");
-        habilidadService
-          .getAll()
-          .then((data) => {
-            sethabi1(data);
-            console.log("datos son: ", data);
-          })
-          .catch((error) => {
-            console.error("Error al obtener los datos:", error);
-          });
-      })
-      .catch((error) => {
-        console.error("Error al enviar el formulario:", error);
-      });
-  };
-
-  const handleUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editItemId !== undefined) {
-      habilidadService
-        .update(Number(editItemId), formData as IHabilidadesData)
-        .then((response) => {
-          swal({
-            title: "Habilidad",
-            text: "Datos actualizados correctamente",
-            icon: "success",
-          });
-          setFormData({ ...formData });
-          sethabi1(
-            habi1.map((habi) =>
-              habi.id_habilidades === editItemId ? response : habi
-            )
-          );
-          setEditMode(false);
-          setEditItemId(undefined);
-        })
-        .catch((error) => {
-          console.error("Error al actualizar el formulario:", error);
-        });
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      descripcion: "",
-      persona: null,
-    });
-    setEditMode(false);
-    setEditItemId(undefined);
-  };
-
   return (
     <Fieldset className="fgrid col-fixed">
       <Card
@@ -133,7 +69,7 @@ function HabilidadContextDes() {
           </Divider>
         </div>
         <div className="flex justify-content-center ">
-          <form onSubmit={editMode ? handleUpdate : handleSubmit}>
+          <form>
             <div className="flex align-content-center w-auto max-w-full">
               <InputTextarea
                 autoResize

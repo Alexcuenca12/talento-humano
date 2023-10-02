@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, } from "react";
 import { InputText } from "primereact/inputtext";
-import { FileUpload } from "primereact/fileupload";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
@@ -49,10 +48,7 @@ function CapacitacionesContextDes() {
     { label: "Hotelería/Turismo", value: "Hotelería/Turismo" },
     { label: "Informática hardware", value: "Informática hardware" },
     { label: "Informática software", value: "Informática software" },
-    {
-      label: "Informática/Telecomunicaciones",
-      value: "Informática/Telecomunicaciones",
-    },
+    {label: "Informática/Telecomunicaciones", value: "Informática/Telecomunicaciones",},
     { label: "Ingeniería/Técnico", value: "Ingeniería/Técnico" },
     { label: "Internet", value: "Internet" },
     { label: "Legal/ Asesoría", value: "Legal/ Asesoría" },
@@ -96,10 +92,6 @@ function CapacitacionesContextDes() {
     },
   });
 
-  const fileUploadRef = useRef<FileUpload>(null);
-
-  const [editMode, setEditMode] = useState(false);
-  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
   const capacitacionService = new CapacitacionesService();
 
   useEffect(() => {
@@ -161,108 +153,6 @@ function CapacitacionesContextDes() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !formData.institucion ||
-      !formData.tipo_evento ||
-      !formData.nombre_evento ||
-      !formData.area_estudios ||
-      !formData.tipo_certificado ||
-      !formData.fecha_inicio ||
-      !formData.fecha_fin ||
-      !formData.numero_dias ||
-      !formData.cantidad_horas ||
-      !formData.evidencia
-    ) {
-      swal("Advertencia", "Por favor, complete todos los campos", "warning");
-      return;
-    }
-
-    capacitacionService
-      .guardarCapacitaciones(formData)
-      .then((response) => {
-        resetForm();
-        swal("Publicacion", "Datos Guardados Correctamente", "success");
-
-        capacitacionService
-          .getAllCap()
-          .then((data) => {
-            setcapacitacion1(data);
-            resetForm();
-            if (fileUploadRef.current) {
-              fileUploadRef.current.clear();
-            }
-          })
-          .catch((error) => {
-            console.error("Error al obtener los datos:", error);
-          });
-      })
-      .catch((error) => {
-        console.error("Error al enviar el formulario:", error);
-      });
-  };
-
-  const handleUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editItemId !== undefined) {
-      capacitacionService
-        .updateCapacitaciones(Number(editItemId), formData as ICapacitaciones)
-        .then((response) => {
-          swal({
-            title: "Publicaciones",
-            text: "Datos actualizados correctamente",
-            icon: "success",
-          });
-          setFormData({
-            institucion: "",
-            tipo_evento: "",
-            nombre_evento: "",
-            area_estudios: "",
-            tipo_certificado: "",
-            fecha_inicio: "",
-            fecha_fin: "",
-            numero_dias: 0,
-            cantidad_horas: 0,
-            evidencia: "",
-            persona: null,
-          });
-          setcapacitacion1(
-            capacitacion1.map((contra) =>
-              contra.id_capacitaciones === editItemId ? response : contra
-            )
-          );
-          setEditMode(false);
-          setEditItemId(undefined);
-        })
-        .catch((error) => {
-          console.error("Error al actualizar el formulario:", error);
-        });
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      institucion: "",
-      tipo_evento: "",
-      nombre_evento: "",
-      area_estudios: "",
-      tipo_certificado: "",
-      fecha_inicio: "",
-      fecha_fin: "",
-      numero_dias: 0,
-      cantidad_horas: 0,
-      evidencia: "",
-      persona: null,
-    });
-    setEditMode(false);
-    setEditItemId(undefined);
-    if (fileUploadRef.current) {
-      fileUploadRef.current.clear(); // Limpiar el campo FileUpload
-    }
-  };
-
   return (
     <Fieldset className="fgrid col-fixed ">
       <Card
@@ -278,10 +168,7 @@ function CapacitacionesContextDes() {
         </div>
 
         <div className="flex justify-content-center flex-wrap">
-          <form
-            onSubmit={editMode ? handleUpdate : handleSubmit}
-            encType="multipart/form-data"
-          >
+          <form encType="multipart/form-data">
             <div className="flex flex-wrap flex-row">
               <div className="flex align-items-center justify-content-center">
                 <div

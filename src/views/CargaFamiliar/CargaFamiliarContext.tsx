@@ -133,7 +133,6 @@ function CargaFamiliarContext() {
         icon: "success",
         timer: 1000,
       });
-      console.log("pdf descargado...");
 
       URL.revokeObjectURL(fileUrl);
     } catch (error) {
@@ -399,6 +398,7 @@ function CargaFamiliarContext() {
                       id="inicio"
                       name="inicio"
                       required
+                      placeholder="Ingresa la Fecha de Nacimiento"
                       dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
                       showIcon
                       maxDate={new Date()}

@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
-import { FileUpload, FileUploadSelectEvent } from "primereact/fileupload";
+import React, { useEffect, useState,  } from "react";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { Fieldset } from "primereact/fieldset";
@@ -39,11 +38,7 @@ function CargaContextDes() {
     persona: { id_persona: idPersona },
   });
 
-  const fileUploadRef = useRef<FileUpload>(null);
   const [dataLoaded, setDataLoaded] = useState(false);
-
-  const [editMode, setEditMode] = useState(false);
-  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
 
   const evaService = new EvaluacionService();
   const carreraService = new VcarreraService();
@@ -139,137 +134,6 @@ function CargaContextDes() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (!formData.evidencia_evaluacion || !formData.cod_carrera) {
-      swal("Advertencia", "Por favor, complete todos los campos", "warning");
-      return;
-    }
-
-    evaService
-      .save(formData)
-      .then((response) => {
-        resetForm();
-        swal("Publicacion", "Datos Guardados Correctamente", "success");
-
-        evaService
-          .getAll()
-          .then((data) => {
-            seteva1(data);
-            resetForm();
-            if (fileUploadRef.current) {
-              fileUploadRef.current.clear();
-            }
-          })
-          .catch((error) => {
-            console.error("Error al obtener los datos:", error);
-          });
-      })
-      .catch((error) => {
-        console.error("Error al enviar el formulario:", error);
-      });
-  };
-
-  const handleDelete = (id: number | undefined) => {
-    if (id !== undefined) {
-      swal({
-        title: "Confirmar Eliminación",
-        text: "¿Estás seguro de eliminar este registro?",
-        icon: "warning",
-        buttons: {
-          cancel: {
-            text: "Cancelar",
-            visible: true,
-            className: "cancel-button",
-          },
-          confirm: {
-            text: "Sí, eliminar",
-            className: "confirm-button",
-          },
-        },
-      }).then((confirmed) => {
-        if (confirmed) {
-          evaService
-            .delete(id)
-            .then(() => {
-              seteva1(eva1.filter((eva) => eva.id_evaluacion !== id));
-              swal(
-                "Eliminado",
-                "El registro ha sido eliminado correctamente",
-                "error"
-              );
-            })
-            .catch((error) => {
-              console.error("Error al eliminar el registro:", error);
-              swal(
-                "Error",
-                "Ha ocurrido un error al eliminar el registro",
-                "error"
-              );
-            });
-        }
-      });
-    }
-  };
-
-  const handleEdit = (id: number | undefined) => {
-    if (id !== undefined) {
-      const editItem = eva1.find((contra) => contra.id_evaluacion === id);
-      if (editItem) {
-        setFormData(editItem);
-
-        setEditMode(true);
-        setEditItemId(id);
-      }
-    }
-  };
-
-  const handleUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editItemId !== undefined) {
-      evaService
-        .update(Number(editItemId), formData as IEvaDocente)
-        .then((response) => {
-          swal({
-            title: "Publicaciones",
-            text: "Datos actualizados correctamente",
-            icon: "success",
-          });
-          setFormData({
-            evidencia_evaluacion: "",
-            cod_carrera: "",
-            per_nombre: "",
-            persona: null,
-          });
-          seteva1(
-            eva1.map((eva) =>
-              eva.id_evaluacion === editItemId ? response : eva
-            )
-          );
-          setEditMode(false);
-          setEditItemId(undefined);
-        })
-        .catch((error) => {
-          console.error("Error al actualizar el formulario:", error);
-        });
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      evidencia_evaluacion: "",
-      cod_carrera: "",
-      per_nombre: "",
-      persona: null,
-    });
-    setEditMode(false);
-    setEditItemId(undefined);
-    if (fileUploadRef.current) {
-      fileUploadRef.current.clear();
-    }
-  };
-
   return (
     <Fieldset className="fgrid col-fixed ">
       <Card
@@ -286,7 +150,6 @@ function CargaContextDes() {
 
         <div className="flex justify-content-center flex-wrap">
           <form
-            onSubmit={editMode ? handleUpdate : handleSubmit}
             encType="multipart/form-data"
           >
             <div className="flex flex-wrap flex-row">

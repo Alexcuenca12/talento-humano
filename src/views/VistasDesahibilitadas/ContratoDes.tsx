@@ -206,7 +206,6 @@ function ContratoContextDes() {
           .getAllByContrato(codigoContratoNumber)
           .then((data) => {
             setcontra1(data);
-            console.log(data);
             resetForm();
             if (fileUploadRef.current) {
               fileUploadRef.current.clear();

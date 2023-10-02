@@ -163,7 +163,6 @@ function PublicacionesContext() {
         icon: "success",
         timer: 1000,
       });
-      console.log("pdf descargado...");
 
       URL.revokeObjectURL(fileUrl);
     } catch (error) {

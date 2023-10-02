@@ -1,8 +1,6 @@
-import React, { useEffect, useState, useRef, ChangeEvent } from "react";
+import React, { useEffect, useState,  } from "react";
 import { InputText } from "primereact/inputtext";
-import { FileUpload } from "primereact/fileupload";
 import { Button } from "primereact/button";
-import { Calendar } from "primereact/calendar";
 import "../../styles/Contrato.css";
 import { Fieldset } from "primereact/fieldset";
 import { Card } from "primereact/card";
@@ -12,7 +10,6 @@ import { InstruccionFormalData } from "../../interfaces/Primary/IInstrucc_Formal
 import { Instruc_FormalService } from "../../services/Instru_FormalService";
 import swal from "sweetalert";
 import { useParams } from "react-router-dom";
-
 interface Params {
   codigoInstrucc: string;
 }
@@ -41,10 +38,6 @@ function InstruccionContextDes() {
     persona: { id_persona: idPersona },
   });
 
-  const fileUploadRef = useRef<FileUpload>(null);
-
-  const [editMode, setEditMode] = useState(false);
-  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
   const instrucFormalService = new Instruc_FormalService();
 
   useEffect(() => {
@@ -54,7 +47,6 @@ function InstruccionContextDes() {
         if (data.length > 0) {
           const contratoData = data[0];
           setFormDisabled(true);
-          // Actualiza el estado local aquí
           setFormData({
             ...formData,
             nivelInstruccion: contratoData.nivelInstruccion,
@@ -77,17 +69,14 @@ function InstruccionContextDes() {
     try {
       // Eliminar encabezados o metadatos de la cadena base64
       const base64WithoutHeader = base64Data.replace(/^data:.*,/, "");
-
       const decodedData = atob(base64WithoutHeader); // Decodificar la cadena base64
       const byteCharacters = new Uint8Array(decodedData.length);
 
       for (let i = 0; i < decodedData.length; i++) {
         byteCharacters[i] = decodedData.charCodeAt(i);
       }
-
       const byteArray = new Blob([byteCharacters], { type: "application/pdf" });
       const fileUrl = URL.createObjectURL(byteArray);
-
       const link = document.createElement("a");
       link.href = fileUrl;
       link.download = "archivoCon.pdf";
@@ -104,102 +93,6 @@ function InstruccionContextDes() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !formData.nivelInstruccion ||
-      !formData.institucionEducativa ||
-      !formData.tituloObtenido ||
-      !formData.num_SenecytRegistro ||
-      !formData.tiempoEstudio ||
-      !formData.anioGraduacion ||
-      !formData.areaEstudios ||
-      !formData.titulo ||
-      !formData.institucionEducativa
-    ) {
-      swal("Advertencia", "Por favor, complete todos los campos", "warning");
-      return;
-    }
-
-    instrucFormalService
-      .save(formData)
-      .then((response) => {
-        resetForm();
-        swal("Publicacion", "Datos Guardados Correctamente", "success");
-
-        instrucFormalService
-          .getAll()
-          .then((data) => {
-            setinstruc1(data);
-            resetForm();
-            if (fileUploadRef.current) {
-              fileUploadRef.current.clear();
-            }
-          })
-          .catch((error) => {
-            console.error("Error al obtener los datos:", error);
-          });
-      })
-      .catch((error) => {
-        console.error("Error al enviar el formulario:", error);
-      });
-  };
-
-  const handleUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editItemId !== undefined) {
-      instrucFormalService
-        .update(Number(editItemId), formData as InstruccionFormalData)
-        .then((response) => {
-          swal({
-            title: "Publicaciones",
-            text: "Datos actualizados correctamente",
-            icon: "success",
-          });
-          setFormData({
-            nivelInstruccion: "",
-            institucionEducativa: "",
-            tituloObtenido: "",
-            num_SenecytRegistro: "",
-            tiempoEstudio: 0,
-            anioGraduacion: 0,
-            areaEstudios: "",
-            titulo: "",
-            persona: null,
-          });
-          setinstruc1(
-            instruc1.map((instruc) =>
-              instruc.id_instruccion === editItemId ? response : instruc
-            )
-          );
-          setEditMode(false);
-          setEditItemId(undefined);
-        })
-        .catch((error) => {
-          console.error("Error al actualizar el formulario:", error);
-        });
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      nivelInstruccion: "",
-      institucionEducativa: "",
-      tituloObtenido: "",
-      num_SenecytRegistro: "",
-      tiempoEstudio: 0,
-      anioGraduacion: 0,
-      areaEstudios: "",
-      titulo: "",
-      persona: null,
-    });
-    setEditMode(false);
-    setEditItemId(undefined);
-    if (fileUploadRef.current) {
-      fileUploadRef.current.clear(); // Limpiar el campo FileUpload
-    }
-  };
 
   return (
     <Fieldset className="fgrid col-fixed ">
@@ -217,7 +110,6 @@ function InstruccionContextDes() {
 
         <div className="flex justify-content-center flex-wrap">
           <form
-            onSubmit={editMode ? handleUpdate : handleSubmit}
             encType="multipart/form-data"
           >
             <div className="flex flex-wrap flex-row">
@@ -340,7 +232,7 @@ function InstruccionContextDes() {
                       name="tiempoEstudio"
                       style={{ width: "221px" }}
                       onChange={(e) => {
-                        const tiempoEstudio = parseFloat(e.currentTarget.value); // Convertir a número
+                        const tiempoEstudio = parseFloat(e.currentTarget.value);
                         setFormData({
                           ...formData,
                           tiempoEstudio: isNaN(tiempoEstudio)

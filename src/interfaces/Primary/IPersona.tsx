@@ -17,6 +17,7 @@ export interface IPersona {
   idioma_secundario: string;
   foto: string | null;
   cv_socioempleo: string | null;
+  mecanizado_iess: string | null;
   descripcion_perfil: string;
 
   pais_residencia: string;

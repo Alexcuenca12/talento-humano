@@ -1,8 +1,6 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, } from "react";
 import { InputText } from "primereact/inputtext";
-import { FileUpload } from "primereact/fileupload";
 import { Button } from "primereact/button";
-import { Calendar } from "primereact/calendar";
 import "../../styles/Contrato.css";
 import { Fieldset } from "primereact/fieldset";
 import { Card } from "primereact/card";
@@ -41,10 +39,7 @@ function RecomendacionContextDes() {
       id_persona: idPersona,
     },
   });
-  const fileUploadRef = useRef<FileUpload>(null);
 
-  const [editMode, setEditMode] = useState(false);
-  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
   const recomService = new RecomendacionesService();
 
   useEffect(() => {
@@ -103,97 +98,6 @@ function RecomendacionContextDes() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !formData.correo ||
-      !formData.primer_apellido ||
-      !formData.primer_nombre ||
-      !formData.segundo_apellido ||
-      !formData.segundo_nombre ||
-      !formData.documentoRecomendacion
-    ) {
-      swal("Advertencia", "Por favor, complete todos los campos", "warning");
-      return;
-    }
-
-    recomService
-      .save(formData)
-      .then((response) => {
-        resetForm();
-        swal("Publicacion", "Datos Guardados Correctamente", "success");
-
-        recomService
-          .getAll()
-          .then((data) => {
-            setrecom1(data);
-            resetForm();
-            if (fileUploadRef.current) {
-              fileUploadRef.current.clear();
-            }
-          })
-          .catch((error) => {
-            console.error("Error al obtener los datos:", error);
-          });
-      })
-      .catch((error) => {
-        console.error("Error al enviar el formulario:", error);
-      });
-  };
-
-  const handleUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editItemId !== undefined) {
-      recomService
-        .update(Number(editItemId), formData as IRecomendaciones)
-        .then((response) => {
-          swal({
-            title: "Publicaciones",
-            text: "Datos actualizados correctamente",
-            icon: "success",
-          });
-          setFormData({
-            primer_nombre: "",
-            segundo_nombre: "",
-            primer_apellido: "",
-            segundo_apellido: "",
-            correo: "",
-            documentoRecomendacion: "",
-            numeroContacto: "",
-            persona: null,
-          });
-          setrecom1(
-            recom1.map((contra) =>
-              contra.id_recomendaciones === editItemId ? response : contra
-            )
-          );
-          setEditMode(false);
-          setEditItemId(undefined);
-        })
-        .catch((error) => {
-          console.error("Error al actualizar el formulario:", error);
-        });
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      primer_nombre: "",
-      segundo_nombre: "",
-      primer_apellido: "",
-      segundo_apellido: "",
-      correo: "",
-      documentoRecomendacion: "",
-      numeroContacto: "",
-      persona: null,
-    });
-    setEditMode(false);
-    setEditItemId(undefined);
-    if (fileUploadRef.current) {
-      fileUploadRef.current.clear(); // Limpiar el campo FileUpload
-    }
-  };
 
   return (
     <Fieldset className="fgrid col-fixed ">
@@ -211,7 +115,6 @@ function RecomendacionContextDes() {
 
         <div className="flex justify-content-center flex-wrap">
           <form
-            onSubmit={editMode ? handleUpdate : handleSubmit}
             encType="multipart/form-data"
           >
             <div className="flex flex-wrap flex-row">
