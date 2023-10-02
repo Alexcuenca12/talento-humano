@@ -238,8 +238,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBar />
-                    {/*<PublicacionesContext />*/}
-                    <Filtros />
+                    <PublicacionesContext />
                     <Footer />
                   </>
                 ) : rol === 2 ? (

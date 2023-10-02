@@ -10,11 +10,19 @@ import { Divider } from "primereact/divider";
 import { IRecomendaciones } from "../../interfaces/Primary/IRecomendaciones";
 import { RecomendacionesService } from "../../services/RecomendacionesService";
 import swal from "sweetalert";
+import { ReportBar } from "../../shared/ReportBar";
+import {
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
 
 function PublicacionesContext() {
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+
+  const [excelReportData, setExcelReportData] =
+    useState<IExcelReportParams | null>(null);
 
   const [recom1, setrecom1] = useState<IRecomendaciones[]>([]);
   const [formData, setFormData] = useState<IRecomendaciones>({
@@ -42,6 +50,7 @@ function PublicacionesContext() {
       .getAllByPersona(idPersona)
       .then((data) => {
         setrecom1(data);
+        loadExcelReportData(data);
         setDataLoaded(true); // Marcar los datos como cargados
       })
       .catch((error) => {
@@ -51,6 +60,26 @@ function PublicacionesContext() {
   useEffect(() => {
     loadData();
   }, []);
+  function loadExcelReportData(data: IRecomendaciones[]) {
+    const reportName = "Recomendaciones";
+    const rowData = data.map((item) => ({
+      nombre: item.primer_nombre + " " + item.segundo_nombre,
+      apellido: item.primer_apellido + " " + item.segundo_apellido,
+      correo: item.correo,
+      numeroContacto: item.numeroContacto,
+    }));
+    const headerItems: IHeaderItem[] = [
+      { header: "NOMBRES" },
+      { header: "APELLIDOS" },
+      { header: "CORREO" },
+      { header: "Nº DE CONTACTO" },
+    ];
+    setExcelReportData({
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
 
   const customBytesUploader = (event: FileUploadSelectEvent) => {
     if (event.files && event.files.length > 0) {
@@ -486,7 +515,12 @@ function PublicacionesContext() {
             />
           </div>
         </div>
-        <div style={{marginTop:"50px"}}>
+        <ReportBar
+          reportName={excelReportData?.reportName!}
+          headerItems={excelReportData?.headerItems!}
+          rowData={excelReportData?.rowData!}
+        />
+        <div style={{ marginTop: "20px" }}>
           <table
             style={{ minWidth: "40rem" }}
             className="mt-4  w-full h-full text-3xl font-large"

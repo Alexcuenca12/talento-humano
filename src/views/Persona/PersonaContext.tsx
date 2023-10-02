@@ -19,6 +19,11 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { Fieldset } from "primereact/fieldset";
 import cardHeader from "../../shared/CardHeader";
 import swal from "sweetalert";
+import { ReportBar } from "../../shared/ReportBar";
+import {
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
 
 const apiViewService = new VistaPersonaService();
 const apiService = new PersonaService();
@@ -32,6 +37,9 @@ const Persona = () => {
   const [message, setMessage] = useState<IMessage | null>(null);
   const [selectedItem, setSelectedItem] = useState<IPersona | null>(null);
   const fileUploadRef = useRef<FileUpload>(null);
+  const [excelReportData, setExcelReportData] =
+    useState<IExcelReportParams | null>(null);
+
   const estadoCivil = [
     "SOLTERO/A",
     "CASADO/A",
@@ -295,10 +303,9 @@ const Persona = () => {
     if (idPersona !== undefined) {
       apiService
         .getAllByPersona(idPersona)
-
         .then((response) => {
           setItems(response);
-          console.log(formik.values.id_persona);
+          loadExcelReportData(response);
         })
         .catch((error) => {
           console.error(error);
@@ -314,7 +321,75 @@ const Persona = () => {
       // Puedes establecer un mensaje de error o realizar alguna otra acción apropiada aquí
     }
   };
-
+  function loadExcelReportData(data: IPersona[]) {
+    const reportName = "Persona";
+    const rowData = data.map((item) => ({
+      cedula: item.cedula,
+      nombres: item.primer_nombre + " " + item.segundo_nombre,
+      apellidos: item.apellido_paterno + " " + item.apellido_materno,
+      correo_institucional: item.correo_institucional,
+      correo: item.correo,
+      celular: item.celular,
+      telefono: item.telefono,
+      fecha_nacimiento: new Date(item.fecha_nacimiento!).toLocaleDateString(
+        "es-ES",
+        {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }
+      ),
+      edad: item.edad,
+      pais_natal: item.pais_natal,
+      genero: item.genero,
+      sexo: item.sexo,
+      tipo_sangre: item.tipo_sangre,
+      estado_civil: item.estado_civil,
+      etnia: item.etnia,
+      idioma_raiz: item.idioma_raiz,
+      idioma_secundario: item.idioma_secundario,
+      pais_residencia: item.pais_residencia,
+      provincia_residencia: item.provincia_residencia,
+      canton_residencia: item.canton_residencia,
+      parroquia_residencia: item.parroquia_residencia,
+      calles: item.calles,
+      numero_casa: item.numero_casa,
+      sector: item.sector,
+      referencia: item.referencia,
+    }));
+    const headerItems: IHeaderItem[] = [
+      { header: "CEDULA" },
+      { header: "NOMBRES" },
+      { header: "APELLIDOS" },
+      { header: "CORREO INSTITUCIONAL" },
+      { header: "CORREO PERSONAL" },
+      { header: "CELULAR" },
+      { header: "TELEFONO" },
+      { header: "FECHA DE NACIMIENTO" },
+      { header: "EDAD" },
+      { header: "PAIS NATAL" },
+      { header: "GENERO" },
+      { header: "SEXO" },
+      { header: "TIPO DE SANGRE" },
+      { header: "ESTADO CIVIL" },
+      { header: "ETNIA" },
+      { header: "IDIOMA RAIZ" },
+      { header: "IDIOMA SECUNDARIO" },
+      { header: "PAIS DE RESIDENCIA" },
+      { header: "PROVINCIA DE RESIDENCIA" },
+      { header: "CANTON DE RESIDENCIA" },
+      { header: "PARROQUIA DE RESIDENCIA" },
+      { header: "CALLES" },
+      { header: "Nº DE CASA" },
+      { header: "SECTOR" },
+      { header: "REFERENCIA" },
+    ];
+    setExcelReportData({
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
   useEffect(() => {
     if (formik.values.cedula.length == 10) {
       apiViewService
@@ -1157,6 +1232,11 @@ const Persona = () => {
             />
           </div>
         </form>
+        <ReportBar
+          reportName={excelReportData?.reportName!}
+          headerItems={excelReportData?.headerItems!}
+          rowData={excelReportData?.rowData!}
+        />
         <table
           style={{ minWidth: "40rem" }}
           className="mt-4  w-full h-full text-3xl font-large"

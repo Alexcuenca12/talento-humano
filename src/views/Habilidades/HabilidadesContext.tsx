@@ -8,20 +8,19 @@ import { Divider } from "primereact/divider";
 import { IHabilidadesData } from "../../interfaces/Primary/IHabilidades";
 import { HabilidadesService } from "../../services/HabilidadesService";
 import swal from "sweetalert";
+import { ReportBar } from "../../shared/ReportBar";
 import {
-  PDFDownloadLink,
-  Page,
-  Text,
-  View,
-  Document,
-  StyleSheet,
-} from "@react-pdf/renderer";
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
 
 function HabilidadesContext() {
   //Session Storage
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+
+  const [excelReportData, setExcelReportData] = useState<IExcelReportParams | null>(null);
 
   const [habi1, sethabi1] = useState<IHabilidadesData[]>([]);
   const [formData, setFormData] = useState<IHabilidadesData>({
@@ -33,19 +32,31 @@ function HabilidadesContext() {
   const [editMode, setEditMode] = useState(false);
   const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
   const habilidadService = new HabilidadesService();
-  const [pdfContent, setPdfContent] = useState<React.ReactNode | null>(null);
 
   useEffect(() => {
     habilidadService
       .getAllByPersona(idPersona)
       .then((data) => {
         sethabi1(data);
+        loadExcelReportData(data);
       })
       .catch((error) => {
         console.error("Error al obtener los datos:", error);
       });
   }, []);
 
+  function loadExcelReportData(data: IHabilidadesData[]) {
+    const reportName = "Habilidades";
+    const rowData = data.map((item) => ({
+      descripcion: item.descripcion,
+    }));
+    const headerItems: IHeaderItem[] = [{ header: "DESCRIPCION" }];
+    setExcelReportData({
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -163,55 +174,6 @@ function HabilidadesContext() {
     setEditItemId(undefined);
   };
 
-  const generatePdfContent = () => {
-    return habi1.map((habilidad) => habilidad.descripcion);
-  };
-
-  const handleGeneratePDF = () => {
-    const dataToPdf = generatePdfContent();
-
-    const styles = StyleSheet.create({
-      page: {
-        flexDirection: "column",
-        backgroundColor: "#ffffff",
-        padding: 20,
-      },
-      title: {
-        fontSize: 24,
-        marginBottom: 20,
-      },
-      description: {
-        fontSize: 16,
-        marginBottom: 10,
-      },
-    });
-
-    const MyDocument = () => (
-      <Document>
-        <Page style={styles.page}>
-          <Text style={styles.title}>Habilidades</Text>
-          {dataToPdf.map((descripcion, index) => (
-            <View key={index}>
-              <Text style={styles.description}>{descripcion}</Text>
-            </View>
-          ))}
-        </Page>
-      </Document>
-    );
-
-    // Generar el blob del PDF y descargarlo
-    const pdfBlob = (
-      <PDFDownloadLink document={<MyDocument />} fileName="habilidades.pdf">
-        {({ blob, url, loading, error }) =>
-          loading ? "Generando PDF..." : "Descargar PDF"
-        }
-      </PDFDownloadLink>
-    );
-
-    // Mostrar el enlace para descargar el PDF
-    setPdfContent(pdfBlob);
-  };
-
   return (
     <Fieldset className="fgrid col-fixed">
       <Card
@@ -261,7 +223,11 @@ function HabilidadesContext() {
             </div>
           </form>
         </div>
-
+        <ReportBar
+          reportName={excelReportData?.reportName!}
+          headerItems={excelReportData?.headerItems!}
+          rowData={excelReportData?.rowData!}
+        />
         <table
           style={{ minWidth: "70rem" }}
           className="mt-5  w-full h-full text-3xl font-medium"

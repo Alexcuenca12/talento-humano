@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { InputText } from "primereact/inputtext";
 import { FileUpload, FileUploadSelectEvent } from "primereact/fileupload";
 import { Button } from "primereact/button";
-import { Calendar } from "primereact/calendar";
 import "../../styles/Contrato.css";
 import { Fieldset } from "primereact/fieldset";
 import { Card } from "primereact/card";
@@ -11,12 +10,19 @@ import { Divider } from "primereact/divider";
 import { InstruccionFormalData } from "../../interfaces/Primary/IInstrucc_Formal";
 import { Instruc_FormalService } from "../../services/Instru_FormalService";
 import swal from "sweetalert";
+import { ReportBar } from "../../shared/ReportBar";
+import {
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
 
 function InstruccionFormalContext() {
   //Session Storage
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+
+  const [excelReportData, setExcelReportData] = useState<IExcelReportParams | null>(null);
 
   const [formal1, setinstruc1] = useState<InstruccionFormalData[]>([]);
   const [formData, setFormData] = useState<InstruccionFormalData>({
@@ -43,6 +49,7 @@ function InstruccionFormalContext() {
       .getAllByPersona(idPersona)
       .then((data) => {
         setinstruc1(data);
+        loadExcelReportData(data);
         setDataLoaded(true); // Marcar los datos como cargados
       })
       .catch((error) => {
@@ -53,6 +60,31 @@ function InstruccionFormalContext() {
     loadData();
   }, []);
 
+  function loadExcelReportData(data: InstruccionFormalData[]) {
+    const reportName = "Instruccion Formal";
+    const rowData = data.map((item) => ({
+      nivelInstruccion: item.nivelInstruccion,
+      institucionEducativa: item.institucionEducativa,
+      tituloObtenido: item.tituloObtenido,
+      anioGraduacion: item.anioGraduacion,
+      tiempoEstudio: item.tiempoEstudio,
+      areaEstudios: item.areaEstudios,
+    }));
+    const headerItems: IHeaderItem[] = [
+      { header: "NIVEL DE INSTRUCCION" },
+      { header: "INSTITUCION EDUCATIVA" },
+      { header: "TITULO OBTENIDO" },
+      { header: "AÑO DE GRADUACIÓN" },
+      { header: "TIEMPO DE ESTUDIO" },
+      { header: "AREA DE ESTUDIOS" },
+    ];
+    setExcelReportData({
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
+  
   const customBytesUploader = (event: FileUploadSelectEvent) => {
     if (event.files && event.files.length > 0) {
       const file = event.files[0];
@@ -133,7 +165,7 @@ function InstruccionFormalContext() {
         swal("Publicacion", "Datos Guardados Correctamente", "success");
 
         instrucFormalService
-        .getAllByPersona(idPersona)
+          .getAllByPersona(idPersona)
           .then((data) => {
             setinstruc1(data);
             resetForm();
@@ -225,7 +257,7 @@ function InstruccionFormalContext() {
             anioGraduacion: 0,
             areaEstudios: "",
             titulo: "",
-            persona: null
+            persona: null,
           });
           setinstruc1(
             formal1.map((instruc) =>
@@ -251,7 +283,7 @@ function InstruccionFormalContext() {
       anioGraduacion: 0,
       areaEstudios: "",
       titulo: "",
-      persona: null
+      persona: null,
     });
     setEditMode(false);
     setEditItemId(undefined);
@@ -540,6 +572,11 @@ function InstruccionFormalContext() {
             </div>
           </form>
         </div>
+        <ReportBar
+          reportName={excelReportData?.reportName!}
+          headerItems={excelReportData?.headerItems!}
+          rowData={excelReportData?.rowData!}
+        />
         <table
           style={{ minWidth: "40rem" }}
           className="mt-4  w-full h-full text-3xl font-large"

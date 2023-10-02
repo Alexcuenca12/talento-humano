@@ -13,12 +13,19 @@ import { EvaluacionService } from "../../services/EvaluacionService";
 import { VcarreraService } from "../../services/VCarreraService";
 import { VPeridosService } from "../../services/VPeridosService";
 import swal from "sweetalert";
+import { ReportBar } from "../../shared/ReportBar";
+import {
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
 
 function PublicacionesContext() {
   //Session Storage
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+
+  const [excelReportData, setExcelReportData] = useState<IExcelReportParams | null>(null);
 
   const [eva1, seteva1] = useState<IEvaDocente[]>([]);
   const [formData, setFormData] = useState<IEvaDocente>({
@@ -83,6 +90,7 @@ function PublicacionesContext() {
       .then((data) => {
         seteva1(data);
         setDataLoaded(true); // Marcar los datos como cargados
+        loadExcelReportData(data);
       })
       .catch((error) => {
         console.error("Error al obtener los datos:", error);
@@ -91,6 +99,22 @@ function PublicacionesContext() {
   useEffect(() => {
     loadData();
   }, []);
+  function loadExcelReportData(data: IEvaDocente[]) {
+    const reportName = "Evaluacion Docente";
+    const rowData = data.map((item) => ({
+      cod_carrera: item.cod_carrera,
+      per_nombre: item.per_nombre,
+    }));
+    const headerItems: IHeaderItem[] = [
+      { header: "CODIGO DE CARRERA" },
+      { header: "PERIODO" },
+    ];
+    setExcelReportData({
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
 
   const customBytesUploader = (event: FileUploadSelectEvent) => {
     if (event.files && event.files.length > 0) {
@@ -406,6 +430,11 @@ function PublicacionesContext() {
             </div>
           </form>
         </div>
+        <ReportBar
+          reportName={excelReportData?.reportName!}
+          headerItems={excelReportData?.headerItems!}
+          rowData={excelReportData?.rowData!}
+        />
         <table
           style={{ minWidth: "40rem" }}
           className="mt-4  w-full h-full text-3xl font-large"

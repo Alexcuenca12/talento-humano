@@ -2,7 +2,6 @@ import React, { useEffect, useState, useRef } from "react";
 import { InputText } from "primereact/inputtext";
 import { FileUpload, FileUploadSelectEvent } from "primereact/fileupload";
 import { Button } from "primereact/button";
-import { Calendar } from "primereact/calendar";
 import "../../styles/Contrato.css";
 import { Fieldset } from "primereact/fieldset";
 import { Dropdown } from "primereact/dropdown";
@@ -16,6 +15,11 @@ import { VPeriodos } from "../../interfaces/Secondary/VPeriodos";
 import { VcarreraService } from "../../services/VCarreraService";
 import { VPeridosService } from "../../services/VPeridosService";
 import swal from "sweetalert";
+import { ReportBar } from "../../shared/ReportBar";
+import {
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
 
 function HorarioContext() {
   //Session Storage
@@ -24,6 +28,8 @@ function HorarioContext() {
   const idPersona = userObj.id;
 
   const [horario1, sethorario1] = useState<IHorarioData[]>([]);
+  const [excelReportData, setExcelReportData] =
+    useState<IExcelReportParams | null>(null);
 
   const carreraService = new VcarreraService();
   const periodoService = new VPeridosService();
@@ -76,7 +82,6 @@ function HorarioContext() {
       id_persona: idPersona,
     },
   });
-  
 
   const tipoJornadaOptions = [
     { label: "Seleccione Una", value: "N/A" },
@@ -99,6 +104,7 @@ function HorarioContext() {
       .then((data) => {
         sethorario1(data);
         setDataLoaded(true); // Marcar los datos como cargados
+        loadExcelReportData(data);
       })
       .catch((error) => {
         console.error("Error al obtener los datos:", error);
@@ -107,7 +113,26 @@ function HorarioContext() {
   useEffect(() => {
     loadData();
   }, []);
-
+  function loadExcelReportData(data: IHorarioData[]) {
+    const reportName = "DISTRIBUTIVO";
+    const rowData = data.map((item) => ({
+      periodoAcademico: item.periodoAcademico,
+      jornadaHorario: item.jornadaHorario,
+      horasSemanalesHorario: item.horasSemanalesHorario,
+      carreraHorario: item.carreraHorario,
+    }));
+    const headerItems: IHeaderItem[] = [
+      { header: "PERIODO ACADEMICO" },
+      { header: "JORNADA" },
+      { header: "TOTAL HORAS" },
+      { header: "CARRERA" },
+    ];
+    setExcelReportData({
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
   const customBytesUploader = (event: FileUploadSelectEvent) => {
     if (event.files && event.files.length > 0) {
       const file = event.files[0];
@@ -223,7 +248,9 @@ function HorarioContext() {
           horarioService
             .delete(id)
             .then(() => {
-              sethorario1(horario1.filter((contra) => contra.id_horario !== id));
+              sethorario1(
+                horario1.filter((contra) => contra.id_horario !== id)
+              );
               swal(
                 "Eliminado",
                 "El registro ha sido eliminado correctamente",
@@ -387,7 +414,7 @@ function HorarioContext() {
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
-                      Horas de Clases  Semanales:
+                      Horas de Clases Semanales:
                     </label>
                     <InputText
                       className="text-2xl"
@@ -460,7 +487,7 @@ function HorarioContext() {
                     className="text-3xl font-medium w-auto min-w-min"
                     style={{
                       marginRight: "20px",
-                      marginLeft: "329px",
+                      marginLeft: "370px",
                       marginTop: "-190px",
                     }}
                   >
@@ -468,7 +495,7 @@ function HorarioContext() {
                   </label>
                   <FileUpload
                     name="pdf"
-                    style={{ marginLeft: "500px", marginTop: "10px" }}
+                    style={{ marginLeft: "550px", marginTop: "10px" }}
                     chooseLabel="Escoger"
                     uploadLabel="Cargar"
                     cancelLabel="Cancelar"
@@ -486,6 +513,11 @@ function HorarioContext() {
             </div>
           </form>
         </div>
+        <ReportBar
+          reportName={excelReportData?.reportName!}
+          headerItems={excelReportData?.headerItems!}
+          rowData={excelReportData?.rowData!}
+        />
         <table
           style={{ minWidth: "40rem" }}
           className="mt-4  w-full h-full text-3xl font-large"

@@ -12,11 +12,19 @@ import { IContratoData } from "../../interfaces/Primary/IContrato";
 import { ContratoService } from "../../services/ContratoService";
 import swal from "sweetalert";
 import { Dropdown } from "primereact/dropdown";
+import { ReportBar } from "../../shared/ReportBar";
+import {
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
 
 function ContratoContext() {
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+
+  const [excelReportData, setExcelReportData] =
+    useState<IExcelReportParams | null>(null);
 
   const [contra1, setcontra1] = useState<IContratoData[]>([]);
   const [formData, setFormData] = useState<IContratoData>({
@@ -31,7 +39,7 @@ function ContratoContext() {
     tiempo_dedicacion: "",
     salario_publico: "",
     contrato_vigente: false,
-   persona: { id_persona: idPersona },
+    persona: { id_persona: idPersona },
   });
 
   const fileUploadRef = useRef<FileUpload>(null);
@@ -69,6 +77,7 @@ function ContratoContext() {
       .getAllByPersona(idPersona)
       .then((data) => {
         setcontra1(data);
+        loadExcelReportData(data);
       })
       .catch((error) => {
         console.error("Error al obtener los datos:", error);
@@ -134,6 +143,39 @@ function ContratoContext() {
       console.error("Error al decodificar la cadena base64:", error);
     }
   };
+
+  function loadExcelReportData(data: IContratoData[]) {
+    const reportName = "Contrato";
+    const rowData = data.map((item) => ({
+      cargo: item.cargo,
+      salario: item.salario,
+      salario_publico: item.salario_publico,
+      tiempo_dedicacion: item.tiempo_dedicacion,
+      fecha_inicio: new Date(item.fecha_inicio!).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      fecha_fin: new Date(item.fecha_fin!).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+    }));
+    const headerItems: IHeaderItem[] = [
+      { header: "CARGO" },
+      { header: "SALARIO" },
+      { header: "SALARIO PUBLICO" },
+      { header: "TIEMPO DE DEDICACIÓN" },
+      { header: "FECHA DE INICIO" },
+      { header: "FECHA DE FIN" },
+    ];
+    setExcelReportData({
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -359,14 +401,20 @@ function ContratoContext() {
           </Divider>
         </div>
 
-        <div className="flex justify-content-center flex-wrap">
+        <div
+          className="flex justify-content-center flex-wrap"
+          style={{ marginLeft: "55px" }}
+        >
           <form
             onSubmit={editMode ? handleUpdate : handleSubmit}
             encType="multipart/form-data"
           >
             <div className="flex flex-wrap flex-row">
               <div className="flex align-items-center justify-content-center">
-                <div className="flex flex-column flex-wrap gap-4">
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginLeft: "20px" }}
+                >
                   <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
                       htmlFor="inicio"
@@ -454,6 +502,11 @@ function ContratoContext() {
                       value={formData.anio_duracion}
                     />
                   </div>
+                </div>
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginLeft: "20px" }}
+                >
                   <div className="flex flex-wrap w-full h-full  justify-content-between  ">
                     <label
                       htmlFor="horas"
@@ -514,10 +567,16 @@ function ContratoContext() {
                       value={formData.salario}
                     />
                   </div>
+                </div>
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginLeft: "20px" }}
+                >
                   <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
                       htmlFor="tiempo_dedicacion"
                       className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "5px" }}
                     >
                       Tiempo Dedicación:
                     </label>
@@ -525,6 +584,7 @@ function ContratoContext() {
                       className="text-2xl"
                       id="tiempo_dedicacion"
                       name="tiempo_dedicacion"
+                      style={{ width: "200px" }} // Ajusta el ancho del Dropdown
                       options={tiempoDedicacionOptions}
                       onChange={(e) =>
                         setFormData({ ...formData, tiempo_dedicacion: e.value })
@@ -553,6 +613,7 @@ function ContratoContext() {
                       value={formData.salario_publico}
                       optionLabel="label"
                       optionValue="value"
+                      style={{ width: "200px" }} // Ajusta el ancho del Dropdown
                       placeholder="Seleccionar....."
                     />
                   </div>
@@ -573,48 +634,54 @@ function ContratoContext() {
                       <span className="slider"></span>
                     </label>
                   </div>
-
-                  <div className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
-                    <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                      <Button
-                        type="submit"
-                        label={editMode ? "Actualizar" : "Guardar"}
-                        className="w-full text-3xl min-w-min "
-                        rounded
-                        onClick={editMode ? handleUpdate : handleSubmit}
-                      />
-                    </div>
-                    <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                      <Button
-                        type="button"
-                        label="Cancelar"
-                        className="w-full text-3xl min-w-min"
-                        rounded
-                        onClick={resetForm}
-                      />
-                    </div>
-                  </div>
                 </div>
               </div>
-              <div className="flex flex-column align-items-center justify-content-center ml-4">
-                <FileUpload
-                  name="pdf"
-                  chooseLabel="Escoger"
-                  uploadLabel="Cargar"
-                  cancelLabel="Cancelar"
-                  emptyTemplate={
-                    <p className="m-0 p-button-rounded">
-                      Arrastre y suelte los archivos aquí para cargarlos.
-                    </p>
-                  }
-                  customUpload
-                  onSelect={customBytesUploader}
-                  accept="application/pdf"
-                />
+              <div className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="submit"
+                    label={editMode ? "Actualizar" : "Guardar"}
+                    className="w-full text-3xl min-w-min "
+                    rounded
+                    onClick={editMode ? handleUpdate : handleSubmit}
+                  />
+                </div>
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="button"
+                    label="Cancelar"
+                    className="w-full text-3xl min-w-min"
+                    rounded
+                    onClick={resetForm}
+                  />
+                </div>
+              </div>
+              <div style={{ marginLeft: "1010px", marginTop: "-300px" }}>
+                <div className="flex flex-column align-items-center justify-content-center ml-4">
+                  <FileUpload
+                    name="pdf"
+                    chooseLabel="Escoger"
+                    uploadLabel="Cargar"
+                    cancelLabel="Cancelar"
+                    emptyTemplate={
+                      <p className="m-0 p-button-rounded">
+                        Arrastre y suelte los archivos aquí para cargarlos.
+                      </p>
+                    }
+                    customUpload
+                    onSelect={customBytesUploader}
+                    accept="application/pdf"
+                  />
+                </div>
               </div>
             </div>
           </form>
         </div>
+        <ReportBar
+          reportName={excelReportData?.reportName!}
+          headerItems={excelReportData?.headerItems!}
+          rowData={excelReportData?.rowData!}
+        />
         <table
           style={{ minWidth: "50rem" }}
           className="mt-5  w-full h-full text-3xl font-medium"

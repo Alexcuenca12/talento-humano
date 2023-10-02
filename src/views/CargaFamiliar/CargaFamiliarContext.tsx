@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, ChangeEvent } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { InputText } from "primereact/inputtext";
 import { FileUpload, FileUploadSelectEvent } from "primereact/fileupload";
 import { Button } from "primereact/button";
@@ -11,12 +11,20 @@ import { Divider } from "primereact/divider";
 import { ICargaFamiliar } from "../../interfaces/Primary/ICargaFamiliar";
 import { CargaFamiliarService } from "../../services/CargaFamiliarService";
 import swal from "sweetalert";
+import { ReportBar } from "../../shared/ReportBar";
+import {
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
 
 function CargaFamiliarContext() {
   //Session Storage
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+
+  const [excelReportData, setExcelReportData] =
+    useState<IExcelReportParams | null>(null);
 
   const [contra1, setcontra1] = useState<ICargaFamiliar[]>([]);
   const [formData, setFormData] = useState<ICargaFamiliar>({
@@ -29,10 +37,6 @@ function CargaFamiliarContext() {
     persona: { id_persona: idPersona },
   });
 
-
-  //Datos normales
-
-
   const fileUploadRef = useRef<FileUpload>(null);
   const [dataLoaded, setDataLoaded] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -44,6 +48,7 @@ function CargaFamiliarContext() {
       .getAllByPersona(idPersona)
       .then((data) => {
         setcontra1(data);
+        loadExcelReportData(data);
         setDataLoaded(true); // Marcar los datos como cargados
       })
       .catch((error) => {
@@ -54,6 +59,33 @@ function CargaFamiliarContext() {
     loadData();
   }, []);
 
+  function loadExcelReportData(data: ICargaFamiliar[]) {
+    const reportName = "Carga Familiar";
+    const rowData = data.map((item) => ({
+      cedula: item.cedula,
+      nombre_pariente: item.nombre_pariente,
+      apellido_pariente: item.apellido_pariente,
+      fecha_nacimiento: new Date(item.fecha_nacimiento!).toLocaleDateString(
+        "es-ES",
+        {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }
+      ),
+    }));
+    const headerItems: IHeaderItem[] = [
+      { header: "CEDULA DE IDENTIDAD" },
+      { header: "NOMBRES" },
+      { header: "APELLIDOS" },
+      { header: "FECHA DE NACIMIENTO" },
+    ];
+    setExcelReportData({
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
   const customBytesUploader = (event: FileUploadSelectEvent) => {
     if (event.files && event.files.length > 0) {
       const file = event.files[0];
@@ -255,11 +287,7 @@ function CargaFamiliarContext() {
     return <div>Cargando datos...</div>;
   }
 
-
-
-
   return (
-
     <Fieldset className="fgrid col-fixed ">
       <Card
         header={cardHeader}
@@ -452,6 +480,11 @@ function CargaFamiliarContext() {
             </div>
           </form>
         </div>
+        <ReportBar
+          reportName={excelReportData?.reportName!}
+          headerItems={excelReportData?.headerItems!}
+          rowData={excelReportData?.rowData!}
+        />
         <table
           style={{ minWidth: "40rem" }}
           className="mt-4  w-full h-full text-3xl font-large"
@@ -546,12 +579,7 @@ function CargaFamiliarContext() {
             ))}
           </tbody>
         </table>
-
-
-
       </Card>
-
-
     </Fieldset>
   );
 }

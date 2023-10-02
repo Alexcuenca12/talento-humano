@@ -11,12 +11,20 @@ import { Divider } from "primereact/divider";
 import { IPublicaciones } from "../../interfaces/Primary/IPublicaciones";
 import { PublicacionesService } from "../../services/PublicacionesService";
 import swal from "sweetalert";
+import { ReportBar } from "../../shared/ReportBar";
+import {
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
 
 function PublicacionesContext() {
-    //Session Storage
-    const userData = sessionStorage.getItem("user");
-    const userObj = JSON.parse(userData || "{}");
-    const idPersona = userObj.id;
+  //Session Storage
+  const userData = sessionStorage.getItem("user");
+  const userObj = JSON.parse(userData || "{}");
+  const idPersona = userObj.id;
+
+  const [excelReportData, setExcelReportData] =
+    useState<IExcelReportParams | null>(null);
 
   const [contra1, setcontra1] = useState<IPublicaciones[]>([]);
   const [formData, setFormData] = useState<IPublicaciones>({
@@ -32,7 +40,7 @@ function PublicacionesContext() {
     issn_publi: "",
     doi_publi: "",
     publicacion: "",
-    persona:{id_persona:idPersona},
+    persona: { id_persona: idPersona },
   });
 
   const fileUploadRef = useRef<FileUpload>(null);
@@ -46,6 +54,7 @@ function PublicacionesContext() {
       .getAllByPersona(idPersona)
       .then((data) => {
         setcontra1(data);
+        loadExcelReportData(data);
         setDataLoaded(true); // Marcar los datos como cargados
       })
       .catch((error) => {
@@ -55,6 +64,47 @@ function PublicacionesContext() {
   useEffect(() => {
     loadData();
   }, []);
+
+  function loadExcelReportData(data: IPublicaciones[]) {
+    const reportName = "Publicaciones";
+    const rowData = data.map((item) => ({
+      titulo_publi: item.titulo_publi,
+      autores_publi: item.autores_publi,
+      filiacion_publi: item.filiacion_publi,
+      lugar_publi: item.lugar_publi,
+      fecha_publi: new Date(item.fecha_publi!).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      fecha_evento: new Date(item.fecha_evento!).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      editorial_publi: item.editorial_publi,
+      isbn_publi: item.isbn_publi,
+      issn_publi: item.issn_publi,
+      doi_publi: item.doi_publi,
+    }));
+    const headerItems: IHeaderItem[] = [
+      { header: "TITULO" },
+      { header: "AUTORES" },
+      { header: "FILIACION DE PUBLICACION" },
+      { header: "LUGAR DE PUBLICACION" },
+      { header: "FECHA DE PUBLICACION" },
+      { header: "FECHA DE EVENTO" },
+      { header: "EDITORIAL" },
+      { header: "ISBN" },
+      { header: "ISSN" },
+      { header: "DOI" },
+    ];
+    setExcelReportData({
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
 
   const customBytesUploader = (event: FileUploadSelectEvent) => {
     if (event.files && event.files.length > 0) {
@@ -130,7 +180,7 @@ function PublicacionesContext() {
         swal("Publicacion", "Datos Guardados Correctamente", "success");
 
         publiService
-        .getAllByPersona(idPersona)
+          .getAllByPersona(idPersona)
           .then((data) => {
             setcontra1(data);
             resetForm();
@@ -224,7 +274,7 @@ function PublicacionesContext() {
             issn_publi: "",
             doi_publi: "",
             publicacion: "",
-            persona: null
+            persona: null,
           });
           setcontra1(
             contra1.map((contra) =>
@@ -253,7 +303,7 @@ function PublicacionesContext() {
       issn_publi: "",
       doi_publi: "",
       publicacion: "",
-      persona: null
+      persona: null,
     });
     setEditMode(false);
     setEditItemId(undefined);
@@ -607,6 +657,11 @@ function PublicacionesContext() {
             </div>
           </form>
         </div>
+        <ReportBar
+          reportName={excelReportData?.reportName!}
+          headerItems={excelReportData?.headerItems!}
+          rowData={excelReportData?.rowData!}
+        />
         <table
           style={{ minWidth: "40rem" }}
           className="mt-4  w-full h-full text-3xl font-large"
