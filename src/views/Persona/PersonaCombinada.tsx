@@ -53,11 +53,13 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
     fehcafExperiencia: string | null;
     actividadExperiencia: string;
   };
+
   type RecomendacionesData = {
     primer_nombre: string;
     primer_apellido: string;
     correo: string;
   };
+
   type CapacitacionData = {
     area_estudioCapacitacion: string;
     intitucionCapacitacion: string;
@@ -75,11 +77,6 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
       .getById(personaId)
 
       .then((data) => {
-        console.log("Data fetched from API:", data);
-        console.log(
-          "datos de personacombianda",
-          personaService.getById(personaId)
-        );
         setpers1(data);
       })
       .catch((error) => {
@@ -113,7 +110,9 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
           areaExperiencia: experiencia.area_trabajo,
           instiExperiencia: experiencia.institucion,
           fechaiExperiencia: formatDate(new Date(experiencia.fecha_inicio)),
-          fehcafExperiencia: experiencia.fecha_fin ? formatDate(new Date(experiencia.fecha_fin)) : null,
+          fehcafExperiencia: experiencia.fecha_fin
+            ? formatDate(new Date(experiencia.fecha_fin))
+            : null,
           actividadExperiencia: experiencia.actividades,
         }))
       : [];
@@ -136,8 +135,6 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
           .map((instruccion) => instruccion.institucionEducativa)
           .join("\n")
       : "";
-
-    console.log("Instrucción Formal - Datos:", pers1.instruccion);
 
     return {
       cedula: data.persona.cedula,
@@ -166,9 +163,6 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
 
   const handleGeneratePDF = () => {
     const pdfData = generatePdfContent();
-
-    console.log(pdfData);
-
     const styles = StyleSheet.create({
       page: {
         padding: 20,
@@ -288,12 +282,15 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
             <View style={{ marginTop: 20 }}></View>
             <View style={styles.tableRow}>
               <View style={styles.leftColumn}>
-                <Text style={styles.sectionContent}> Número de Contacto: 
+                <Text style={styles.sectionContent}>
+                  {" "}
+                  Número de Contacto:
                   {data.celular} , {data.telefono}
                 </Text>
                 <Text style={styles.sectionContent}>Correo: {data.correo}</Text>
                 <Text style={styles.sectionContent}>
-                 Dirección:  {data.parroquia} , {data.sector} , {data.paisnacimiento}
+                  Dirección: {data.parroquia} , {data.sector} ,{" "}
+                  {data.paisnacimiento}
                 </Text>
               </View>
               <View style={styles.rightColumn}>
@@ -311,11 +308,11 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
             {data.experiencia.map((experiencia, index) => (
               <View key={index} style={styles.sectionContent}>
                 <Text style={styles.sectionSubTitle}>
-                 Area: {experiencia.areaExperiencia}
+                  Area: {experiencia.areaExperiencia}
                 </Text>
                 <Text>Institución: {experiencia.instiExperiencia}</Text>
                 <Text>
-                  Fecha de Inicio/Fin: {experiencia.fechaiExperiencia}  - 
+                  Fecha de Inicio/Fin: {experiencia.fechaiExperiencia} -
                   {experiencia.fehcafExperiencia}
                 </Text>
                 <Text>Actividad: {experiencia.actividadExperiencia}</Text>
@@ -391,7 +388,6 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
         </Page>
       </Document>
     );
-
     // Generar el blob del PDF y descargarlo
     const pdfBlob = (
       <PDFDownloadLink
@@ -413,7 +409,7 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
       <Button
         type="button"
         className="w-30 text-3xl min-w-min"
-        label="Generar HOJA DE VIDA"
+        label="HOJA DE VIDA"
         style={{
           background: "#ff0000",
           borderRadius: "20%",

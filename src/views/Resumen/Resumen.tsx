@@ -15,6 +15,7 @@ import { IHorarioData } from "../../interfaces/Primary/IHorario";
 import { IRecomendaciones } from "../../interfaces/Primary/Recomendaciones";
 import { IExperiencia } from "../../interfaces/Primary/IExperiencia";
 import { InstruccionFormalData } from "../../interfaces/Primary/IInstrucc_Formal";
+import PersonaCombinada from "../Persona/PersonaCombinada";
 
 const Resumen = () => {
   const userData = sessionStorage.getItem("user");
@@ -662,6 +663,7 @@ const Resumen = () => {
                       }}
                     ></Column>
                   </DataTable>
+                  <PersonaCombinada personaId={userId} />
                 </div>
               </div>
             </div>

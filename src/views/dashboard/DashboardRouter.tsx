@@ -152,7 +152,7 @@ export const DashboardRouter = () => {
                 {rol === 1 ? (
                   <>
                     <NavBar />
-                    <CargaFamiliarContext/>
+                    <CargaFamiliarContext />
                   </>
                 ) : rol === 2 ? (
                   <>
@@ -255,13 +255,11 @@ export const DashboardRouter = () => {
                   <>
                     <NavBar />
                     <Resumen />
-                    <PersonaCombinada personaId={userId} />
                   </>
                 ) : rol === 2 ? (
                   <>
                     <NavBarDoc />
                     <Resumen />
-                    <PersonaCombinada personaId={userId} />
                   </>
                 ) : (
                   <NavBarUserDisabled />
