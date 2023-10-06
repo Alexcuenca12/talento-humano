@@ -14,6 +14,11 @@ import { IPersona } from "../../interfaces/Primary/IPersona";
 import { PersonaService } from "../../services/PersonaService";
 import swal from "sweetalert";
 import { useParams } from "react-router-dom";
+import { ReportBar } from "../../shared/ReportBar";
+import {
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
 
 interface Params {
   codigoPersona: string;
@@ -23,7 +28,8 @@ function PersonaContextDes() {
   const [items, setItems] = useState<IPersona[]>([]);
   const { codigoPersona } = useParams<Params>();
   const codigoPersonaNumber = Number(codigoPersona);
-  const [imageUrl, setImageUrl] = useState<string | undefined>("");
+  const [excelReportData, setExcelReportData] =
+    useState<IExcelReportParams | null>(null);
 
   const [formDisabled, setFormDisabled] = useState(false);
 
@@ -63,7 +69,7 @@ function PersonaContextDes() {
     etnia: "",
     idioma_raiz: "",
     idioma_secundario: "",
-    foto: null,
+    foto: "",
     cv_socioempleo: null,
     mecanizado_iess: null,
     descripcion_perfil: "",
@@ -95,7 +101,7 @@ function PersonaContextDes() {
         if (data.length > 0) {
           const contratoData = data[0];
           setFormDisabled(true);
-          // Actualiza el estado local aquí
+          loadExcelReportData(data);
           setFormData({
             ...formData,
             cedula: contratoData.cedula,
@@ -158,10 +164,10 @@ function PersonaContextDes() {
 
       const link = document.createElement("a");
       link.href = fileUrl;
-      link.download = "archivoCon.pdf";
+      link.download = "CurriculumVitae.pdf";
       link.click();
       swal({
-        title: "Ficha Personal",
+        title: "Curriculum Vitae",
         text: "Descargando pdf....",
         icon: "success",
         timer: 1000,
@@ -171,6 +177,107 @@ function PersonaContextDes() {
       console.error("Error al decodificar la cadena base64:", error);
     }
   };
+
+  const decodeBase64Mecanizado = (base64Data: string) => {
+    try {
+      // Eliminar encabezados o metadatos de la cadena base64
+      const base64WithoutHeader = base64Data.replace(/^data:.*,/, "");
+
+      const decodedData = atob(base64WithoutHeader); // Decodificar la cadena base64
+      const byteCharacters = new Uint8Array(decodedData.length);
+
+      for (let i = 0; i < decodedData.length; i++) {
+        byteCharacters[i] = decodedData.charCodeAt(i);
+      }
+
+      const byteArray = new Blob([byteCharacters], { type: "application/pdf" });
+      const fileUrl = URL.createObjectURL(byteArray);
+
+      const link = document.createElement("a");
+      link.href = fileUrl;
+      link.download = "MecanizadoIESS.pdf";
+      link.click();
+      swal({
+        title: "Mecanizado IESS",
+        text: "Descargando pdf....",
+        icon: "success",
+        timer: 1000,
+      });
+      link.remove();
+    } catch (error) {
+      console.error("Error al decodificar la cadena base64:", error);
+    }
+  };
+
+  function loadExcelReportData(data: IPersona[]) {
+    const reportName = "Persona";
+    const rowData = data.map((item) => ({
+      cedula: item.cedula,
+      nombres: item.primer_nombre + " " + item.segundo_nombre,
+      apellidos: item.apellido_paterno + " " + item.apellido_materno,
+      correo_institucional: item.correo_institucional,
+      correo: item.correo,
+      celular: item.celular,
+      telefono: item.telefono,
+      fecha_nacimiento: new Date(item.fecha_nacimiento!).toLocaleDateString(
+        "es-ES",
+        {
+          year: "numeric",
+          month: "2-digit",
+          day: "2-digit",
+        }
+      ),
+      edad: item.edad,
+      pais_natal: item.pais_natal,
+      genero: item.genero,
+      sexo: item.sexo,
+      tipo_sangre: item.tipo_sangre,
+      estado_civil: item.estado_civil,
+      etnia: item.etnia,
+      idioma_raiz: item.idioma_raiz,
+      idioma_secundario: item.idioma_secundario,
+      pais_residencia: item.pais_residencia,
+      provincia_residencia: item.provincia_residencia,
+      canton_residencia: item.canton_residencia,
+      parroquia_residencia: item.parroquia_residencia,
+      calles: item.calles,
+      numero_casa: item.numero_casa,
+      sector: item.sector,
+      referencia: item.referencia,
+    }));
+    const headerItems: IHeaderItem[] = [
+      { header: "CEDULA" },
+      { header: "NOMBRES" },
+      { header: "APELLIDOS" },
+      { header: "CORREO INSTITUCIONAL" },
+      { header: "CORREO PERSONAL" },
+      { header: "CELULAR" },
+      { header: "TELEFONO" },
+      { header: "FECHA DE NACIMIENTO" },
+      { header: "EDAD" },
+      { header: "PAIS NATAL" },
+      { header: "GENERO" },
+      { header: "SEXO" },
+      { header: "TIPO DE SANGRE" },
+      { header: "ESTADO CIVIL" },
+      { header: "ETNIA" },
+      { header: "IDIOMA RAIZ" },
+      { header: "IDIOMA SECUNDARIO" },
+      { header: "PAIS DE RESIDENCIA" },
+      { header: "PROVINCIA DE RESIDENCIA" },
+      { header: "CANTON DE RESIDENCIA" },
+      { header: "PARROQUIA DE RESIDENCIA" },
+      { header: "CALLES" },
+      { header: "Nº DE CASA" },
+      { header: "SECTOR" },
+      { header: "REFERENCIA" },
+    ];
+    setExcelReportData({
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
 
   return (
     <Fieldset className="fgrid col-fixed ">
@@ -628,6 +735,11 @@ function PersonaContextDes() {
             <label className="font-medium"></label>
           </div>
         </form>
+        <ReportBar
+          reportName={excelReportData?.reportName!}
+          headerItems={excelReportData?.headerItems!}
+          rowData={excelReportData?.rowData!}
+        />
         <table
           style={{ minWidth: "40rem" }}
           className="mt-4  w-full h-full text-3xl font-large"
@@ -641,7 +753,8 @@ function PersonaContextDes() {
               <th>Celular</th>
               <th>Correo</th>
               <th>Discapacidad</th>
-              <th>Evidencia</th>
+              <th>Curriculum Vitae</th>
+              <th>Mecanizado IESS</th>
             </tr>
           </thead>
           <tbody>
@@ -668,6 +781,27 @@ function PersonaContextDes() {
                         justifyContent: "center",
                       }}
                       onClick={() => decodeBase64(per.cv_socioempleo!)}
+                    />
+                  ) : (
+                    <span>Sin evidencia</span>
+                  )}
+                </td>
+                <td>
+                  {per.mecanizado_iess ? (
+                    <Button
+                      type="button"
+                      className=""
+                      label="Descargar PDF"
+                      style={{
+                        background: "#009688",
+                        borderRadius: "10%",
+                        fontSize: "12px",
+                        color: "black",
+                        justifyContent: "center",
+                      }}
+                      onClick={() =>
+                        decodeBase64Mecanizado(per.mecanizado_iess!)
+                      }
                     />
                   ) : (
                     <span>Sin evidencia</span>

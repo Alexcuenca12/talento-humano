@@ -10,6 +10,11 @@ import { IPublicaciones } from "../../interfaces/Primary/IPublicaciones";
 import { PublicacionesService } from "../../services/PublicacionesService";
 import swal from "sweetalert";
 import { useParams } from "react-router-dom";
+import { ReportBar } from "../../shared/ReportBar";
+import {
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
 
 interface Params {
   codigoPublicacion: string;
@@ -19,6 +24,9 @@ function PublicacionesContextDes() {
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+
+  const [excelReportData, setExcelReportData] =
+  useState<IExcelReportParams | null>(null);
 
   const [publi1, setPubli1] = useState<IPublicaciones[]>([]);
   const { codigoPublicacion } = useParams<Params>();
@@ -50,6 +58,7 @@ function PublicacionesContextDes() {
       .then((data) => {
         if (data.length > 0) {
           const publicacionData = data[0];
+          loadExcelReportData(data);
           setFormDisabled(true);
           // Actualiza el estado local aquí
           setFormData({
@@ -73,6 +82,46 @@ function PublicacionesContextDes() {
       });
   }, []);
 
+  function loadExcelReportData(data: IPublicaciones[]) {
+    const reportName = "Publicaciones";
+    const rowData = data.map((item) => ({
+      titulo_publi: item.titulo_publi,
+      autores_publi: item.autores_publi,
+      filiacion_publi: item.filiacion_publi,
+      lugar_publi: item.lugar_publi,
+      fecha_publi: new Date(item.fecha_publi!).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      fecha_evento: new Date(item.fecha_evento!).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      editorial_publi: item.editorial_publi,
+      isbn_publi: item.isbn_publi,
+      issn_publi: item.issn_publi,
+      doi_publi: item.doi_publi,
+    }));
+    const headerItems: IHeaderItem[] = [
+      { header: "TITULO" },
+      { header: "AUTORES" },
+      { header: "FILIACION DE PUBLICACION" },
+      { header: "LUGAR DE PUBLICACION" },
+      { header: "FECHA DE PUBLICACION" },
+      { header: "FECHA DE EVENTO" },
+      { header: "EDITORIAL" },
+      { header: "ISBN" },
+      { header: "ISSN" },
+      { header: "DOI" },
+    ];
+    setExcelReportData({
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
 
   const decodeBase64 = (base64Data: string) => {
     try {
@@ -403,6 +452,11 @@ function PublicacionesContextDes() {
             </div>
           </form>
         </div>
+        <ReportBar
+          reportName={excelReportData?.reportName!}
+          headerItems={excelReportData?.headerItems!}
+          rowData={excelReportData?.rowData!}
+        />
         <table
           style={{ minWidth: "40rem" }}
           className="mt-4  w-full h-full text-3xl font-large"

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, } from "react";
+import React, { useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
 import { Dropdown } from "primereact/dropdown";
 import { Button } from "primereact/button";
@@ -11,6 +11,11 @@ import { ICapacitaciones } from "../../interfaces/Primary/ICapacitaciones";
 import { CapacitacionesService } from "../../services/CapacitacionesService";
 import swal from "sweetalert";
 import { useParams } from "react-router-dom";
+import {
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
+import { ReportBar } from "../../shared/ReportBar";
 
 interface Params {
   codigoCapacitacion: string;
@@ -20,6 +25,9 @@ function CapacitacionesContextDes() {
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+
+  const [excelReportData, setExcelReportData] =
+    useState<IExcelReportParams | null>(null);
 
   const [capacitacion1, setcapacitacion1] = useState<ICapacitaciones[]>([]);
   const { codigoCapacitacion } = useParams<Params>();
@@ -48,7 +56,10 @@ function CapacitacionesContextDes() {
     { label: "Hotelería/Turismo", value: "Hotelería/Turismo" },
     { label: "Informática hardware", value: "Informática hardware" },
     { label: "Informática software", value: "Informática software" },
-    {label: "Informática/Telecomunicaciones", value: "Informática/Telecomunicaciones",},
+    {
+      label: "Informática/Telecomunicaciones",
+      value: "Informática/Telecomunicaciones",
+    },
     { label: "Ingeniería/Técnico", value: "Ingeniería/Técnico" },
     { label: "Internet", value: "Internet" },
     { label: "Legal/ Asesoría", value: "Legal/ Asesoría" },
@@ -101,7 +112,7 @@ function CapacitacionesContextDes() {
         if (data.length > 0) {
           const capacitacionData = data[0];
           setFormDisabled(true);
-          // Actualiza el estado local aquí
+          loadExcelReportData(data);
           setFormData({
             ...formData,
             institucion: capacitacionData.institucion,
@@ -121,6 +132,39 @@ function CapacitacionesContextDes() {
         console.error("Error al obtener los datos:", error);
       });
   }, []);
+
+  function loadExcelReportData(data: ICapacitaciones[]) {
+    const reportName = "Capacitaciones";
+    const rowData = data.map((item) => ({
+      institucion: item.institucion,
+      tipo_evento: item.tipo_evento,
+      nombre_evento: item.nombre_evento,
+      area_estudios: item.area_estudios,
+      fecha_inicio: new Date(item.fecha_inicio!).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      fecha_fin: new Date(item.fecha_fin!).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+    }));
+    const headerItems: IHeaderItem[] = [
+      { header: "INSTITUCION" },
+      { header: "TIPO DE EVENTO" },
+      { header: "NOMBRE DEL EVENTO" },
+      { header: "AREA DE ESTUDIOS" },
+      { header: "FECHA DE INICIO" },
+      { header: "FECHA DE FIN" },
+    ];
+    setExcelReportData({
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
 
   const decodeBase64 = (base64Data: string) => {
     try {
@@ -439,6 +483,11 @@ function CapacitacionesContextDes() {
             </div>
           </form>
         </div>
+        <ReportBar
+          reportName={excelReportData?.reportName!}
+          headerItems={excelReportData?.headerItems!}
+          rowData={excelReportData?.rowData!}
+        />
         <table
           style={{ minWidth: "40rem" }}
           className="mt-4  w-full h-full text-3xl font-large"

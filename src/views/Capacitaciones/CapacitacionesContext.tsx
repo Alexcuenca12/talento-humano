@@ -12,7 +12,10 @@ import { Divider } from "primereact/divider";
 import { ICapacitaciones } from "../../interfaces/Primary/ICapacitaciones";
 import { CapacitacionesService } from "../../services/CapacitacionesService";
 import swal from "sweetalert";
-import { IExcelReportParams, IHeaderItem } from "../../interfaces/Secondary/IExcelReportParams";
+import {
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
 import { ReportBar } from "../../shared/ReportBar";
 
 function PublicacionesContext() {
@@ -44,7 +47,10 @@ function PublicacionesContext() {
   ];
   const areaEstudioOptions = [
     { label: "Administración/oficina", value: "Administración/oficina" },
-    { label: "Agricultura/Pesca/Ganadería",value: "Agricultura/Pesca/Ganadería",},
+    {
+      label: "Agricultura/Pesca/Ganadería",
+      value: "Agricultura/Pesca/Ganadería",
+    },
     { label: "Arte/Diseño/Medios", value: "Arte/Diseño/Medios" },
     { label: "Científico/Investigación", value: "Científico/Investigación" },
     { label: "Dirección/ Gerencia", value: "Dirección/ Gerencia" },
@@ -58,7 +64,10 @@ function PublicacionesContext() {
     { label: "Hotelería/Turismo", value: "Hotelería/Turismo" },
     { label: "Informática hardware", value: "Informática hardware" },
     { label: "Informática software", value: "Informática software" },
-    {label: "Informática/Telecomunicaciones",value: "Informática/Telecomunicaciones",},
+    {
+      label: "Informática/Telecomunicaciones",
+      value: "Informática/Telecomunicaciones",
+    },
     { label: "Ingeniería/Técnico", value: "Ingeniería/Técnico" },
     { label: "Internet", value: "Internet" },
     { label: "Legal/ Asesoría", value: "Legal/ Asesoría" },
@@ -87,8 +96,9 @@ function PublicacionesContext() {
   const [editMode, setEditMode] = useState(false);
   const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
   const capaService = new CapacitacionesService();
-  
-  const [excelReportData, setExcelReportData] = useState<IExcelReportParams | null>(null);
+
+  const [excelReportData, setExcelReportData] =
+    useState<IExcelReportParams | null>(null);
 
   const loadData = () => {
     capaService
@@ -105,41 +115,40 @@ function PublicacionesContext() {
   useEffect(() => {
     loadData();
   }, []);
+
   function loadExcelReportData(data: ICapacitaciones[]) {
-    const reportName = "Capacitaciones"
-    const rowData = data.map((item) => (
-        {
-            institucion: item.institucion,
-            tipo_evento: item.tipo_evento,
-            nombre_evento: item.nombre_evento,
-            area_estudios: item.area_estudios,
-            fecha_inicio: new Date(item.fecha_inicio!).toLocaleDateString("es-ES", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-            }),
-            fecha_fin: new Date(item.fecha_fin!).toLocaleDateString("es-ES", {
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-            }),
-        }
-    ));
+    const reportName = "Capacitaciones";
+    const rowData = data.map((item) => ({
+      institucion: item.institucion,
+      tipo_evento: item.tipo_evento,
+      nombre_evento: item.nombre_evento,
+      area_estudios: item.area_estudios,
+      fecha_inicio: new Date(item.fecha_inicio!).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      fecha_fin: new Date(item.fecha_fin!).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+    }));
     const headerItems: IHeaderItem[] = [
-        {header: "INSTITUCION"},
-        {header: "TIPO DE EVENTO"},
-        {header: "NOMBRE DEL EVENTO"},
-        {header: "AREA DE ESTUDIOS"},
-        {header: "FECHA DE INICIO"},
-        {header: "FECHA DE FIN"},
-    ]
+      { header: "INSTITUCION" },
+      { header: "TIPO DE EVENTO" },
+      { header: "NOMBRE DEL EVENTO" },
+      { header: "AREA DE ESTUDIOS" },
+      { header: "FECHA DE INICIO" },
+      { header: "FECHA DE FIN" },
+    ];
     setExcelReportData({
-            reportName,
-            headerItems,
-            rowData
-        }
-    )
-}
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
+
   const customBytesUploader = (event: FileUploadSelectEvent) => {
     if (event.files && event.files.length > 0) {
       const file = event.files[0];
@@ -377,7 +386,10 @@ function PublicacionesContext() {
           >
             <div className="flex flex-wrap flex-row">
               <div className="flex align-items-center justify-content-center">
-                <div className="flex flex-column flex-wrap gap-4" style={{ marginLeft: "20px" }}>
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginLeft: "20px" }}
+                >
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
                       htmlFor="institucion"
@@ -691,10 +703,10 @@ function PublicacionesContext() {
           </form>
         </div>
         <ReportBar
-                    reportName={excelReportData?.reportName!}
-                    headerItems={excelReportData?.headerItems!}
-                    rowData={excelReportData?.rowData!}
-                />
+          reportName={excelReportData?.reportName!}
+          headerItems={excelReportData?.headerItems!}
+          rowData={excelReportData?.rowData!}
+        />
         <table
           style={{ minWidth: "40rem" }}
           className="mt-4  w-full h-full text-3xl font-large"

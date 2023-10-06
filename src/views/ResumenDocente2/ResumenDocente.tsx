@@ -19,6 +19,7 @@ import { InstruccionFormalData } from "../../interfaces/Primary/IInstrucc_Formal
 import { useParams } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 import { IPublicaciones } from "../../interfaces/Primary/IPublicaciones";
+import PersonaCombinada from "../Persona/PersonaCombinada";
 
 interface Params {
   codigoDocente: string;
@@ -764,7 +765,7 @@ function ResumenDocente() {
                 width: "100px",
                 height: "100px",
                 borderRadius: "20%", // Borde redondeado
-                marginLeft: "5%"
+                marginLeft: "5%",
               }}
             />
           )}
@@ -1149,6 +1150,7 @@ function ResumenDocente() {
                       }}
                     ></Column>
                   </DataTable>
+                  <PersonaCombinada personaId={persona?.id_persona || 0} />
                 </div>
               </div>
             </div>

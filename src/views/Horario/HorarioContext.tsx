@@ -113,6 +113,7 @@ function HorarioContext() {
   useEffect(() => {
     loadData();
   }, []);
+
   function loadExcelReportData(data: IHorarioData[]) {
     const reportName = "DISTRIBUTIVO";
     const rowData = data.map((item) => ({
@@ -133,6 +134,7 @@ function HorarioContext() {
       rowData,
     });
   }
+  
   const customBytesUploader = (event: FileUploadSelectEvent) => {
     if (event.files && event.files.length > 0) {
       const file = event.files[0];

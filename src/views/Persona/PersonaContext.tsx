@@ -192,7 +192,7 @@ const Persona = () => {
       etnia: "",
       idioma_raiz: "",
       idioma_secundario: "",
-      foto: null,
+      foto: "",
       cv_socioempleo: null,
       mecanizado_iess: null,
       descripcion_perfil: "",
@@ -521,6 +521,7 @@ const Persona = () => {
         });
     }
   }, [formik.values.cedula]);
+  
   const handleSubmit = async (data: IPersona) => {
     if (selectedItem) {
       await apiService

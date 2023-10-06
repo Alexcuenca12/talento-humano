@@ -4,7 +4,7 @@ export interface IExperiencia {
     puesto: string;
     area_trabajo: string;
     fecha_inicio: string;
-    fecha_fin: string | null;
+    fecha_fin: string;
     actividades: string;
     estado: boolean;
     certificado_trabajo: string | null;

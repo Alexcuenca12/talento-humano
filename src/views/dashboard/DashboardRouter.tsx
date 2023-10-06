@@ -40,7 +40,6 @@ export const DashboardRouter = () => {
   const rol = userObj.rol;
   const toast = useRef<Toast>(null);
 
-
   return (
     <>
       <Toast ref={toast} />
@@ -449,6 +448,23 @@ export const DashboardRouter = () => {
                   <NavBarUserDisabled />
                 )}
               </Route>
+
+              <Route path="/filtros">
+                {rol === 1 ? (
+                  <>
+                    <NavBarDoc />
+                    <Filtros />
+                  </>
+                ) : rol === 2 ? (
+                  <>
+                    <NavBarDoc />
+                    <Filtros />
+                  </>
+                ) : (
+                  <NavBarUserDisabled />
+                )}
+              </Route>
+
               <Route path="*">
                 {rol === 1 ? (
                   <NavBar />

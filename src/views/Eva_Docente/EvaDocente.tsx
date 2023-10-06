@@ -25,7 +25,8 @@ function PublicacionesContext() {
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
 
-  const [excelReportData, setExcelReportData] = useState<IExcelReportParams | null>(null);
+  const [excelReportData, setExcelReportData] =
+    useState<IExcelReportParams | null>(null);
 
   const [eva1, seteva1] = useState<IEvaDocente[]>([]);
   const [formData, setFormData] = useState<IEvaDocente>({
@@ -325,7 +326,10 @@ function PublicacionesContext() {
           >
             <div className="flex flex-wrap flex-row">
               <div className="flex align-items-center justify-content-center">
-                <div className="flex flex-column flex-wrap gap-4" style={{ marginLeft: "100px" }} >
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginLeft: "100px" }}
+                >
                   <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
                       htmlFor="cod_carrera"

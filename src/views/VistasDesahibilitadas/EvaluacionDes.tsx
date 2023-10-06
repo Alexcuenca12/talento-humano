@@ -1,4 +1,4 @@
-import React, { useEffect, useState,  } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import { Fieldset } from "primereact/fieldset";
@@ -12,8 +12,12 @@ import { EvaluacionService } from "../../services/EvaluacionService";
 import { VcarreraService } from "../../services/VCarreraService";
 import { VPeridosService } from "../../services/VPeridosService";
 import swal from "sweetalert";
-
 import { useParams } from "react-router-dom";
+import { ReportBar } from "../../shared/ReportBar";
+import {
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
 
 interface Params {
   codigoEvaluacion: string;
@@ -23,6 +27,9 @@ function CargaContextDes() {
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+
+  const [excelReportData, setExcelReportData] =
+    useState<IExcelReportParams | null>(null);
 
   const [eva1, seteva1] = useState<IEvaDocente[]>([]);
   const { codigoEvaluacion } = useParams<Params>();
@@ -89,6 +96,7 @@ function CargaContextDes() {
         if (data.length > 0) {
           const contratoData = data[0];
           setFormDisabled(true);
+          loadExcelReportData(data);
           // Actualiza el estado local aquí
           setFormData({
             ...formData,
@@ -102,6 +110,23 @@ function CargaContextDes() {
         console.error("Error al obtener los datos:", error);
       });
   }, []);
+
+  function loadExcelReportData(data: IEvaDocente[]) {
+    const reportName = "Evaluacion Docente";
+    const rowData = data.map((item) => ({
+      cod_carrera: item.cod_carrera,
+      per_nombre: item.per_nombre,
+    }));
+    const headerItems: IHeaderItem[] = [
+      { header: "CODIGO DE CARRERA" },
+      { header: "PERIODO" },
+    ];
+    setExcelReportData({
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
 
   const decodeBase64 = (base64Data: string) => {
     try {
@@ -149,9 +174,7 @@ function CargaContextDes() {
         </div>
 
         <div className="flex justify-content-center flex-wrap">
-          <form
-            encType="multipart/form-data"
-          >
+          <form encType="multipart/form-data">
             <div className="flex flex-wrap flex-row">
               <div className="flex align-items-center justify-content-center">
                 <div
@@ -207,10 +230,14 @@ function CargaContextDes() {
                   </div>
                 </div>
               </div>
-
             </div>
           </form>
         </div>
+        <ReportBar
+          reportName={excelReportData?.reportName!}
+          headerItems={excelReportData?.headerItems!}
+          rowData={excelReportData?.rowData!}
+        />
         <table
           style={{ minWidth: "40rem" }}
           className="mt-4  w-full h-full text-3xl font-large"

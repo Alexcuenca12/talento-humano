@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useRef, } from "react";
+import React, { useEffect, useState, } from "react";
 import { InputText } from "primereact/inputtext";
-import { FileUpload } from "primereact/fileupload";
 import { Button } from "primereact/button";
 import { Dropdown } from "primereact/dropdown";
 import "../../styles/Contrato.css";
@@ -16,6 +15,11 @@ import { VcarreraService } from "../../services/VCarreraService";
 import { VPeridosService } from "../../services/VPeridosService";
 import swal from "sweetalert";
 import { useParams } from "react-router-dom";
+import { ReportBar } from "../../shared/ReportBar";
+import {
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
 
 interface Params {
   codigoHorario: string;
@@ -25,6 +29,9 @@ function HorarioContextDes() {
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+
+  const [excelReportData, setExcelReportData] =
+  useState<IExcelReportParams | null>(null);
 
   const [horario1, sethorario1] = useState<IHorarioData[]>([]);
   const [carreras, setCarreras] = useState<VCarreras[]>([]);
@@ -106,6 +113,7 @@ function HorarioContextDes() {
         if (data.length > 0) {
           const contratoData = data[0];
           setFormDisabled(true);
+          loadExcelReportData(data);
           // Actualiza el estado local aquí
           setFormData({
             ...formData,
@@ -121,6 +129,27 @@ function HorarioContextDes() {
         console.error("Error al obtener los datos:", error);
       });
   }, []);
+
+  function loadExcelReportData(data: IHorarioData[]) {
+    const reportName = "DISTRIBUTIVO";
+    const rowData = data.map((item) => ({
+      periodoAcademico: item.periodoAcademico,
+      jornadaHorario: item.jornadaHorario,
+      horasSemanalesHorario: item.horasSemanalesHorario,
+      carreraHorario: item.carreraHorario,
+    }));
+    const headerItems: IHeaderItem[] = [
+      { header: "PERIODO ACADEMICO" },
+      { header: "JORNADA" },
+      { header: "TOTAL HORAS" },
+      { header: "CARRERA" },
+    ];
+    setExcelReportData({
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
 
   const decodeBase64 = (base64Data: string) => {
     try {
@@ -284,6 +313,11 @@ function HorarioContextDes() {
             </div>
           </form>
         </div>
+        <ReportBar
+          reportName={excelReportData?.reportName!}
+          headerItems={excelReportData?.headerItems!}
+          rowData={excelReportData?.rowData!}
+        />
         <table
           style={{ minWidth: "40rem" }}
           className="mt-4  w-full h-full text-3xl font-large"

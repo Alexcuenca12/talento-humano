@@ -1,6 +1,5 @@
-import React, { useEffect, useState, useRef, ChangeEvent } from "react";
+import React, { useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
-import { FileUpload } from "primereact/fileupload";
 import { Button } from "primereact/button";
 import { Calendar } from "primereact/calendar";
 import "../../styles/Contrato.css";
@@ -13,6 +12,11 @@ import { ContratoService } from "../../services/ContratoService";
 import swal from "sweetalert";
 import { Dropdown } from "primereact/dropdown";
 import { useParams } from "react-router-dom";
+import { ReportBar } from "../../shared/ReportBar";
+import {
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
 
 interface Params {
   codigoContrato: string;
@@ -22,6 +26,9 @@ function ContratoContextDes() {
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+
+  const [excelReportData, setExcelReportData] =
+    useState<IExcelReportParams | null>(null);
 
   const [contra1, setcontra1] = useState<IContratoData[]>([]);
   const { codigoContrato } = useParams<Params>();
@@ -44,10 +51,6 @@ function ContratoContextDes() {
     persona: { id_persona: idPersona },
   });
 
-  const fileUploadRef = useRef<FileUpload>(null);
-
-  const [editMode, setEditMode] = useState(false);
-  const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
   const contratService = new ContratoService();
 
   const tiempoDedicacionOptions = [
@@ -84,6 +87,7 @@ function ContratoContextDes() {
         if (data.length > 0) {
           const contratoData = data[0];
           setFormDisabled(true);
+          loadExcelReportData(data);
           // Actualiza el estado local aquí
           setFormData({
             ...formData,
@@ -104,6 +108,39 @@ function ContratoContextDes() {
         console.error("Error al obtener los datos:", error);
       });
   }, []);
+
+  function loadExcelReportData(data: IContratoData[]) {
+    const reportName = "Contrato";
+    const rowData = data.map((item) => ({
+      cargo: item.cargo,
+      salario: item.salario,
+      salario_publico: item.salario_publico,
+      tiempo_dedicacion: item.tiempo_dedicacion,
+      fecha_inicio: new Date(item.fecha_inicio!).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      fecha_fin: new Date(item.fecha_fin!).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+    }));
+    const headerItems: IHeaderItem[] = [
+      { header: "CARGO" },
+      { header: "SALARIO" },
+      { header: "SALARIO PUBLICO" },
+      { header: "TIEMPO DE DEDICACIÓN" },
+      { header: "FECHA DE INICIO" },
+      { header: "FECHA DE FIN" },
+    ];
+    setExcelReportData({
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
 
   const decodeBase64 = (base64Data: string) => {
     try {
@@ -136,162 +173,6 @@ function ContratoContextDes() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-
-    if (
-      !formData.fecha_inicio ||
-      !formData.anio_duracion ||
-      !formData.tiempo_dedicacion ||
-      !formData.cargo ||
-      !formData.horas_diarias ||
-      !formData.salario ||
-      !formData.salario_publico
-    ) {
-      swal("Advertencia", "Por favor, complete todos los campos", "warning");
-      return;
-    }
-
-    // Validar solo números en anio_duracion
-    const anioDuracionRegex = /^\d+$/;
-    if (!anioDuracionRegex.test(formData.anio_duracion)) {
-      swal(
-        "Advertencia",
-        "Por favor, ingrese solo números en el campo Años de Duracion",
-        "warning"
-      );
-      return;
-    }
-
-    const salarioRegex = /^\d+$/;
-    if (!salarioRegex.test(formData.salario)) {
-      swal(
-        "Advertencia",
-        "Por favor, ingrese solo números en el campo Salario",
-        "warning"
-      );
-      return;
-    }
-
-    const horasRegex = /^\d+$/;
-    if (!horasRegex.test(formData.horas_diarias)) {
-      swal(
-        "Advertencia",
-        "Por favor, ingrese solo números en el campo Horas Diarias",
-        "warning"
-      );
-      return;
-    }
-
-    const fechaInicio = new Date(formData.fecha_inicio);
-    const fechaFin = new Date(formData.fecha_fin);
-
-    // Validar fecha de inicio y fecha de fin
-    if (fechaInicio > fechaFin) {
-      swal(
-        "Advertencia",
-        "La fecha de inicio debe ser menor que la fecha de fin",
-        "warning"
-      );
-      return;
-    }
-
-    contratService
-      .save(formData)
-      .then((response) => {
-        resetForm();
-        swal("Contrato", "Datos Guardados Correctamente", "success");
-
-        contratService
-          .getAllByContrato(codigoContratoNumber)
-          .then((data) => {
-            setcontra1(data);
-            resetForm();
-            if (fileUploadRef.current) {
-              fileUploadRef.current.clear();
-            }
-          })
-          .catch((error) => {
-            console.error("Error al obtener los datos:", error);
-          });
-      })
-      .catch((error) => {
-        console.error("Error al enviar el formulario:", error);
-      });
-  };
-
-  const handleUpdate = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (editItemId !== undefined) {
-      // Validating "Fecha Inicio" and "Fecha Fin"
-      const fechaInicio = new Date(formData.fecha_inicio);
-      const fechaFin = new Date(formData.fecha_fin);
-      if (fechaInicio > fechaFin) {
-        swal(
-          "Advertencia",
-          "La fecha de inicio debe ser menor que la fecha de fin",
-          "warning"
-        );
-        return;
-      }
-
-      contratService
-        .update(Number(editItemId), formData as IContratoData)
-        .then((response) => {
-          swal({
-            title: "Contrato",
-            text: "Datos actualizados correctamente",
-            icon: "success",
-          });
-          setFormData({
-            fecha_inicio: "",
-            fecha_fin: "",
-            anio_duracion: "",
-            horas_diarias: "",
-            salario: "",
-            cargo: "",
-            evidencia: "",
-            tiempo_dedicacion: "",
-            salario_publico: "",
-            contrato_vigente: false,
-            persona: null,
-          });
-          setcontra1(
-            contra1.map((contra) =>
-              contra.id_contrato === editItemId ? response : contra
-            )
-          );
-          setEditMode(false);
-          setEditItemId(undefined);
-        })
-        .catch((error) => {
-          console.error("Error al actualizar el formulario:", error);
-        });
-    }
-  };
-
-  const resetForm = () => {
-    setFormData({
-      id_contrato: 0,
-      fecha_inicio: "",
-      fecha_fin: "",
-      anio_duracion: "",
-      horas_diarias: "",
-      salario: "",
-      cargo: "",
-      evidencia: "",
-      tiempo_dedicacion: "",
-      salario_publico: "",
-      contrato_vigente: false,
-      persona: null,
-    });
-    setEditMode(false);
-    setEditItemId(undefined);
-    if (fileUploadRef.current) {
-      fileUploadRef.current.clear(); // Limpiar el campo FileUpload
-    }
-  };
-
   return (
     <Fieldset className="fgrid col-fixed ">
       <Card
@@ -307,13 +188,13 @@ function ContratoContextDes() {
         </div>
 
         <div className="flex justify-content-center flex-wrap">
-          <form
-            onSubmit={editMode ? handleUpdate : handleSubmit}
-            encType="multipart/form-data"
-          >
+          <form encType="multipart/form-data">
             <div className="flex flex-wrap flex-row">
               <div className="flex align-items-center justify-content-center">
-                <div className="flex flex-column flex-wrap gap-4">
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginLeft: "20px" }}
+                >
                   <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
                       htmlFor="inicio"
@@ -325,10 +206,11 @@ function ContratoContextDes() {
                       className="text-2xl"
                       id="inicio"
                       name="inicio"
+                      disabled={formDisabled}
                       required
+                      placeholder="Ingresa la Fecha de Inicio"
                       dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
                       showIcon
-                      disabled={formDisabled}
                       maxDate={new Date()}
                       onChange={(e) => {
                         const selectedDate =
@@ -360,6 +242,7 @@ function ContratoContextDes() {
                       className="text-2xl"
                       id="fin"
                       name="fin"
+                      placeholder="Ingresa la Fecha de Fin"
                       disabled={formDisabled}
                       required
                       dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
@@ -392,8 +275,9 @@ function ContratoContextDes() {
                       className="text-2xl"
                       id="anios"
                       required
-                      disabled={formDisabled}
+                      placeholder="Ingresa los años de duracion"
                       name="anios"
+                      disabled={formDisabled}
                       onChange={(e) =>
                         setFormData({
                           ...formData,
@@ -403,6 +287,11 @@ function ContratoContextDes() {
                       value={formData.anio_duracion}
                     />
                   </div>
+                </div>
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginLeft: "20px" }}
+                >
                   <div className="flex flex-wrap w-full h-full  justify-content-between  ">
                     <label
                       htmlFor="horas"
@@ -415,6 +304,7 @@ function ContratoContextDes() {
                       id="horas"
                       disabled={formDisabled}
                       name="horas"
+                      placeholder="Ingresa las Horas"
                       onChange={(e) =>
                         setFormData({
                           ...formData,
@@ -435,6 +325,7 @@ function ContratoContextDes() {
                       className="text-2xl"
                       id="cargo"
                       disabled={formDisabled}
+                      placeholder="Ingresa el Cargo"
                       name="cargo"
                       onChange={(e) =>
                         setFormData({
@@ -457,6 +348,7 @@ function ContratoContextDes() {
                       id="salario"
                       name="salario"
                       disabled={formDisabled}
+                      placeholder="Ingresa el Salario"
                       onChange={(e) =>
                         setFormData({
                           ...formData,
@@ -466,18 +358,25 @@ function ContratoContextDes() {
                       value={formData.salario}
                     />
                   </div>
+                </div>
+                <div
+                  className="flex flex-column flex-wrap gap-4"
+                  style={{ marginLeft: "20px" }}
+                >
                   <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
                       htmlFor="tiempo_dedicacion"
                       className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "5px" }}
                     >
                       Tiempo Dedicación:
                     </label>
                     <Dropdown
                       className="text-2xl"
                       id="tiempo_dedicacion"
-                      disabled={formDisabled}
                       name="tiempo_dedicacion"
+                      disabled={formDisabled}
+                      style={{ width: "200px" }} // Ajusta el ancho del Dropdown
                       options={tiempoDedicacionOptions}
                       onChange={(e) =>
                         setFormData({ ...formData, tiempo_dedicacion: e.value })
@@ -507,6 +406,7 @@ function ContratoContextDes() {
                       value={formData.salario_publico}
                       optionLabel="label"
                       optionValue="value"
+                      style={{ width: "200px" }} // Ajusta el ancho del Dropdown
                       placeholder="Seleccionar....."
                     />
                   </div>
@@ -521,7 +421,6 @@ function ContratoContextDes() {
                       <input
                         type="checkbox"
                         id="contratoVigente"
-                        disabled={formDisabled}
                         checked={formData.contrato_vigente}
                         onChange={handleContratoVigenteToggle}
                       />
@@ -533,6 +432,11 @@ function ContratoContextDes() {
             </div>
           </form>
         </div>
+        <ReportBar
+          reportName={excelReportData?.reportName!}
+          headerItems={excelReportData?.headerItems!}
+          rowData={excelReportData?.rowData!}
+        />
         <table
           style={{ minWidth: "50rem" }}
           className="mt-5  w-full h-full text-3xl font-medium"

@@ -23,8 +23,6 @@ function ContratoContext() {
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
 
-  
-
   const [excelReportData, setExcelReportData] =
     useState<IExcelReportParams | null>(null);
 
@@ -684,6 +682,7 @@ function ContratoContext() {
               </div>
             </div>
           </form>
+          
         </div>
         <ReportBar
           reportName={excelReportData?.reportName!}
