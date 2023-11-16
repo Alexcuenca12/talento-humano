@@ -98,7 +98,7 @@ function RecomendacionesContext() {
       .save(formData)
       .then((response) => {
         resetForm();
-        swal("Publicacion", "Datos Guardados Correctamente", "success");
+        swal("Recomendacion", "Datos Guardados Correctamente", "success");
 
         recomService
           .getAllByPersona(idPersona)
@@ -180,7 +180,7 @@ function RecomendacionesContext() {
         .update(Number(editItemId), formData as IRecomendaciones)
         .then((response) => {
           swal({
-            title: "Publicaciones",
+            title: "Recomendacion",
             text: "Datos actualizados correctamente",
             icon: "success",
           });
@@ -237,6 +237,12 @@ function RecomendacionesContext() {
             </h1>
           </Divider>
         </div>
+        <Divider align="left">
+          <div className="inline-flex align-items-center">
+            <i className="pi pi-book mr-2"></i>
+            <b>Formulario </b>
+          </div>
+        </Divider>
 
         <div className="flex justify-content-center flex-wrap">
           <form
@@ -244,16 +250,13 @@ function RecomendacionesContext() {
             encType="multipart/form-data"
           >
             <div className="flex flex-wrap flex-row">
-              <div
-                className="flex align-items-center justify-content-center"
-                style={{ marginLeft: "10%" }}
-              >
+              <div className="flex align-items-center justify-content-center" style={{ marginLeft: "100px"}}>
                 <div className="flex flex-column flex-wrap gap-4">
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
                       htmlFor="primer_nombre"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "125px" }}
                     >
                       Primer Nombre:
                     </label>
@@ -276,7 +279,7 @@ function RecomendacionesContext() {
                     <label
                       htmlFor="segundo_nombre"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "125px" }}
                     >
                       Segundo Nombre:
                     </label>
@@ -299,7 +302,7 @@ function RecomendacionesContext() {
                     <label
                       htmlFor="primer_apellido"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "125px" }}
                     >
                       Primer Apellido:
                     </label>
@@ -319,15 +322,12 @@ function RecomendacionesContext() {
                     />
                   </div>
                 </div>
-                <div
-                  className="flex flex-column flex-wrap gap-4"
-                  style={{ marginLeft: "25px" }}
-                >
+                <div className="flex flex-column flex-wrap gap-4">
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
                       htmlFor="segundo_apellido"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "125px" }}
                     >
                       Segundo Apellido:
                     </label>
@@ -350,9 +350,9 @@ function RecomendacionesContext() {
                     <label
                       htmlFor="correo"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "125px" }}
                     >
-                      Filiación de la Publicacion:
+                      Correo:
                     </label>
                     <InputText
                       className="text-2xl"
@@ -373,7 +373,7 @@ function RecomendacionesContext() {
                     <label
                       htmlFor="numeroContacto"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "125px" }}
                     >
                       Número de Contacto:
                     </label>
@@ -445,10 +445,14 @@ function RecomendacionesContext() {
                 >
                   <td>{recomendaciones.id_recomendaciones}</td>
                   <td>
-                    {recomendaciones.primer_nombre +" " +recomendaciones.segundo_nombre}
+                    {recomendaciones.primer_nombre +
+                      " " +
+                      recomendaciones.segundo_nombre}
                   </td>
                   <td>
-                    {recomendaciones.primer_apellido +" " +recomendaciones.segundo_apellido}
+                    {recomendaciones.primer_apellido +
+                      " " +
+                      recomendaciones.segundo_apellido}
                   </td>
                   <td>{recomendaciones.correo}</td>
                   <td>{recomendaciones.numeroContacto}</td>

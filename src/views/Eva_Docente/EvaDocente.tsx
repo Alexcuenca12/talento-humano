@@ -19,7 +19,7 @@ import {
   IHeaderItem,
 } from "../../interfaces/Secondary/IExcelReportParams";
 
-function PublicacionesContext() {
+function EvaDocenteContext() {
   //Session Storage
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
@@ -156,10 +156,10 @@ function PublicacionesContext() {
 
       const link = document.createElement("a");
       link.href = fileUrl;
-      link.download = "archivoCon.pdf";
+      link.download = "PDF Evaluacion.pdf";
       link.click();
       swal({
-        title: "Publicación",
+        title: "Evaluacion Docente",
         text: "Descargando pdf....",
         icon: "success",
         timer: 1000,
@@ -183,7 +183,7 @@ function PublicacionesContext() {
       .save(formData)
       .then((response) => {
         resetForm();
-        swal("Publicacion", "Datos Guardados Correctamente", "success");
+        swal("Evaluacion Docente", "Datos Guardados Correctamente", "success");
 
         evaService
           .getAllByPersona(idPersona)
@@ -264,7 +264,7 @@ function PublicacionesContext() {
         .update(Number(editItemId), formData as IEvaDocente)
         .then((response) => {
           swal({
-            title: "Publicaciones",
+            title: "Evaluacion Docente",
             text: "Datos actualizados correctamente",
             icon: "success",
           });
@@ -318,6 +318,12 @@ function PublicacionesContext() {
             </h1>
           </Divider>
         </div>
+        <Divider align="left">
+          <div className="inline-flex align-items-center">
+            <i className="pi pi-book mr-2"></i>
+            <b>Formulario </b>
+          </div>
+        </Divider>
 
         <div className="flex justify-content-center flex-wrap">
           <form
@@ -326,10 +332,7 @@ function PublicacionesContext() {
           >
             <div className="flex flex-wrap flex-row">
               <div className="flex align-items-center justify-content-center">
-                <div
-                  className="flex flex-column flex-wrap gap-4"
-                  style={{ marginLeft: "100px" }}
-                >
+                <div className="flex flex-column flex-wrap gap-4">
                   <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
                       htmlFor="cod_carrera"
@@ -352,7 +355,6 @@ function PublicacionesContext() {
                       style={{ width: "250px" }}
                     />
                   </div>
-
                   <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
                       htmlFor="per_nombre"
@@ -377,62 +379,57 @@ function PublicacionesContext() {
                   </div>
                 </div>
               </div>
-              <div
-                className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6"
-                style={{ marginLeft: "-45px" }}
-              >
-                <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                  <Button
-                    type="submit"
-                    label={editMode ? "Actualizar" : "Guardar"}
-                    className="w-full text-3xl min-w-min "
-                    rounded
-                    onClick={editMode ? handleUpdate : handleSubmit}
-                  />
-                </div>
-                <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                  <Button
-                    type="button"
-                    label="Cancelar"
-                    className="w-full text-3xl min-w-min"
-                    rounded
-                    onClick={resetForm}
-                  />
-                </div>
-              </div>
-              <div style={{ marginLeft: "556px", marginTop: "-185px" }}>
-                <div className="flex flex-column align-items-center justify-content-center ml-4">
-                  <label
-                    htmlFor="pdf"
-                    className="text-3xl font-medium w-auto min-w-min"
-                    style={{
-                      marginRight: "20px",
-                      marginLeft: "169px",
-                      marginTop: "-5px",
-                    }}
-                  >
-                    Subir Evidencia:
-                  </label>
-                  <FileUpload
-                    name="pdf"
-                    style={{ marginLeft: "380px", marginTop: "10px" }}
-                    chooseLabel="Escoger"
-                    uploadLabel="Cargar"
-                    cancelLabel="Cancelar"
-                    emptyTemplate={
-                      <p className="m-0 p-button-rounded">
-                        Arrastre y suelte los archivos aquí para cargarlos.
-                      </p>
-                    }
-                    customUpload
-                    onSelect={customBytesUploader}
-                    accept="application/pdf"
-                  />
-                </div>
-              </div>
             </div>
           </form>
+          <Divider align="left">
+            <div className="inline-flex align-items-center">
+              <i className="pi pi-file-pdf mr-2"></i>
+              <b>Anexos</b>
+            </div>
+          </Divider>
+          <div className="column">
+            <div className="input-box">
+              <label htmlFor="pdf" className="font-medium w-auto min-w-min">
+                Subir Certificado de Experiencia:
+              </label>
+              <FileUpload
+                name="pdf"
+                chooseLabel="Escoger"
+                uploadLabel="Cargar"
+                cancelLabel="Cancelar"
+                emptyTemplate={
+                  <p className="m-0 p-button-rounded">
+                    Arrastre y suelte los archivos aquí para cargarlos.
+                  </p>
+                }
+                customUpload
+                onSelect={customBytesUploader}
+                accept="application/pdf"
+              />
+            </div>
+          </div>
+          <div className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
+            <div className="flex align-items-center justify-content-center w-auto min-w-min">
+              <Button
+                type="submit"
+                label={editMode ? "Actualizar" : "Guardar"}
+                className="w-full text-3xl min-w-min "
+                rounded
+                onClick={editMode ? handleUpdate : handleSubmit}
+              />
+            </div>
+            <div className="flex align-items-center justify-content-center w-auto min-w-min">
+              <Button
+                type="button"
+                label="Cancelar"
+                className="w-full text-3xl min-w-min"
+                rounded
+                onClick={resetForm}
+              />
+            </div>
+          </div>
         </div>
+
         <ReportBar
           reportName={excelReportData?.reportName!}
           headerItems={excelReportData?.headerItems!}
@@ -515,4 +512,4 @@ function PublicacionesContext() {
   );
 }
 
-export default PublicacionesContext;
+export default EvaDocenteContext;

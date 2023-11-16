@@ -327,6 +327,12 @@ function PublicacionesContext() {
             </h1>
           </Divider>
         </div>
+        <Divider align="left">
+          <div className="inline-flex align-items-center">
+            <i className="pi pi-book mr-2"></i>
+            <b>Formulario </b>
+          </div>
+        </Divider>
 
         <div className="flex justify-content-center flex-wrap">
           <form
@@ -340,7 +346,7 @@ function PublicacionesContext() {
                     <label
                       htmlFor="cargo"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
                       Titulo de la Publicacion:
                     </label>
@@ -363,7 +369,7 @@ function PublicacionesContext() {
                     <label
                       htmlFor="inicio"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
                       Fecha de Publicación:
                     </label>
@@ -398,7 +404,7 @@ function PublicacionesContext() {
                     <label
                       htmlFor="cargo"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
                       Autores de la Publicacion:
                     </label>
@@ -421,7 +427,7 @@ function PublicacionesContext() {
                     <label
                       htmlFor="doi"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
                       DOI de la Publicacion:
                     </label>
@@ -441,15 +447,12 @@ function PublicacionesContext() {
                     />
                   </div>
                 </div>
-                <div
-                  className="flex flex-column flex-wrap gap-4"
-                  style={{ marginTop: "-52px", marginLeft: "25px" }}
-                >
+                <div className="flex flex-column flex-wrap gap-4">
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
                       htmlFor="filiacion"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
                       Filiación de la Publicacion:
                     </label>
@@ -472,7 +475,7 @@ function PublicacionesContext() {
                     <label
                       htmlFor="lugar"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
                       Lugar de la Publicacion:
                     </label>
@@ -495,7 +498,7 @@ function PublicacionesContext() {
                     <label
                       htmlFor="evento"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
                       Fecha de Evento:
                     </label>
@@ -527,15 +530,12 @@ function PublicacionesContext() {
                     />
                   </div>
                 </div>
-                <div
-                  className="flex flex-column flex-wrap gap-4"
-                  style={{ marginTop: "-52px", marginLeft: "25px" }}
-                >
+                <div className="flex flex-column flex-wrap gap-4">
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
                       htmlFor="filiacion"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
                       Editorial de la Publicacion:
                     </label>
@@ -558,7 +558,7 @@ function PublicacionesContext() {
                     <label
                       htmlFor="isbn"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
                       ISBN de la Publicacion:
                     </label>
@@ -581,7 +581,7 @@ function PublicacionesContext() {
                     <label
                       htmlFor="issn"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
                       ISSN de la Publicacion:
                     </label>
@@ -602,10 +602,35 @@ function PublicacionesContext() {
                   </div>
                 </div>
               </div>
-              <div
-                className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6"
-                style={{ marginLeft: "-45px" }}
-              >
+
+              <Divider align="left">
+                <div className="inline-flex align-items-center">
+                  <i className="pi pi-file-pdf mr-2"></i>
+                  <b>Anexos</b>
+                </div>
+              </Divider>
+              <div className="column">
+                <div className="input-box" style={{ marginLeft: "20px" }}>
+                  <label htmlFor="pdf" className="font-medium w-auto min-w-min">
+                    Subir Publicación:
+                  </label>
+                  <FileUpload
+                    name="pdf"
+                    chooseLabel="Escoger"
+                    uploadLabel="Cargar"
+                    cancelLabel="Cancelar"
+                    emptyTemplate={
+                      <p className="m-0 p-button-rounded">
+                        Arrastre y suelte los archivos aquí para cargarlos.
+                      </p>
+                    }
+                    customUpload
+                    onSelect={customBytesUploader}
+                    accept="application/pdf"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
                 <div className="flex align-items-center justify-content-center w-auto min-w-min">
                   <Button
                     type="submit"
@@ -622,36 +647,6 @@ function PublicacionesContext() {
                     className="w-full text-3xl min-w-min"
                     rounded
                     onClick={resetForm}
-                  />
-                </div>
-              </div>
-              <div style={{ marginLeft: "556px", marginTop: "-103px" }}>
-                <div className="flex flex-column align-items-center justify-content-center ml-4">
-                  <label
-                    htmlFor="pdf"
-                    className="text-3xl font-medium w-auto min-w-min"
-                    style={{
-                      marginRight: "20px",
-                      marginLeft: "169px",
-                      marginTop: "-5px",
-                    }}
-                  >
-                    Subir Evidencia:
-                  </label>
-                  <FileUpload
-                    name="pdf"
-                    style={{ marginLeft: "380px", marginTop: "10px" }}
-                    chooseLabel="Escoger"
-                    uploadLabel="Cargar"
-                    cancelLabel="Cancelar"
-                    emptyTemplate={
-                      <p className="m-0 p-button-rounded">
-                        Arrastre y suelte los archivos aquí para cargarlos.
-                      </p>
-                    }
-                    customUpload
-                    onSelect={customBytesUploader}
-                    accept="application/pdf"
                   />
                 </div>
               </div>
