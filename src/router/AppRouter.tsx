@@ -1,5 +1,10 @@
 import { useContext } from "react";
-import {BrowserRouter as Router, Switch, Route, Redirect} from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Redirect,
+} from "react-router-dom";
 import { AuthRouter } from "../views/auth/Authrouter";
 import { PrivateRouter } from "../router/PrivateRouter";
 import { AuthContext } from "../reducers/AuthContext";

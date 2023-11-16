@@ -134,7 +134,7 @@ function HorarioContext() {
       rowData,
     });
   }
-  
+
   const customBytesUploader = (event: FileUploadSelectEvent) => {
     if (event.files && event.files.length > 0) {
       const file = event.files[0];
@@ -177,7 +177,7 @@ function HorarioContext() {
       link.download = "Evidencias Capacitaciones.pdf";
       link.click();
       swal({
-        title: "Publicación",
+        title: "Horario",
         text: "Descargando pdf....",
         icon: "success",
         timer: 1000,
@@ -206,7 +206,7 @@ function HorarioContext() {
       .save(formData)
       .then((response) => {
         resetForm();
-        swal("Publicacion", "Datos Guardados Correctamente", "success");
+        swal("Horario", "Datos Guardados Correctamente", "success");
 
         horarioService
           .getAllByPersona(idPersona)
@@ -289,7 +289,7 @@ function HorarioContext() {
         .update(Number(editItemId), formData as IHorarioData)
         .then((response) => {
           swal({
-            title: "Publicaciones",
+            title: "Horario",
             text: "Datos actualizados correctamente",
             icon: "success",
           });
@@ -347,6 +347,12 @@ function HorarioContext() {
             </h1>
           </Divider>
         </div>
+        <Divider align="left">
+          <div className="inline-flex align-items-center">
+            <i className="pi pi-book mr-2"></i>
+            <b>Formulario </b>
+          </div>
+        </Divider>
 
         <div className="flex justify-content-center flex-wrap">
           <form
@@ -355,15 +361,12 @@ function HorarioContext() {
           >
             <div className="flex flex-wrap flex-row">
               <div className="flex align-items-center justify-content-center">
-                <div
-                  className="flex flex-column flex-wrap gap-4"
-                  style={{ marginLeft: "20px" }}
-                >
+                <div className="flex flex-column flex-wrap gap-4">
                   <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
                       htmlFor="per_nombre"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "150px" }}
                     >
                       Periodo Académico:
                     </label>
@@ -385,7 +388,7 @@ function HorarioContext() {
                     <label
                       htmlFor="jornadaHorario"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "150px" }}
                     >
                       Jornada:
                     </label>
@@ -404,15 +407,12 @@ function HorarioContext() {
                     />
                   </div>
                 </div>
-                <div
-                  className="flex flex-column flex-wrap gap-4"
-                  style={{ marginTop: "-2px", marginLeft: "25px" }}
-                >
+                <div className="flex flex-column flex-wrap gap-4">
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
                       htmlFor="horas_semanales"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "150px" }}
                     >
                       Horas de Clases Semanales:
                     </label>
@@ -435,7 +435,7 @@ function HorarioContext() {
                     <label
                       htmlFor="cod_carrera"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "150px" }}
                     >
                       Carrera con Mayor Carga Horaria:
                     </label>
@@ -455,47 +455,19 @@ function HorarioContext() {
                   </div>
                 </div>
               </div>
-              <div
-                className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6"
-                style={{ marginLeft: "-45px" }}
-              >
-                <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                  <Button
-                    type="submit"
-                    style={{ marginTop: "55px" }}
-                    label={editMode ? "Actualizar" : "Guardar"}
-                    className="w-full text-3xl min-w-min "
-                    rounded
-                    onClick={editMode ? handleUpdate : handleSubmit}
-                  />
+              <Divider align="left">
+                <div className="inline-flex align-items-center">
+                  <i className="pi pi-file-pdf mr-2"></i>
+                  <b>Anexos</b>
                 </div>
-                <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                  <Button
-                    type="button"
-                    label="Cancelar"
-                    style={{ marginTop: "55px" }}
-                    className="w-full text-3xl min-w-min"
-                    rounded
-                    onClick={resetForm}
-                  />
-                </div>
-              </div>
-              <div style={{ marginLeft: "466px", marginTop: "-93px" }}>
-                <div className="flex flex-column align-items-center justify-content-center ml-4">
-                  <label
-                    htmlFor="pdf"
-                    className="text-3xl font-medium w-auto min-w-min"
-                    style={{
-                      marginRight: "20px",
-                      marginLeft: "370px",
-                      marginTop: "-190px",
-                    }}
-                  >
-                    Subir Distributivo:
+              </Divider>
+              <div className="column">
+                <div className="input-box" style={{ marginLeft: "20px" }}>
+                  <label htmlFor="pdf" className="font-medium w-auto min-w-min">
+                    Subir Horario:
                   </label>
                   <FileUpload
                     name="pdf"
-                    style={{ marginLeft: "550px", marginTop: "10px" }}
                     chooseLabel="Escoger"
                     uploadLabel="Cargar"
                     cancelLabel="Cancelar"
@@ -507,6 +479,29 @@ function HorarioContext() {
                     customUpload
                     onSelect={customBytesUploader}
                     accept="application/pdf"
+                  />
+                </div>
+              </div>
+              <div
+                className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6"
+                style={{ marginLeft: "-45px" }}
+              >
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="submit"
+                    label={editMode ? "Actualizar" : "Guardar"}
+                    className="w-full text-3xl min-w-min "
+                    rounded
+                    onClick={editMode ? handleUpdate : handleSubmit}
+                  />
+                </div>
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="button"
+                    label="Cancelar"
+                    className="w-full text-3xl min-w-min"
+                    rounded
+                    onClick={resetForm}
                   />
                 </div>
               </div>

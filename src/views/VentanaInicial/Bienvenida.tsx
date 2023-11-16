@@ -35,16 +35,19 @@ const Bienvenida = () => {
               TALENTO HUMANO
             </h1>
             <h1 className="text-white fw-6 header-title" id="innovacion">
-              Bienvenidos a la plataforma de "Recursos Humanos"
-              Del Instituto Universitario Tecnológico del Azuay
-              Para ingresar debera ser miembro de la comunidad 
-              educativa @tecazuay.edu.ec
+              Bienvenidos a la plataforma de "Recursos Humanos" Del Instituto
+              Universitario Tecnológico del Azuay Para ingresar debera ser
+              miembro de la comunidad educativa @tecazuay.edu.ec
             </h1>
             <div className="btn-groups flex">
               <button
                 type="button"
                 className="btn-item bg-brown fw-4 ls-2"
-                style={{backgroundColor: "#004E9D", border: "none", color:"white"}}
+                style={{
+                  backgroundColor: "#004E9D",
+                  border: "none",
+                  color: "white",
+                }}
                 onClick={handleClick}
               >
                 Iniciar Sesión
@@ -52,7 +55,11 @@ const Bienvenida = () => {
               <button
                 type="button"
                 className="btn-item bg-dark fw-4 ls-2"
-                style={{backgroundColor: "#E5BB2A", border: "none", color:"white"}}
+                style={{
+                  backgroundColor: "#E5BB2A",
+                  border: "none",
+                  color: "white",
+                }}
                 onClick={newUser}
               >
                 Registrarse

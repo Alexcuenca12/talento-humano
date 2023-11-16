@@ -95,13 +95,7 @@ function CargaFamiliarContext() {
         const base64data = reader.result as string;
         setFormData({ ...formData, evidencia: base64data });
       };
-
-      reader.onerror = (error) => {
-        console.error("Error al leer el archivo:", error);
-      };
-
       reader.readAsDataURL(file);
-
       if (fileUploadRef.current) {
         fileUploadRef.current.clear();
       }
@@ -241,7 +235,7 @@ function CargaFamiliarContext() {
         .updateCarga(Number(editItemId), formData as ICargaFamiliar)
         .then((response) => {
           swal({
-            title: "Publicaciones",
+            title: "Carga Familiar",
             text: "Datos actualizados correctamente",
             icon: "success",
           });
@@ -299,6 +293,12 @@ function CargaFamiliarContext() {
             </h1>
           </Divider>
         </div>
+        <Divider align="left">
+          <div className="inline-flex align-items-center">
+            <i className="pi pi-book mr-2"></i>
+            <b>Formulario </b>
+          </div>
+        </Divider>
 
         <div className="flex justify-content-center flex-wrap">
           <form
@@ -307,23 +307,20 @@ function CargaFamiliarContext() {
           >
             <div className="flex flex-wrap flex-row">
               <div className="flex align-items-center justify-content-center">
-                <div
-                  className="flex flex-column flex-wrap gap-4"
-                  style={{ marginLeft: "20px" }}
-                >
+                <div className="flex flex-column flex-wrap gap-4">
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
-                      htmlFor="cargo"
+                      htmlFor="cedula"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "200px" }}
                     >
                       Cédula:
                     </label>
                     <InputText
                       className="text-2xl"
                       placeholder="Ingrese la Cédula"
-                      id="cargo"
-                      name="cargo"
+                      id="cedula"
+                      name="cedula"
                       style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
@@ -338,7 +335,7 @@ function CargaFamiliarContext() {
                     <label
                       htmlFor="nombresP"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "200px" }}
                     >
                       Nombre Completo:
                     </label>
@@ -357,39 +354,13 @@ function CargaFamiliarContext() {
                       value={formData.nombre_pariente}
                     />
                   </div>
-                  <div className="flex flex-wrap w-full h-full  justify-content-between">
-                    <label
-                      htmlFor="apellidoP"
-                      className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
-                    >
-                      Apellido Completo:
-                    </label>
-                    <InputText
-                      className="text-2xl"
-                      placeholder="Ingrese los Apellidos"
-                      id="apellidoP"
-                      name="apellidoP"
-                      style={{ width: "221px" }}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          apellido_pariente: e.currentTarget.value,
-                        })
-                      }
-                      value={formData.apellido_pariente}
-                    />
-                  </div>
                 </div>
-                <div
-                  className="flex flex-column flex-wrap gap-4"
-                  style={{ marginTop: "-105px", marginLeft: "25px" }}
-                >
+                <div className="flex flex-column flex-wrap gap-4">
                   <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
                       htmlFor="nacimiento"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "200px" }}
                     >
                       Fecha de Nacimiento:
                     </label>
@@ -420,49 +391,44 @@ function CargaFamiliarContext() {
                       }
                     />
                   </div>
+                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                    <label
+                      htmlFor="apellidoP"
+                      className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px", marginLeft: "200px" }}
+                    >
+                      Apellido Completo:
+                    </label>
+                    <InputText
+                      className="text-2xl"
+                      placeholder="Ingrese los Apellidos"
+                      id="apellidoP"
+                      name="apellidoP"
+                      style={{ width: "221px" }}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          apellido_pariente: e.currentTarget.value,
+                        })
+                      }
+                      value={formData.apellido_pariente}
+                    />
+                  </div>
                 </div>
               </div>
-              <div
-                className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6"
-                style={{ marginLeft: "-45px" }}
-              >
-                <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                  <Button
-                    type="submit"
-                    style={{ marginTop: "25px" }}
-                    label={editMode ? "Actualizar" : "Guardar"}
-                    className="w-full text-3xl min-w-min "
-                    rounded
-                    onClick={editMode ? handleUpdate : handleSubmit}
-                  />
+              <Divider align="left">
+                <div className="inline-flex align-items-center">
+                  <i className="pi pi-file-pdf mr-2"></i>
+                  <b>Anexos</b>
                 </div>
-                <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                  <Button
-                    type="button"
-                    label="Cancelar"
-                    style={{ marginTop: "25px" }}
-                    className="w-full text-3xl min-w-min"
-                    rounded
-                    onClick={resetForm}
-                  />
-                </div>
-              </div>
-              <div style={{ marginLeft: "600px", marginTop: "-285px" }}>
-                <div className="flex flex-column align-items-center justify-content-center ml-4">
-                  <label
-                    htmlFor="pdf"
-                    className="text-3xl font-medium w-auto min-w-min"
-                    style={{
-                      marginRight: "20px",
-                      marginLeft: "169px",
-                      marginTop: "-5px",
-                    }}
-                  >
+              </Divider>
+              <div className="column">
+                <div className="input-box" style={{ marginLeft: "20px" }}>
+                  <label htmlFor="pdf" className="font-medium w-auto min-w-min">
                     Subir Cédula de Identidad:
                   </label>
                   <FileUpload
                     name="pdf"
-                    style={{ marginLeft: "285px", marginTop: "10px" }}
                     chooseLabel="Escoger"
                     uploadLabel="Cargar"
                     cancelLabel="Cancelar"
@@ -474,6 +440,29 @@ function CargaFamiliarContext() {
                     customUpload
                     onSelect={customBytesUploader}
                     accept="application/pdf"
+                  />
+                </div>
+              </div>
+              <div
+                className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6"
+                style={{ marginLeft: "-45px" }}
+              >
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="submit"
+                    label={editMode ? "Actualizar" : "Guardar"}
+                    className="w-full text-3xl min-w-min "
+                    rounded
+                    onClick={editMode ? handleUpdate : handleSubmit}
+                  />
+                </div>
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="button"
+                    label="Cancelar"
+                    className="w-full text-3xl min-w-min"
+                    rounded
+                    onClick={resetForm}
                   />
                 </div>
               </div>
@@ -491,6 +480,7 @@ function CargaFamiliarContext() {
         >
           <thead>
             <tr style={{ backgroundColor: "#0C3255", color: "white" }}>
+              <th>Nro. </th>
               <th>Cédula </th>
               <th>Nombre</th>
               <th>Fecha de Nacimiento</th>
@@ -504,6 +494,7 @@ function CargaFamiliarContext() {
                 className="text-center"
                 key={cargaF.id_cargaFamiliar?.toString()}
               >
+                <td>{cargaF.id_cargaFamiliar}</td>
                 <td>{cargaF.cedula}</td>
                 <td>
                   {cargaF.nombre_pariente + " " + cargaF.apellido_pariente}

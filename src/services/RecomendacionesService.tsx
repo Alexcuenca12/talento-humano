@@ -11,7 +11,9 @@ export class RecomendacionesService {
   }
   save(recomendacion: any) {
     // Método para guardar la instrucción
-    return axios.post(this.baseUrl + "create", recomendacion).then((res) => res.data);
+    return axios
+      .post(this.baseUrl + "create", recomendacion)
+      .then((res) => res.data);
   }
   getAllByRecomendacion(id: number) {
     return axios

@@ -399,26 +399,27 @@ function ContratoContext() {
               Contrato
             </h1>
           </Divider>
+          <Divider align="left">
+            <div className="inline-flex align-items-center">
+              <i className="pi pi-book mr-2"></i>
+              <b>Formulario </b>
+            </div>
+          </Divider>
         </div>
 
-        <div
-          className="flex justify-content-center flex-wrap"
-          style={{ marginLeft: "55px" }}
-        >
+        <div className="flex justify-content-center flex-wrap">
           <form
             onSubmit={editMode ? handleUpdate : handleSubmit}
             encType="multipart/form-data"
           >
             <div className="flex flex-wrap flex-row">
               <div className="flex align-items-center justify-content-center">
-                <div
-                  className="flex flex-column flex-wrap gap-4"
-                  style={{ marginLeft: "20px" }}
-                >
+                <div className="flex flex-column flex-wrap gap-4">
                   <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
                       htmlFor="inicio"
                       className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px", marginLeft: "100px" }}
                     >
                       Fecha Inicio:
                     </label>
@@ -454,6 +455,7 @@ function ContratoContext() {
                     <label
                       htmlFor="fin"
                       className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px", marginLeft: "100px" }}
                     >
                       Fecha Fin:
                     </label>
@@ -487,6 +489,7 @@ function ContratoContext() {
                     <label
                       htmlFor="anios"
                       className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px", marginLeft: "100px" }}
                     >
                       Años de duracion:
                     </label>
@@ -506,14 +509,12 @@ function ContratoContext() {
                     />
                   </div>
                 </div>
-                <div
-                  className="flex flex-column flex-wrap gap-4"
-                  style={{ marginLeft: "20px" }}
-                >
+                <div className="flex flex-column flex-wrap gap-4">
                   <div className="flex flex-wrap w-full h-full  justify-content-between  ">
                     <label
                       htmlFor="horas"
                       className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px", marginLeft: "100px" }}
                     >
                       Horas:
                     </label>
@@ -535,6 +536,7 @@ function ContratoContext() {
                     <label
                       htmlFor="cargo"
                       className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px", marginLeft: "100px" }}
                     >
                       Cargo:
                     </label>
@@ -556,6 +558,7 @@ function ContratoContext() {
                     <label
                       htmlFor="salario"
                       className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px", marginLeft: "100px" }}
                     >
                       Salario:
                     </label>
@@ -574,15 +577,12 @@ function ContratoContext() {
                     />
                   </div>
                 </div>
-                <div
-                  className="flex flex-column flex-wrap gap-4"
-                  style={{ marginLeft: "20px" }}
-                >
+                <div className="flex flex-column flex-wrap gap-4">
                   <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
                       htmlFor="tiempo_dedicacion"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "5px" }}
+                      style={{ marginRight: "20px", marginLeft: "100px" }}
                     >
                       Tiempo Dedicación:
                     </label>
@@ -605,6 +605,7 @@ function ContratoContext() {
                     <label
                       htmlFor="salario_publico"
                       className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px", marginLeft: "100px" }}
                     >
                       Salario Público:
                     </label>
@@ -627,6 +628,7 @@ function ContratoContext() {
                     <label
                       htmlFor="contratoVigente"
                       className="text-3xl font-medium w-auto min-w-min"
+                      style={{ marginRight: "20px", marginLeft: "100px" }}
                     >
                       Contrato Vigente:
                     </label>
@@ -642,28 +644,17 @@ function ContratoContext() {
                   </div>
                 </div>
               </div>
-              <div className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
-                <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                  <Button
-                    type="submit"
-                    label={editMode ? "Actualizar" : "Guardar"}
-                    className="w-full text-3xl min-w-min "
-                    rounded
-                    onClick={editMode ? handleUpdate : handleSubmit}
-                  />
+              <Divider align="left">
+                <div className="inline-flex align-items-center">
+                  <i className="pi pi-file-pdf mr-2"></i>
+                  <b>Anexos</b>
                 </div>
-                <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                  <Button
-                    type="button"
-                    label="Cancelar"
-                    className="w-full text-3xl min-w-min"
-                    rounded
-                    onClick={resetForm}
-                  />
-                </div>
-              </div>
-              <div style={{ marginLeft: "1010px", marginTop: "-300px" }}>
-                <div className="flex flex-column align-items-center justify-content-center ml-4">
+              </Divider>
+              <div className="column">
+                <div className="input-box" style={{ marginLeft: "20px" }}>
+                  <label htmlFor="pdf" className="font-medium w-auto min-w-min">
+                    Subir Certificado:
+                  </label>
                   <FileUpload
                     name="pdf"
                     chooseLabel="Escoger"
@@ -682,7 +673,27 @@ function ContratoContext() {
               </div>
             </div>
           </form>
-          
+        </div>
+
+        <div className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
+          <div className="flex align-items-center justify-content-center w-auto min-w-min">
+            <Button
+              type="submit"
+              label={editMode ? "Actualizar" : "Guardar"}
+              className="w-full text-3xl min-w-min "
+              rounded
+              onClick={editMode ? handleUpdate : handleSubmit}
+            />
+          </div>
+          <div className="flex align-items-center justify-content-center w-auto min-w-min">
+            <Button
+              type="button"
+              label="Cancelar"
+              className="w-full text-3xl min-w-min"
+              rounded
+              onClick={resetForm}
+            />
+          </div>
         </div>
         <ReportBar
           reportName={excelReportData?.reportName!}

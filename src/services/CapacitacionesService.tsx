@@ -31,9 +31,10 @@ export class CapacitacionesService {
   }
 
   getAllByPersona(id: number) {
-    return this.api.get(`readCapacitacionPersona/${id}`).then((res) => res.data);
+    return this.api
+      .get(`readCapacitacionPersona/${id}`)
+      .then((res) => res.data);
   }
-
 
   updateCapacitaciones(id: number, capacitaciones: ICapacitaciones) {
     return this.api

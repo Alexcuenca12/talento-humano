@@ -9,11 +9,15 @@ export class ContratoService {
   }
 
   getAllByContrato(id: number) {
-    return axios.get(`${this.baseUrl}readContrato/${id}`).then((res) => res.data);
+    return axios
+      .get(`${this.baseUrl}readContrato/${id}`)
+      .then((res) => res.data);
   }
 
   getAllByPersona(id: number) {
-    return axios.get(`${this.baseUrl}readContratoPersona/${id}`).then((res) => res.data);
+    return axios
+      .get(`${this.baseUrl}readContratoPersona/${id}`)
+      .then((res) => res.data);
   }
   //Crear
   save(contrato: any) {

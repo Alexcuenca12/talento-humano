@@ -127,7 +127,9 @@ const Persona = () => {
       fileUploadRef.current.clear();
     }
   };
-  const customBytesUploaderMecanizado = async (event: FileUploadHandlerEvent) => {
+  const customBytesUploaderMecanizado = async (
+    event: FileUploadHandlerEvent
+  ) => {
     fileConverter(event.files[0])
       .then((data) => {
         formik.setFieldValue("mecanizado_iess", data);
@@ -521,7 +523,7 @@ const Persona = () => {
         });
     }
   }, [formik.values.cedula]);
-  
+
   const handleSubmit = async (data: IPersona) => {
     if (selectedItem) {
       await apiService
@@ -883,8 +885,7 @@ const Persona = () => {
             <FileUpload
               id="cv_socioempleo"
               ref={fileUploadRef}
-              mode="advanced"
-              name="file"
+              name="file_socioempleo"
               accept=".pdf"
               customUpload
               uploadHandler={customBytesUploader}
@@ -911,7 +912,7 @@ const Persona = () => {
               id="mecanizado_iess"
               ref={fileUploadRef}
               mode="advanced"
-              name="file"
+              name="file_mecanizado"
               accept=".pdf"
               customUpload
               uploadHandler={customBytesUploaderMecanizado}
@@ -935,7 +936,10 @@ const Persona = () => {
             <label className="font-medium"></label>
           </div>
 
-          <div className="field  flex flex-column" style={{marginLeft:"35%"}}>
+          <div
+            className="field  flex flex-column"
+            style={{ marginLeft: "35%" }}
+          >
             <label className="font-medium" htmlFor="foto">
               Foto Personal
             </label>

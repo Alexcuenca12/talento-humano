@@ -1,6 +1,5 @@
-import React, { useEffect, useState, } from "react";
+import React, { useEffect, useState } from "react";
 import { InputText } from "primereact/inputtext";
-import { Button } from "primereact/button";
 import "../../styles/Contrato.css";
 import { Fieldset } from "primereact/fieldset";
 import { Card } from "primereact/card";
@@ -8,7 +7,6 @@ import cardHeader from "../../shared/CardHeader";
 import { Divider } from "primereact/divider";
 import { IRecomendaciones } from "../../interfaces/Primary/IRecomendaciones";
 import { RecomendacionesService } from "../../services/RecomendacionesService";
-import swal from "sweetalert";
 import { useParams } from "react-router-dom";
 
 interface Params {
@@ -33,7 +31,6 @@ function RecomendacionContextDes() {
     primer_apellido: "",
     segundo_apellido: "",
     correo: "",
-    documentoRecomendacion: "",
     numeroContacto: "",
     persona: {
       id_persona: idPersona,
@@ -67,38 +64,6 @@ function RecomendacionContextDes() {
       });
   }, []);
 
-  const decodeBase64 = (base64Data: string) => {
-    try {
-      // Eliminar encabezados o metadatos de la cadena base64
-      const base64WithoutHeader = base64Data.replace(/^data:.*,/, "");
-
-      const decodedData = atob(base64WithoutHeader); // Decodificar la cadena base64
-      const byteCharacters = new Uint8Array(decodedData.length);
-
-      for (let i = 0; i < decodedData.length; i++) {
-        byteCharacters[i] = decodedData.charCodeAt(i);
-      }
-
-      const byteArray = new Blob([byteCharacters], { type: "application/pdf" });
-      const fileUrl = URL.createObjectURL(byteArray);
-
-      const link = document.createElement("a");
-      link.href = fileUrl;
-      link.download = "archivoCon.pdf";
-      link.click();
-      swal({
-        title: "Recomendacion",
-        text: "Descargando pdf....",
-        icon: "success",
-        timer: 1000,
-      });
-      link.remove();
-    } catch (error) {
-      console.error("Error al decodificar la cadena base64:", error);
-    }
-  };
-
-
   return (
     <Fieldset className="fgrid col-fixed ">
       <Card
@@ -114,19 +79,15 @@ function RecomendacionContextDes() {
         </div>
 
         <div className="flex justify-content-center flex-wrap">
-          <form
-            encType="multipart/form-data"
-          >
+          <form encType="multipart/form-data">
             <div className="flex flex-wrap flex-row">
-              <div
-                className="flex align-items-center justify-content-center"
-              >
+              <div className="flex align-items-center justify-content-center">
                 <div className="flex flex-column flex-wrap gap-4">
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
                       htmlFor="primer_nombre"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "30px" }}
                     >
                       Primer Nombre:
                     </label>
@@ -286,9 +247,9 @@ function RecomendacionContextDes() {
               <tr style={{ backgroundColor: "#0C3255", color: "white" }}>
                 <th>Nº</th>
                 <th>Nombres</th>
+                <th>Apellidos</th>
                 <th>Correo</th>
                 <th>Número </th>
-                <th>Evidencia</th>
               </tr>
             </thead>
             <tbody>
@@ -298,36 +259,19 @@ function RecomendacionContextDes() {
                   key={recomendaciones.id_recomendaciones?.toString()}
                 >
                   <td>{recomendaciones.id_recomendaciones}</td>
-
                   <td>
                     {recomendaciones.primer_nombre +
                       " " +
-                      recomendaciones.primer_apellido}
+                      recomendaciones.segundo_nombre}
                   </td>
+                  <td>
+                    {recomendaciones.primer_apellido +
+                      " " +
+                      recomendaciones.segundo_apellido}
+                  </td>
+
                   <td>{recomendaciones.correo}</td>
                   <td>{recomendaciones.numeroContacto}</td>
-
-                  <td>
-                    {recomendaciones.documentoRecomendacion ? (
-                      <Button
-                        type="button"
-                        className=""
-                        label="Descargar PDF"
-                        style={{
-                          background: "#009688",
-                          borderRadius: "10%",
-                          fontSize: "12px",
-                          color: "black",
-                          justifyContent: "center",
-                        }}
-                        onClick={() =>
-                          decodeBase64(recomendaciones.documentoRecomendacion!)
-                        }
-                      />
-                    ) : (
-                      <span>Sin evidencia</span>
-                    )}
-                  </td>
                 </tr>
               ))}
             </tbody>

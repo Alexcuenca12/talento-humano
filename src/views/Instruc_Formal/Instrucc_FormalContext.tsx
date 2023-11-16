@@ -15,6 +15,7 @@ import {
   IExcelReportParams,
   IHeaderItem,
 } from "../../interfaces/Secondary/IExcelReportParams";
+import { Dropdown } from "primereact/dropdown";
 
 function InstruccionFormalContext() {
   //Session Storage
@@ -22,7 +23,8 @@ function InstruccionFormalContext() {
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
 
-  const [excelReportData, setExcelReportData] = useState<IExcelReportParams | null>(null);
+  const [excelReportData, setExcelReportData] =
+    useState<IExcelReportParams | null>(null);
 
   const [formal1, setinstruc1] = useState<InstruccionFormalData[]>([]);
   const [formData, setFormData] = useState<InstruccionFormalData>({
@@ -84,7 +86,7 @@ function InstruccionFormalContext() {
       rowData,
     });
   }
-  
+
   const customBytesUploader = (event: FileUploadSelectEvent) => {
     if (event.files && event.files.length > 0) {
       const file = event.files[0];
@@ -290,6 +292,39 @@ function InstruccionFormalContext() {
       fileUploadRef.current.clear(); // Limpiar el campo FileUpload
     }
   };
+  const areaEstudioOptions = [
+    { label: "Administración/oficina", value: "Administración/oficina" },
+    {
+      label: "Agricultura/Pesca/Ganadería",
+      value: "Agricultura/Pesca/Ganadería",
+    },
+    { label: "Arte/Diseño/Medios", value: "Arte/Diseño/Medios" },
+    { label: "Científico/Investigación", value: "Científico/Investigación" },
+    { label: "Dirección/ Gerencia", value: "Dirección/ Gerencia" },
+    { label: "Economía/Contabilidad", value: "Economía/Contabilidad" },
+    { label: "Educación Básica/Cursos", value: "Educación Básica/Cursos" },
+    { label: "Educación/Universidad", value: "Educación/Universidad" },
+    { label: "Entretenimiento/Deportes", value: "Entretenimiento/Deportes" },
+    { label: "Fabricación", value: "Fabricación" },
+    { label: "Finanzas/ Banca", value: "Finanzas/ Banca" },
+    { label: "Gobierno", value: "Gobierno" },
+    { label: "Hotelería/Turismo", value: "Hotelería/Turismo" },
+    { label: "Informática hardware", value: "Informática hardware" },
+    { label: "Informática software", value: "Informática software" },
+    {
+      label: "Informática/Telecomunicaciones",
+      value: "Informática/Telecomunicaciones",
+    },
+    { label: "Ingeniería/Técnico", value: "Ingeniería/Técnico" },
+    { label: "Internet", value: "Internet" },
+    { label: "Legal/ Asesoría", value: "Legal/ Asesoría" },
+    { label: "Marketing/Ventas", value: "Marketing/Ventas" },
+    { label: "Materia prima", value: "Materia prima" },
+    { label: "Medicina/Salud", value: "Medicina/Salud" },
+    { label: "Recursos Humanos/Personal", value: "Recursos Humanos/Personal" },
+    { label: "Sin Área de Estudio", value: "Sin Área de Estudio" },
+    { label: "Ventas al consumidor", value: "Ventas al consumidor" },
+  ];
   if (!dataLoaded) {
     return <div>Cargando datos...</div>;
   }
@@ -307,7 +342,12 @@ function InstruccionFormalContext() {
             </h1>
           </Divider>
         </div>
-
+        <Divider align="left">
+          <div className="inline-flex align-items-center">
+            <i className="pi pi-book mr-2"></i>
+            <b>Formulario </b>
+          </div>
+        </Divider>
         <div className="flex justify-content-center flex-wrap">
           <form
             onSubmit={editMode ? handleUpdate : handleSubmit}
@@ -318,17 +358,17 @@ function InstruccionFormalContext() {
                 <div className="flex flex-column flex-wrap gap-4">
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
-                      htmlFor="cargo"
+                      htmlFor="nivelInstruccion"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
                       Nivel de Instrucción:
                     </label>
                     <InputText
                       className="text-2xl"
                       placeholder="Ingrese el Nivel de Instrucción"
-                      id="cargo"
-                      name="cargo"
+                      id="nivelInstruccion"
+                      name="nivelInstruccion"
                       style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
@@ -341,17 +381,17 @@ function InstruccionFormalContext() {
                   </div>
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
-                      htmlFor="cargo"
+                      htmlFor="institucionEdu"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
                       Institución Educativa:
                     </label>
                     <InputText
                       className="text-2xl"
                       placeholder="Ingrese la Institución"
-                      id="cargo"
-                      name="cargo"
+                      id="institucionEdu"
+                      name="institucionEdu"
                       style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
@@ -364,17 +404,17 @@ function InstruccionFormalContext() {
                   </div>
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
-                      htmlFor="cargo"
+                      htmlFor="titulo"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
                       Titulo Obtenido:
                     </label>
                     <InputText
                       className="text-2xl"
                       placeholder="Ingrese el Titulo"
-                      id="cargo"
-                      name="cargo"
+                      id="titulo"
+                      name="titulo"
                       style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
@@ -388,21 +428,20 @@ function InstruccionFormalContext() {
                 </div>
                 <div
                   className="flex flex-column flex-wrap gap-4"
-                  style={{ marginTop: "-3px", marginLeft: "25px" }}
                 >
                   <div className="flex flex-wrap w-full h-full  justify-content-between">
                     <label
-                      htmlFor="filiacion"
+                      htmlFor="registroSenecyt"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
                       Nº de Registro de Senecyt:
                     </label>
                     <InputText
                       className="text-2xl"
                       placeholder="Ingrese el Registro de Senecyt"
-                      id="filiacion"
-                      name="filiacion"
+                      id="registroSenecyt"
+                      name="registroSenecyt"
                       style={{ width: "221px" }}
                       onChange={(e) =>
                         setFormData({
@@ -417,7 +456,7 @@ function InstruccionFormalContext() {
                     <label
                       htmlFor="tiempoEstudio"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
                       Tiempo de Estudio:
                     </label>
@@ -448,7 +487,7 @@ function InstruccionFormalContext() {
                     <label
                       htmlFor="anioGraduacion"
                       className="text-3xl font-medium w-auto min-w-min"
-                      style={{ marginRight: "20px" }}
+                      style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
                       Año de Graduación:
                     </label>
@@ -481,39 +520,62 @@ function InstruccionFormalContext() {
                   className="flex flex-column flex-wrap gap-4"
                   style={{ marginTop: "-107px", marginLeft: "25px" }}
                 >
-                  <div className="flex flex-wrap w-full h-full  justify-content-between">
+                  <div className="flex flex-wrap w-full h-full justify-content-between">
                     <label
-                      htmlFor="area"
+                      htmlFor="area_estudios"
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px" }}
                     >
-                      Area de Estudios
+                      Área de Estudios:
                     </label>
-                    <InputText
-                      className="text-2xl"
-                      placeholder="Ingrese el Area de Estudios"
-                      id="area"
-                      name="area"
-                      style={{ width: "221px" }}
+                    <Dropdown
+                      id="area_estudios"
+                      name="area_estudios"
+                      options={areaEstudioOptions}
                       onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          areaEstudios: e.currentTarget.value,
-                        })
+                        setFormData({ ...formData, areaEstudios: e.value })
                       }
                       value={formData.areaEstudios}
+                      optionLabel="label"
+                      optionValue="value"
+                      placeholder="Seleccione el Área de Estudio"
+                      style={{ width: "250px" }} // Ajusta el ancho del Dropdown
                     />
                   </div>
+                </div>
+              </div>
+              <Divider align="left">
+                <div className="inline-flex align-items-center">
+                  <i className="pi pi-file-pdf mr-2"></i>
+                  <b>Anexos</b>
+                </div>
+              </Divider>
+              <div className="column">
+                <div className="input-box" style={{ marginLeft: "20px" }}>
+                  <label htmlFor="pdf" className="font-medium w-auto min-w-min">
+                    Subir Título:
+                  </label>
+                  <FileUpload
+                    name="pdf"
+                    chooseLabel="Escoger"
+                    uploadLabel="Cargar"
+                    cancelLabel="Cancelar"
+                    emptyTemplate={
+                      <p className="m-0 p-button-rounded">
+                        Arrastre y suelte los archivos aquí para cargarlos.
+                      </p>
+                    }
+                    customUpload
+                    onSelect={customBytesUploader}
+                    accept="application/pdf"
+                  />
                 </div>
               </div>
               <div
                 className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6"
                 style={{ marginLeft: "-45px" }}
               >
-                <div
-                  className="flex align-items-center justify-content-center w-auto min-w-min"
-                  style={{ marginTop: "25px" }}
-                >
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
                   <Button
                     type="submit"
                     label={editMode ? "Actualizar" : "Guardar"}
@@ -522,10 +584,7 @@ function InstruccionFormalContext() {
                     onClick={editMode ? handleUpdate : handleSubmit}
                   />
                 </div>
-                <div
-                  className="flex align-items-center justify-content-center w-auto min-w-min"
-                  style={{ marginTop: "25px" }}
-                >
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
                   <Button
                     type="button"
                     label="Cancelar"
@@ -533,39 +592,6 @@ function InstruccionFormalContext() {
                     rounded
                     onClick={resetForm}
                   />
-                </div>
-              </div>
-              <div>
-                {" "}
-                <div className="flex flex-column align-items-center justify-content-center ml-4">
-                  <div style={{ marginTop: "-105px", marginLeft: "630px" }}>
-                    <label
-                      htmlFor="pdf"
-                      className="text-3xl font-medium w-auto min-w-min"
-                      style={{
-                        marginRight: "20px",
-                        marginLeft: "267px",
-                        marginTop: "5px",
-                      }}
-                    >
-                      Subir Evidencia:
-                    </label>
-                    <FileUpload
-                      name="pdf"
-                      style={{ marginLeft: "270px", marginTop: "10px" }}
-                      chooseLabel="Escoger"
-                      uploadLabel="Cargar"
-                      cancelLabel="Cancelar"
-                      emptyTemplate={
-                        <p className="m-0 p-button-rounded">
-                          Arrastre y suelte los archivos aquí para cargarlos.
-                        </p>
-                      }
-                      customUpload
-                      onSelect={customBytesUploader}
-                      accept="application/pdf"
-                    />
-                  </div>
                 </div>
               </div>
             </div>

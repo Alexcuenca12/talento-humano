@@ -26,9 +26,7 @@ export class ExperienciaService {
   }
 
   getAllByPersona(id: number) {
-    return this.api
-      .get(`readExperienciaPersona/${id}`)
-      .then((res) => res.data);
+    return this.api.get(`readExperienciaPersona/${id}`).then((res) => res.data);
   }
 
   createItem(item: IExperiencia) {

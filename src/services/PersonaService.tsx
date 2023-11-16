@@ -1,6 +1,5 @@
 import axios from "axios";
-import {IResumen} from "../interfaces/Primary/IResumen";
-
+import { IResumen } from "../interfaces/Primary/IResumen";
 
 export class PersonaService {
   baseUrl = "http://localhost:8080/api/persona/";
@@ -24,7 +23,6 @@ export class PersonaService {
     return axios.delete(`${this.baseUrl}delete/${id}`).then((res) => res.data);
   }
 
-  
   getAllByPersona(id: number) {
     return axios
       .get(`${this.baseUrl}readPersona/${id}`)
@@ -32,18 +30,22 @@ export class PersonaService {
   }
 
   getSummary(id: number) {
-    return axios.get(`${this.baseUrl}combined/${id}`).then(response => response.data as IResumen)
-        .catch(error => {
-            throw error
-        })
-}
+    return axios
+      .get(`${this.baseUrl}combined/${id}`)
+      .then((response) => response.data as IResumen)
+      .catch((error) => {
+        throw error;
+      });
+  }
 
-getSummarySecre(cedula: string) {
-  return axios.get(`${this.baseUrl}combi/${cedula}`).then(response => response.data as IResumen)
-      .catch(error => {
-          throw error
-      })
-}
+  getSummarySecre(cedula: string) {
+    return axios
+      .get(`${this.baseUrl}combi/${cedula}`)
+      .then((response) => response.data as IResumen)
+      .catch((error) => {
+        throw error;
+      });
+  }
   //Metodo para actualizar un horario basado en el id de la misma
   update(id: number, user: any) {
     return axios

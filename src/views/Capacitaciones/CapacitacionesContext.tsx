@@ -18,7 +18,7 @@ import {
 } from "../../interfaces/Secondary/IExcelReportParams";
 import { ReportBar } from "../../shared/ReportBar";
 
-function PublicacionesContext() {
+function CapacitacionesContext() {
   //Session Storage
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
@@ -158,13 +158,7 @@ function PublicacionesContext() {
         const base64data = reader.result as string;
         setFormData({ ...formData, evidencia: base64data });
       };
-
-      reader.onerror = (error) => {
-        console.error("Error al leer el archivo:", error);
-      };
-
       reader.readAsDataURL(file);
-
       if (fileUploadRef.current) {
         fileUploadRef.current.clear();
       }
@@ -191,7 +185,7 @@ function PublicacionesContext() {
       link.download = "Evidencias Capacitaciones.pdf";
       link.click();
       swal({
-        title: "Publicación",
+        title: "Certificado de la Capacitación",
         text: "Descargando pdf....",
         icon: "success",
         timer: 1000,
@@ -225,7 +219,7 @@ function PublicacionesContext() {
       .guardarCapacitaciones(formData)
       .then((response) => {
         resetForm();
-        swal("Publicacion", "Datos Guardados Correctamente", "success");
+        swal("Capacitacion", "Datos Guardados Correctamente", "success");
 
         capaService
           .getAllByPersona(idPersona)
@@ -277,7 +271,6 @@ function PublicacionesContext() {
               );
             })
             .catch((error) => {
-              console.error("Error al eliminar el registro:", error);
               swal(
                 "Error",
                 "Ha ocurrido un error al eliminar el registro",
@@ -310,7 +303,7 @@ function PublicacionesContext() {
         .updateCapacitaciones(Number(editItemId), formData as ICapacitaciones)
         .then((response) => {
           swal({
-            title: "Publicaciones",
+            title: "Capacitaciones",
             text: "Datos actualizados correctamente",
             icon: "success",
           });
@@ -378,6 +371,12 @@ function PublicacionesContext() {
             </h1>
           </Divider>
         </div>
+        <Divider align="left">
+          <div className="inline-flex align-items-center">
+            <i className="pi pi-book mr-2"></i>
+            <b>Formulario </b>
+          </div>
+        </Divider>
 
         <div className="flex justify-content-center flex-wrap">
           <form
@@ -644,47 +643,20 @@ function PublicacionesContext() {
                   </div>
                 </div>
               </div>
-              <div
-                className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6"
-                style={{ marginLeft: "-45px" }}
-              >
-                <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                  <Button
-                    type="submit"
-                    style={{ marginTop: "55px" }}
-                    label={editMode ? "Actualizar" : "Guardar"}
-                    className="w-full text-3xl min-w-min "
-                    rounded
-                    onClick={editMode ? handleUpdate : handleSubmit}
-                  />
+              <Divider align="left">
+                <div className="inline-flex align-items-center">
+                  <i className="pi pi-file-pdf mr-2"></i>
+                  <b>Anexos</b>
                 </div>
-                <div className="flex align-items-center justify-content-center w-auto min-w-min">
-                  <Button
-                    type="button"
-                    label="Cancelar"
-                    style={{ marginTop: "55px" }}
-                    className="w-full text-3xl min-w-min"
-                    rounded
-                    onClick={resetForm}
-                  />
-                </div>
-              </div>
-              <div style={{ marginLeft: "466px", marginTop: "-93px" }}>
-                <div className="flex flex-column align-items-center justify-content-center ml-4">
-                  <label
-                    htmlFor="pdf"
-                    className="text-3xl font-medium w-auto min-w-min"
-                    style={{
-                      marginRight: "20px",
-                      marginLeft: "169px",
-                      marginTop: "-5px",
-                    }}
-                  >
+              </Divider>
+
+              <div className="column">
+                <div className="input-box" style={{ marginLeft: "20px" }}>
+                  <label htmlFor="pdf" className="font-medium w-auto min-w-min">
                     Subir Certificado:
                   </label>
                   <FileUpload
                     name="pdf"
-                    style={{ marginLeft: "380px", marginTop: "10px" }}
                     chooseLabel="Escoger"
                     uploadLabel="Cargar"
                     cancelLabel="Cancelar"
@@ -696,6 +668,29 @@ function PublicacionesContext() {
                     customUpload
                     onSelect={customBytesUploader}
                     accept="application/pdf"
+                  />
+                </div>
+              </div>
+              <div
+                className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6"
+                style={{ marginLeft: "-45px" }}
+              >
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="submit"
+                    label={editMode ? "Actualizar" : "Guardar"}
+                    className="w-full text-3xl min-w-min "
+                    rounded
+                    onClick={editMode ? handleUpdate : handleSubmit}
+                  />
+                </div>
+                <div className="flex align-items-center justify-content-center w-auto min-w-min">
+                  <Button
+                    type="button"
+                    label="Cancelar"
+                    className="w-full text-3xl min-w-min"
+                    rounded
+                    onClick={resetForm}
                   />
                 </div>
               </div>
@@ -825,4 +820,4 @@ function PublicacionesContext() {
   );
 }
 
-export default PublicacionesContext;
+export default CapacitacionesContext;

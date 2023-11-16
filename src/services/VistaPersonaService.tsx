@@ -1,5 +1,5 @@
 import axios from "axios";
-import {AxiosInstance} from "axios/index";
+import { AxiosInstance } from "axios/index";
 
 export class VistaPersonaService {
   baseUrl = "http://localhost:8080/api/fenix/cedula/";
@@ -8,15 +8,15 @@ export class VistaPersonaService {
 
   constructor() {
     this.api = axios.create({
-      baseURL: this.baseUrl
+      baseURL: this.baseUrl,
     });
   }
   getByCedula(cedula: string) {
-    return this.api.get(`${this.baseUrl}${cedula}`)
-        .then(response => response.data)
-        .catch(error => {
-          throw error
-        })
+    return this.api
+      .get(`${this.baseUrl}${cedula}`)
+      .then((response) => response.data)
+      .catch((error) => {
+        throw error;
+      });
   }
-
-};
+}
