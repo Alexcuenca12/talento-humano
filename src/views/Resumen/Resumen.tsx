@@ -16,6 +16,7 @@ import { IRecomendaciones } from "../../interfaces/Primary/Recomendaciones";
 import { IExperiencia } from "../../interfaces/Primary/IExperiencia";
 import { InstruccionFormalData } from "../../interfaces/Primary/IInstrucc_Formal";
 import PersonaCombinada from "../Persona/PersonaCombinada";
+import { IPublicaciones } from "../../interfaces/Primary/IPublicaciones";
 
 const Resumen = () => {
   const userData = sessionStorage.getItem("user");
@@ -29,6 +30,7 @@ const Resumen = () => {
   const [evaluaciones, setEvaluaciones] = useState<IEvaDocente[]>([]);
   const [habilidades, setHabilidades] = useState<IHabilidadesData[]>([]);
   const [horarios, setHorarios] = useState<IHorarioData[]>([]);
+  const [publicaciones, setPublicaciones] = useState<IPublicaciones[]>([]);
   const personaService = new PersonaService();
   const [recomendaciones, setRecomendaciones] = useState<IRecomendaciones[]>(
     []
@@ -54,6 +56,7 @@ const Resumen = () => {
           evaluaciones,
           habilidades,
           horarios,
+          publicaciones,
           instruccionFormals,
           recomendaciones,
           experiencias,
@@ -65,6 +68,7 @@ const Resumen = () => {
         setEvaluaciones(evaluaciones);
         setHabilidades(habilidades);
         setHorarios(horarios);
+        setPublicaciones(publicaciones);
         setRecomendaciones(recomendaciones);
         setExperiencias(experiencias);
         setinstruccionFormals(instruccionFormals);
@@ -140,9 +144,13 @@ const Resumen = () => {
           <h2 className="text-3xl">Cargo: </h2>
           <p className="text-2xl">{rowData.cargo}</p>
         </div>
-        <div className=" ">
+        <div className=" mr-4">
           <h2 className="text-3xl">Salario: </h2>
           <p className="text-2xl">{rowData.salario}</p>
+        </div>
+        <div className=" mr-4">
+          <h2 className="text-3xl">Jornada: </h2>
+          <p className="text-2xl">{rowData.tiempo_dedicacion}</p>
         </div>
       </div>
     );
@@ -211,12 +219,22 @@ const Resumen = () => {
         <div className="mr-4">
           <h2 className="text-3xl">Nombres: </h2>
           <p className="text-2xl">
-            {rowData.primer_nombre + " " + rowData.primer_apellido}
+            {rowData.primer_nombre + " " + rowData.segundo_nombre}
+          </p>
+        </div>
+        <div className="mr-4">
+          <h2 className="text-3xl">Apellidos: </h2>
+          <p className="text-2xl">
+            {rowData.primer_apellido + " " + rowData.segundo_apellido}
           </p>
         </div>
         <div className="mr-4">
           <h2 className="text-3xl">Email: </h2>
           <p className="text-2xl">{rowData.correo}</p>
+        </div>
+        <div className="mr-4">
+          <h2 className="text-3xl">Número: </h2>
+          <p className="text-2xl">{rowData.numeroContacto}</p>
         </div>
       </div>
     );
@@ -290,6 +308,10 @@ const Resumen = () => {
           <h2 className="text-3xl">Puesto: </h2>
           <p className="text-2xl">{rowData.puesto}</p>
         </div>
+        <div className="mr-4">
+          <h2 className="text-3xl">Actividades: </h2>
+          <p className="text-2xl">{rowData.actividades}</p>
+        </div>
       </div>
     );
   };
@@ -300,6 +322,43 @@ const Resumen = () => {
         <div className="mr-4">
           <h2 className="text-3xl">Descripcion: </h2>
           <p className="text-2xl">{rowData.descripcion}</p>
+        </div>
+      </div>
+    );
+  };
+
+  const publicacionBody = (rowData: IPublicaciones) => {
+    return (
+      <div className="flex">
+        <div className="mr-4 ">
+          <h2 className="text-3xl">Titulo: </h2>
+          <p className="text-2xl">{rowData.titulo_publi}</p>
+        </div>
+        <div className="mr-4">
+          <h2 className="text-3xl">Fecha Publicación: </h2>
+          <p className="text-2xl">
+            {String(
+              rowData.fecha_publi
+                ? new Date(rowData.fecha_publi).toLocaleDateString("es-ES", {
+                    year: "numeric",
+                    month: "2-digit",
+                    day: "2-digit",
+                  })
+                : ""
+            )}
+          </p>
+        </div>
+        <div className="mr-4 ">
+          <h2 className="text-3xl">Autores: </h2>
+          <p className="text-2xl">{rowData.autores_publi}</p>
+        </div>
+        <div className="mr-4 ">
+          <h2 className="text-3xl">Lugar Publicación: </h2>
+          <p className="text-2xl">{rowData.lugar_publi}</p>
+        </div>
+        <div className=" ">
+          <h2 className="text-3xl">Editorial: </h2>
+          <p className="text-2xl">{rowData.editorial_publi}</p>
         </div>
       </div>
     );
@@ -363,16 +422,6 @@ const Resumen = () => {
                         color: "white",
                       }}
                     ></Column>
-                    <Column
-                      field="Acciones"
-                      header="Acciones"
-                      frozen
-                      style={{ width: "50px" }}
-                      headerStyle={{
-                        backgroundColor: "#0C3255",
-                        color: "white",
-                      }}
-                    ></Column>
                   </DataTable>
                 </div>
                 <div
@@ -396,15 +445,6 @@ const Resumen = () => {
                       }}
                       body={contratoBody}
                     ></Column>
-                    <Column
-                      field="Acciones"
-                      header="Acciones"
-                      style={{ width: "50px" }}
-                      headerStyle={{
-                        backgroundColor: "#0C3255",
-                        color: "white",
-                      }}
-                    ></Column>
                   </DataTable>
                 </div>
 
@@ -424,15 +464,6 @@ const Resumen = () => {
                       field="Horario"
                       header="Horario"
                       body={horarioBody}
-                      headerStyle={{
-                        backgroundColor: "#0C3255",
-                        color: "white",
-                      }}
-                    ></Column>
-                    <Column
-                      field="Acciones"
-                      header="Acciones"
-                      style={{ width: "50px" }}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -461,15 +492,6 @@ const Resumen = () => {
                       }}
                       body={capacitacionesBody}
                     ></Column>
-                    <Column
-                      field="Acciones"
-                      header="Acciones"
-                      style={{ width: "50px" }}
-                      headerStyle={{
-                        backgroundColor: "#0C3255",
-                        color: "white",
-                      }}
-                    ></Column>
                   </DataTable>
                 </div>
                 <div
@@ -493,10 +515,24 @@ const Resumen = () => {
                         color: "white",
                       }}
                     ></Column>
+                  </DataTable>
+                </div>
+                <div
+                  className="flex flex-row flex-wrap w-full h-full justify-content-center flex-grow-1 row-gap-8 gap-8 mt-6"
+                  style={{ marginLeft: "15%" }}
+                >
+                  <DataTable
+                    value={publicaciones}
+                    dataKey="id_publicacion"
+                    tableStyle={{ minWidth: "50rem", width: "79rem" }}
+                    scrollable
+                    scrollHeight="400px"
+                    className="mt-5  w-full h-full text-3xl font-medium"
+                  >
                     <Column
-                      field="Acciones"
-                      header="Acciones"
-                      style={{ width: "50px" }}
+                      field="Publicación"
+                      header="Publicación"
+                      body={publicacionBody}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -525,15 +561,6 @@ const Resumen = () => {
                         color: "white",
                       }}
                     ></Column>
-                    <Column
-                      field="Acciones"
-                      header="Acciones"
-                      style={{ width: "50px" }}
-                      headerStyle={{
-                        backgroundColor: "#0C3255",
-                        color: "white",
-                      }}
-                    ></Column>
                   </DataTable>
                 </div>
                 <div
@@ -552,15 +579,6 @@ const Resumen = () => {
                       field="Instruccion Formal"
                       header="Instruccion Formal"
                       body={instruccionFBody} //
-                      headerStyle={{
-                        backgroundColor: "#0C3255",
-                        color: "white",
-                      }}
-                    ></Column>
-                    <Column
-                      field="Acciones"
-                      header="Acciones"
-                      style={{ width: "50px" }}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",
@@ -589,15 +607,6 @@ const Resumen = () => {
                         color: "white",
                       }}
                     ></Column>
-                    <Column
-                      field="Acciones"
-                      header="Acciones"
-                      style={{ width: "50px" }}
-                      headerStyle={{
-                        backgroundColor: "#0C3255",
-                        color: "white",
-                      }}
-                    ></Column>
                   </DataTable>
                 </div>
                 <div
@@ -621,15 +630,6 @@ const Resumen = () => {
                         color: "white",
                       }}
                     ></Column>
-                    <Column
-                      field="Acciones"
-                      header="Acciones"
-                      style={{ width: "50px" }}
-                      headerStyle={{
-                        backgroundColor: "#0C3255",
-                        color: "white",
-                      }}
-                    ></Column>
                   </DataTable>
                 </div>
                 <div
@@ -648,15 +648,6 @@ const Resumen = () => {
                       field="descripcion"
                       header="Habilidades"
                       body={habilidadesBody}
-                      headerStyle={{
-                        backgroundColor: "#0C3255",
-                        color: "white",
-                      }}
-                    ></Column>
-                    <Column
-                      field="Acciones"
-                      header="Acciones"
-                      style={{ width: "50px" }}
                       headerStyle={{
                         backgroundColor: "#0C3255",
                         color: "white",

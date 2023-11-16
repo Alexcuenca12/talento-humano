@@ -150,6 +150,29 @@ const Persona = () => {
     }
   };
 
+  const customBytesUploaderDocumentos = async (
+    event: FileUploadHandlerEvent
+  ) => {
+    fileConverter(event.files[0])
+      .then((data) => {
+        formik.setFieldValue("documentos_personales", data);
+        setMessage({ severity: "info", detail: "Archivo Cargado" });
+      })
+      .catch((error) => {
+        console.error(error);
+        setMessage({
+          severity: "error",
+          summary: "Error",
+          detail: error.message,
+        });
+      });
+
+    if (fileUploadRef.current) {
+      // clean the file uploaded
+      fileUploadRef.current.clear();
+    }
+  };
+
   const decodeBase64 = (base64Data: string) => {
     try {
       const base64WithoutHeader = base64Data.replace(/^data:.*,/, "");
@@ -197,6 +220,7 @@ const Persona = () => {
       foto: "",
       cv_socioempleo: null,
       mecanizado_iess: null,
+      documentos_personales: null,
       descripcion_perfil: "",
       pais_residencia: "",
       provincia_residencia: "",
@@ -605,6 +629,12 @@ const Persona = () => {
               Datos Personales
             </h1>
           </Divider>
+          <Divider align="left">
+            <div className="inline-flex align-items-center">
+              <i className="pi pi-book mr-2"></i>
+              <b>Formulario </b>
+            </div>
+          </Divider>
 
           <div className="field col-4">
             <label className="font-medium" htmlFor="cedula">
@@ -877,92 +907,6 @@ const Persona = () => {
               {formik.touched.descripcion_perfil &&
                 formik.errors.descripcion_perfil}
             </small>
-          </div>
-          <div className="field col-4 flex flex-column">
-            <label className="font-medium" htmlFor="cv_socioempleo">
-              Curriculum Vitae SocioEmpleo
-            </label>
-            <FileUpload
-              id="cv_socioempleo"
-              ref={fileUploadRef}
-              name="file_socioempleo"
-              accept=".pdf"
-              customUpload
-              uploadHandler={customBytesUploader}
-              chooseLabel="Seleccionar"
-              uploadLabel="Subir"
-              cancelLabel="Cancelar"
-              emptyTemplate={
-                <p className="m-0">
-                  {formik.values.cv_socioempleo
-                    ? "Archivo Cargado Correctamente"
-                    : "Seleccione un Documento"}
-                </p>
-              }
-            />
-            <small className="p-error w-full">
-              {formik.touched.cv_socioempleo && formik.errors.cv_socioempleo}
-            </small>
-          </div>
-          <div className="field col-4 flex flex-column">
-            <label className="font-medium" htmlFor="mecanizado_iess">
-              Mecanizado del IESS
-            </label>
-            <FileUpload
-              id="mecanizado_iess"
-              ref={fileUploadRef}
-              mode="advanced"
-              name="file_mecanizado"
-              accept=".pdf"
-              customUpload
-              uploadHandler={customBytesUploaderMecanizado}
-              chooseLabel="Seleccionar"
-              uploadLabel="Subir"
-              cancelLabel="Cancelar"
-              emptyTemplate={
-                <p className="m-0">
-                  {formik.values.mecanizado_iess
-                    ? "Archivo Cargado Correctamente"
-                    : "Seleccione un Documento"}
-                </p>
-              }
-            />
-            <small className="p-error w-full">
-              {formik.touched.mecanizado_iess && formik.errors.mecanizado_iess}
-            </small>
-          </div>
-
-          <div className="field col-1">
-            <label className="font-medium"></label>
-          </div>
-
-          <div
-            className="field  flex flex-column"
-            style={{ marginLeft: "35%" }}
-          >
-            <label className="font-medium" htmlFor="foto">
-              Foto Personal
-            </label>
-            <img src={imageUrl} height={200} width={200} alt="" />
-            <label className="font-medium" htmlFor="foto"></label>
-            <FileUpload
-              id="foto"
-              ref={fileUploadRef}
-              mode="basic"
-              name="file"
-              chooseLabel="Escoger"
-              uploadLabel="Cargar"
-              cancelLabel="Cancelar"
-              accept="image/*"
-              auto
-              customUpload
-              uploadHandler={imageUploader}
-              emptyTemplate={
-                <p className="m-0 p-button-rounded">
-                  Arrastre y suelte los archivos aquí para cargarlos.
-                </p>
-              }
-            />
           </div>
 
           <Divider align="center">
@@ -1260,18 +1204,141 @@ const Persona = () => {
           <div className="field col-4">
             <label className="font-medium"></label>
           </div>
+          <Divider align="left">
+            <div className="inline-flex align-items-center">
+              <i className="pi pi-file-pdf mr-2"></i>
+              <b>Anexos</b>
+            </div>
+          </Divider>
 
-          <div className="col-12 flex justify-content-evenly align-content-center mt-3">
+          <div className="field col-4 flex flex-column">
+            <label className="font-medium" htmlFor="cv_socioempleo">
+              Curriculum Vitae SocioEmpleo
+            </label>
+            <FileUpload
+              id="cv_socioempleo"
+              ref={fileUploadRef}
+              name="file_socioempleo"
+              accept=".pdf"
+              customUpload
+              uploadHandler={customBytesUploader}
+              chooseLabel="Seleccionar"
+              uploadLabel="Subir"
+              cancelLabel="Cancelar"
+              emptyTemplate={
+                <p className="m-0">
+                  {formik.values.cv_socioempleo
+                    ? "Archivo Cargado Correctamente"
+                    : "Seleccione un Documento"}
+                </p>
+              }
+            />
+            <small className="p-error w-full">
+              {formik.touched.cv_socioempleo && formik.errors.cv_socioempleo}
+            </small>
+          </div>
+          <div className="field col-4 flex flex-column">
+            <label className="font-medium" htmlFor="mecanizado_iess">
+              Mecanizado del IESS
+            </label>
+            <FileUpload
+              id="mecanizado_iess"
+              ref={fileUploadRef}
+              mode="advanced"
+              name="file_mecanizado"
+              accept=".pdf"
+              customUpload
+              uploadHandler={customBytesUploaderMecanizado}
+              chooseLabel="Seleccionar"
+              uploadLabel="Subir"
+              cancelLabel="Cancelar"
+              emptyTemplate={
+                <p className="m-0">
+                  {formik.values.mecanizado_iess
+                    ? "Archivo Cargado Correctamente"
+                    : "Seleccione un Documento"}
+                </p>
+              }
+            />
+            <small className="p-error w-full">
+              {formik.touched.mecanizado_iess && formik.errors.mecanizado_iess}
+            </small>
+          </div>
+          <div className="field col-4 flex flex-column">
+            <label className="font-medium" htmlFor="documentos_personales">
+              Documentos Personales
+            </label>
+            <FileUpload
+              id="documentos_personales"
+              ref={fileUploadRef}
+              mode="advanced"
+              name="documentos_personales"
+              accept=".pdf"
+              customUpload
+              uploadHandler={customBytesUploaderDocumentos}
+              chooseLabel="Seleccionar"
+              uploadLabel="Subir"
+              cancelLabel="Cancelar"
+              emptyTemplate={
+                <p className="m-0">
+                  {formik.values.documentos_personales
+                    ? "Archivo Cargado Correctamente"
+                    : "Seleccione un Documento"}
+                </p>
+              }
+            />
+            <small className="p-error w-full">
+              {formik.touched.mecanizado_iess && formik.errors.mecanizado_iess}
+            </small>
+          </div>
+          <div className="field col-1">
+            <label className="font-medium"></label>
+          </div>
+          <div
+            className="field  flex flex-column"
+            style={{ marginLeft: "35%" }}
+          >
+            <label className="font-medium" htmlFor="foto">
+              Foto Personal
+            </label>
+            <img src={imageUrl} height={200} width={200} alt="" />
+            <label className="font-medium" htmlFor="foto"></label>
+            <FileUpload
+              id="foto"
+              ref={fileUploadRef}
+              mode="basic"
+              name="file"
+              chooseLabel="Escoger"
+              uploadLabel="Cargar"
+              cancelLabel="Cancelar"
+              accept="image/*"
+              auto
+              customUpload
+              uploadHandler={imageUploader}
+              emptyTemplate={
+                <p className="m-0 p-button-rounded">
+                  Arrastre y suelte los archivos aquí para cargarlos.
+                </p>
+              }
+            />
+          </div>
+        </form>
+        <div className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
+          <div className="flex align-items-center justify-content-center w-auto min-w-min">
             <Button
               type="submit"
               label={selectedItem ? "Actualizar" : "Guardar"}
               severity={selectedItem ? "warning" : "success"}
               rounded
+              className="w-full text-3xl min-w-min "
             />
+          </div>
+          <div className="flex align-items-center justify-content-center w-auto min-w-min">
             <Button
               type="button"
               label="Cancelar"
               severity="secondary"
+              className="w-full text-3xl min-w-min "
               rounded
               onClick={() => {
                 formik.resetForm();
@@ -1279,7 +1346,8 @@ const Persona = () => {
               }}
             />
           </div>
-        </form>
+        </div>
+
         <ReportBar
           reportName={excelReportData?.reportName!}
           headerItems={excelReportData?.headerItems!}

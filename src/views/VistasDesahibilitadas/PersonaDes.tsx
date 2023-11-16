@@ -72,6 +72,7 @@ function PersonaContextDes() {
     foto: "",
     cv_socioempleo: null,
     mecanizado_iess: null,
+    documentos_personales: null,
     descripcion_perfil: "",
     pais_residencia: "",
     provincia_residencia: "",

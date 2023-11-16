@@ -1,5 +1,3 @@
-import {IPersona} from "./IPersona";
-
 export interface IContratoData {
   id_contrato?: Number;
   fecha_inicio: string;
