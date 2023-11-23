@@ -4,13 +4,15 @@ import { Card } from "primereact/card";
 import { InputText } from "primereact/inputtext";
 import { Button } from "primereact/button";
 import { Divider } from "primereact/divider";
-import { VDocentes } from "../../interfaces/Secondary/VDocentes";
-import { vDocenteService } from "../../services/VDocentesService";
 import { useHistory } from "react-router-dom";
+import { IPersona } from "../../interfaces/Primary/IPersona";
+import { PersonaService } from "../../services/PersonaService";
 
 function DocenteContext() {
-  const [docentes, setDocentes] = useState<VDocentes[]>([]);
-  const docenteService = new vDocenteService();
+  //const [docentes, setDocentes] = useState<VDocentes[]>([]);
+  const [docentes, setDocentes] = useState<IPersona[]>([]);
+  const docenteService = new PersonaService();
+  //const docenteService = new vDocenteService();
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedDocente, setSelectedDocente] = useState<string | null>(null);
   const history = useHistory();
@@ -31,17 +33,17 @@ function DocenteContext() {
   };
 
   const filteredDocentes = docentes.filter((docente) => {
-    const nombresCompletos = `${docente.nombres} ${docente.apellidos}`;
+    const nombresCompletos = `${docente.primer_nombre}  ${docente.segundo_nombre} ${docente.apellido_paterno} ${docente.apellido_materno}`;
     return (
       nombresCompletos.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      docente.docente_codigo.includes(searchTerm)
+      docente.cedula.includes(searchTerm)
     );
   });
 
   // Ordenar los resultados por apellido
   const sortedDocentes = filteredDocentes.sort((a, b) => {
-    const apellidoA = a.apellidos.toLowerCase();
-    const apellidoB = b.apellidos.toLowerCase();
+    const apellidoA = a.apellido_paterno.toLowerCase();
+    const apellidoB = b.apellido_paterno.toLowerCase();
     if (apellidoA < apellidoB) return -1;
     if (apellidoA > apellidoB) return 1;
     return 0;
@@ -56,9 +58,7 @@ function DocenteContext() {
 
   return (
     <Fieldset className="fgrid col-fixed">
-      <Card
-        className="border-solid border-blue-800 border-3 flex-1 w-full h-full flex-wrap"
-      >
+      <Card className="border-solid border-blue-800 border-3 flex-1 w-full h-full flex-wrap">
         <div className="h1-rem">
           <Divider align="center">
             <h1 className="text-7xl font-semibold lg:md-2 w-full h-full max-w-full max-h-full min-w-min">
@@ -93,10 +93,10 @@ function DocenteContext() {
               {sortedDocentes.map((docente) => (
                 <tr
                   className="text-center"
-                  key={docente.id_docente?.toString() || ""}
+                  key={docente.id_persona?.toString() || ""}
                 >
-                  <td>{docente.docente_codigo}</td>
-                  <td>{`${docente.apellidos} ${docente.nombres} `}</td>
+                  <td>{docente.cedula}</td>
+                  <td>{`${docente.apellido_paterno} ${docente.apellido_materno}  ${docente.primer_nombre} ${docente.segundo_nombre}  `}</td>
                   <td>
                     <Button
                       type="button"
@@ -111,9 +111,7 @@ function DocenteContext() {
                         justifyContent: "center",
                         marginRight: "8px",
                       }}
-                      onClick={() =>
-                        handleDocenteClick(docente.docente_codigo)
-                      }
+                      onClick={() => handleDocenteClick(docente.cedula)}
                     />
                   </td>
                 </tr>

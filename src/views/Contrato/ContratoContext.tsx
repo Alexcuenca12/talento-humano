@@ -48,8 +48,8 @@ function ContratoContext() {
   const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
   const contratService = new ContratoService();
   const tiempoDedicacionOptions = [
-    { label: "Tiempo completo", value: "Tiempo Completo" },
-    { label: "Medio tiempo", value: "Medio Tiempo" },
+    { label: "Tiempo Completo", value: "Tiempo Completo" },
+    { label: "Medio Tiempo", value: "Medio Tiempo" },
     { label: "Por horas", value: "Por Horas" },
   ];
   const salariopublicoOptions = [

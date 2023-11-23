@@ -10,4 +10,5 @@ export interface IFiltros {
   contrato_vigente: boolean;
   salario_publico: string;
   salario?: number;
+  tiempo_dedicacion: string;
 }

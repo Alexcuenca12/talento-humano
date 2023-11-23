@@ -534,12 +534,10 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
         fileName="HojaVida.pdf"
       >
         {({ blob, url, loading, error }) =>
-          loading ? "Generando PDF..." : " Descargar PDF"
+          loading ? "Generando PDF..." : "  Descargar PDF"
         }
       </PDFDownloadLink>
     );
-
-    // Mostrar el enlace para descargar el PDF
     setPdfContent(pdfBlob);
   };
 

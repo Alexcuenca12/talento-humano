@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { DataTable } from "primereact/datatable";
-import { Column } from "primereact/column";
 import { VFiltrosService } from "../../services/VFiltros";
 import { IFiltros } from "../../interfaces/Primary/VFiltros";
 import { Dropdown } from "primereact/dropdown";
@@ -10,6 +8,11 @@ import { Button } from "primereact/button";
 import { Card } from "primereact/card";
 import cardHeader from "../../shared/CardHeader";
 import { Divider } from "primereact/divider";
+import {
+  IExcelReportParams,
+  IHeaderItem,
+} from "../../interfaces/Secondary/IExcelReportParams";
+import { ReportBar } from "../../shared/ReportBar";
 
 function Filtros() {
   const [filtrosData, setFiltrosData] = useState<IFiltros[]>([]);
@@ -20,14 +23,17 @@ function Filtros() {
     salario_publico: "",
     genero: "",
     fecha_inicio: null as Date | null,
+    tiempo_dedicacion: "",
   });
   const [filteredData, setFilteredData] = useState<IFiltros[]>([]);
   const [selectedFechaInicio, setSelectedFechaInicio] = useState<Date | null>(
     null
   );
   const [isLoading, setIsLoading] = useState(true);
-
+  const [fechaFiltroTipo, setFechaFiltroTipo] = useState("");
   const vFiltrosService = new VFiltrosService();
+  const [excelReportData, setExcelReportData] =
+    useState<IExcelReportParams | null>(null);
   const getContratoVigenteText = (contrato_vigente: boolean) => {
     return contrato_vigente ? "Por terminar" : "Finalizado";
   };
@@ -46,27 +52,75 @@ function Filtros() {
       setFiltrosData(data);
       setOriginalData(data);
       setIsLoading(false);
+      loadExcelReportData(data);
     } catch (error) {
       console.error("Error al obtener datos:", error);
     }
   };
+
+  function loadExcelReportData(data: IFiltros[]) {
+    const reportName = "Listado de Docentes";
+    const rowData = data.map((item) => ({
+      id_persona: item.id_persona,
+      cedula: item.cedula,
+      primer_nombre: item.primer_nombre,
+      apellido_paterno: item.apellido_paterno,
+      genero: item.genero,
+      discapacidad: item.discapacidad,
+      contrato_vigente: getContratoVigenteText(item.contrato_vigente),
+      fecha_inicio: new Date(item.fecha_inicio!).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      fecha_fin: new Date(item.fecha_fin!).toLocaleDateString("es-ES", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      }),
+      salario: item.salario,
+      salario_publico: item.salario_publico,
+      tiempo_dedicacion: item.tiempo_dedicacion,
+    }));
+    const headerItems: IHeaderItem[] = [
+      { header: "NRO REGISTRO" },
+      { header: "CÉDULA" },
+      { header: "PRIMER NOMBRE" },
+      { header: "APELLIDO PATERNO" },
+      { header: "GÉNERO" },
+      { header: "DISCAPACIDAD" },
+      { header: "CONTRATO VIGENTE" },
+      { header: "FECHA DE INICIO" },
+      { header: "FECHA DE FIN" },
+      { header: "SALARIO" },
+      { header: "SALARIO PÚBLICO" },
+      { header: "TIEMPO DEDICACIÓN" },
+    ];
+    setExcelReportData({
+      reportName,
+      headerItems,
+      rowData,
+    });
+  }
 
   const applyFilters = () => {
     const filtered = originalData.filter((item) => {
       const fechaInicio = new Date(item.fecha_inicio);
       const filtrosNoVigente = !item.contrato_vigente;
 
-      // Convierte la fecha del filtro a una fecha JavaScript sin la hora y zona horaria
       const filtroFechaInicio = filters.fecha_inicio
         ? new Date(filters.fecha_inicio)
         : null;
 
-      // Establece la hora en cero para ambas fechas
       fechaInicio.setUTCHours(0, 0, 0, 0);
 
       if (filtroFechaInicio) {
         filtroFechaInicio.setUTCHours(0, 0, 0, 0);
       }
+
+      const diferenciaAnios = Math.abs(
+        new Date().getFullYear() - fechaInicio.getFullYear()
+      );
 
       return (
         (filters.filtros_vigente === "" ||
@@ -77,9 +131,17 @@ function Filtros() {
         (filters.salario_publico === "" ||
           item.salario_publico === filters.salario_publico) &&
         (filters.genero === "" || item.genero === filters.genero) &&
+        (filters.tiempo_dedicacion === "" ||
+          item.tiempo_dedicacion === filters.tiempo_dedicacion) &&
         (!filters.fecha_inicio ||
           (filtroFechaInicio &&
-            fechaInicio.getTime() === filtroFechaInicio.getTime()))
+            fechaInicio.getTime() === filtroFechaInicio.getTime())) &&
+        (!filters.fecha_inicio ||
+          (fechaFiltroTipo === "mayor" && diferenciaAnios > 5) ||
+          (fechaFiltroTipo === "menor" &&
+            filtroFechaInicio &&
+            fechaInicio.getTime() > filtroFechaInicio.getTime()) ||
+          fechaFiltroTipo === "")
       );
     });
 
@@ -95,6 +157,7 @@ function Filtros() {
     filters.discapacidad ||
     filters.salario_publico ||
     filters.genero ||
+    filters.tiempo_dedicacion ||
     filters.fecha_inicio
       ? filteredData
       : filtrosData;
@@ -111,7 +174,23 @@ function Filtros() {
           </h1>
         </Divider>
       </div>
-
+      <div style={{ marginLeft: "91.5%" , marginBottom: "5px"}}>
+        <Button
+          className="flex"
+          label="Borrar Filtros"
+          onClick={() => {
+            setSelectedFechaInicio(null);
+            setFilters({
+              filtros_vigente: "",
+              discapacidad: "",
+              salario_publico: "",
+              genero: "",
+              fecha_inicio: null,
+              tiempo_dedicacion: "",
+            });
+          }}
+        />
+      </div>
       <div className="flex flex-row flex-wrap gap-4">
         <div className="flex">
           <label>Contraro Vigente:</label>
@@ -176,8 +255,28 @@ function Filtros() {
               { label: "Todos", value: "" },
               { label: "MASCULINO", value: "MASCULINO" },
               { label: "FEMENINO", value: "FEMENINO" },
+              { label: "LGBTI+", value: "LGBTI+" },
             ]}
             placeholder="Filtrar por Género"
+            style={{ marginLeft: "5px" }}
+          />
+        </div>
+        <div className="flex">
+          <label>Dedicacion de Tiempo:</label>
+          <Dropdown
+            optionLabel="label"
+            optionValue="value"
+            value={filters.tiempo_dedicacion}
+            onChange={(e) =>
+              setFilters({ ...filters, tiempo_dedicacion: e.value })
+            }
+            options={[
+              { label: "Todos", value: "" },
+              { label: "Tiempo Completo", value: "Tiempo Completo" },
+              { label: "Medio Tiempo", value: "Medio Tiempo" },
+            ]}
+            placeholder="Filtrar por Tiempo"
+            style={{ marginLeft: "5px" }}
           />
         </div>
         <div className="flex">
@@ -193,22 +292,12 @@ function Filtros() {
             dateFormat="yy-mm-dd"
           />
         </div>
-        <Button
-          className="flex"
-          label="Limpiar Filtros"
-          onClick={() => {
-            setSelectedFechaInicio(null);
-            setFilters({
-              filtros_vigente: "",
-              discapacidad: "",
-              salario_publico: "",
-              genero: "",
-              fecha_inicio: null,
-            });
-          }}
-        />
       </div>
-
+      <ReportBar
+        reportName={excelReportData?.reportName!}
+        headerItems={excelReportData?.headerItems!}
+        rowData={excelReportData?.rowData!}
+      />
       <table
         style={{ minWidth: "40rem" }}
         className="mt-4  w-full h-full text-3xl font-large"
@@ -224,6 +313,7 @@ function Filtros() {
             <th>Salario</th>
             <th>Salario Público </th>
             <th>Contrato</th>
+            <th>Tiempo Dedicación</th>
             <th>Discapacidad </th>
           </tr>
         </thead>
@@ -239,12 +329,17 @@ function Filtros() {
               <td>{filtros.cedula ? filtros.cedula : "N/A"}</td>
               <td>{filtros.genero ? filtros.genero : "N/A"}</td>
               <td>{filtros.fecha_inicio}</td>
-              <td>{filtros.fecha_fin}</td>
+              <td>
+                {filtros.fecha_fin ? filtros.fecha_fin : "Contrato Vigente"}
+              </td>
               <td>{filtros.salario ? filtros.salario : "N/A"}</td>
               <td>
                 {filtros.salario_publico ? filtros.salario_publico : "N/A"}
               </td>
               <td>{getContratoVigenteText(filtros.contrato_vigente)}</td>
+              <td>
+                {filtros.tiempo_dedicacion ? filtros.tiempo_dedicacion : "N/A"}
+              </td>
               <td>{filtros.discapacidad ? filtros.discapacidad : "N/A"}</td>
             </tr>
           ))}

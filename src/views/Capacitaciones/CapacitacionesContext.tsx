@@ -520,20 +520,40 @@ function CapacitacionesContext() {
                       name="fecha_inicio"
                       placeholder="Ingrese Fecha de Inicio"
                       required
-                      dateFormat="yy-mm-dd" // Cambiar el formato a ISO 8601
+                      dateFormat="yy-mm-dd"
                       showIcon
                       style={{ width: "250px" }}
                       maxDate={new Date()}
                       onChange={(e) => {
                         const selectedDate =
                           e.value instanceof Date ? e.value : null;
-                        const formattedDate = selectedDate
-                          ? selectedDate.toISOString().split("T")[0] // Formatear a ISO 8601
-                          : "";
-                        setFormData({
-                          ...formData,
-                          fecha_inicio: formattedDate,
-                        });
+                        const currentDate = new Date();
+                        const maxDate = new Date(
+                          currentDate.getFullYear() - 5,
+                          currentDate.getMonth(),
+                          currentDate.getDate()
+                        );
+
+                        if (
+                          selectedDate &&
+                          selectedDate <= currentDate &&
+                          selectedDate >= maxDate
+                        ) {
+                          const formattedDate = selectedDate
+                            ? selectedDate.toISOString().split("T")[0]
+                            : "";
+                          setFormData({
+                            ...formData,
+                            fecha_inicio: formattedDate,
+                          });
+                        } else {
+                          // Fecha no válida, puedes manejar esto de acuerdo a tus necesidades
+                          swal(
+                            "Advertencia",
+                            "La fecha no es válida",
+                            "warning"
+                          );
+                        }
                       }}
                       value={
                         formData.fecha_inicio
