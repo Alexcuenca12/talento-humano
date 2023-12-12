@@ -1,9 +1,10 @@
 import axios from "axios";
+import { environment } from "../environments/environment";
 
 export class EvaluacionService {
   //url base para el componente usuario, esta url se encuentra expresada
   //en la api
-  baseUrl = "http://localhost:8080/api/evaluaciondocente/";
+  baseUrl =  `${environment.baseUrl}/api/evaluaciondocente/`;
 
   //Metodo para listar todas los horarios
   getAll() {

@@ -129,7 +129,7 @@ function InstruccionFormalContext() {
       link.download = "archivoCon.pdf";
       link.click();
       swal({
-        title: "Publicación",
+        title: "Instruccion Formal",
         text: "Descargando pdf....",
         icon: "success",
         timer: 1000,
@@ -435,11 +435,11 @@ function InstruccionFormalContext() {
                       className="text-3xl font-medium w-auto min-w-min"
                       style={{ marginRight: "20px", marginLeft: "20px" }}
                     >
-                      Nº de Registro de Senecyt:
+                      Nº de Registro de Senescyt:
                     </label>
                     <InputText
                       className="text-2xl"
-                      placeholder="Ingrese el Registro de Senecyt"
+                      placeholder="Ingrese el Registro de Senescyt"
                       id="registroSenecyt"
                       name="registroSenecyt"
                       style={{ width: "221px" }}
@@ -611,7 +611,7 @@ function InstruccionFormalContext() {
               <th>Nivel de Instrucción</th>
               <th>Institución Educativa </th>
               <th>Titulo Obtenido </th>
-              <th>Nº de Registro de Senecyt</th>
+              <th>Nº de Registro de Senescyt</th>
               <th>Tiempo de estudio</th>
               <th>Año de Graduación</th>
               <th>Area de Estudio </th>

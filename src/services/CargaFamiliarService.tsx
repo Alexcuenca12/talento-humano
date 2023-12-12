@@ -1,7 +1,9 @@
 import axios, { AxiosInstance } from "axios";
 import { ICargaFamiliar } from "../interfaces/Primary/ICargaFamiliar";
+import { environment } from "../environments/environment";
 
-const API_BASE_URL = "http://localhost:8080/api/CargaFamiliar";
+///https://dsbackend.tecazuay.edu.ec/talento"
+const API_BASE_URL = `${environment.baseUrl}api/CargaFamiliar`;
 export class CargaFamiliarService {
   private api: AxiosInstance;
 

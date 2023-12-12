@@ -1,7 +1,8 @@
 import axios, { AxiosInstance } from "axios";
 import { ICapacitaciones } from "../interfaces/Primary/ICapacitaciones";
+import { environment } from "../environments/environment";
 
-const API_BASE_URL = "http://localhost:8080/api/capacitaciones";
+const API_BASE_URL = `${environment.baseUrl}api/capacitaciones`;
 
 export class CapacitacionesService {
   private api: AxiosInstance;

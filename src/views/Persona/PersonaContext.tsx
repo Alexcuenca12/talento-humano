@@ -19,27 +19,15 @@ import { InputTextarea } from "primereact/inputtextarea";
 import { Fieldset } from "primereact/fieldset";
 import cardHeader from "../../shared/CardHeader";
 import swal from "sweetalert";
-import { ReportBar } from "../../shared/ReportBar";
-import {
-  IExcelReportParams,
-  IHeaderItem,
-} from "../../interfaces/Secondary/IExcelReportParams";
 
 const apiViewService = new VistaPersonaService();
 const apiService = new PersonaService();
 
 const Persona = () => {
-  const userData = sessionStorage.getItem("user");
-  const userObj = JSON.parse(userData || "{}");
-  const idPersona = userObj.id;
-
   const [items, setItems] = useState<IPersona[]>([]);
   const [message, setMessage] = useState<IMessage | null>(null);
   const [selectedItem, setSelectedItem] = useState<IPersona | null>(null);
   const fileUploadRef = useRef<FileUpload>(null);
-  const [excelReportData, setExcelReportData] =
-    useState<IExcelReportParams | null>(null);
-
   const estadoCivil = [
     "SOLTERO/A",
     "CASADO/A",
@@ -91,30 +79,12 @@ const Persona = () => {
       .then((data) => {
         formik.setFieldValue("foto", data);
         setMessage({ severity: "info", detail: "Foto Cargada" });
+        // Crear una URL temporal para el archivo
         const objectUrl = URL.createObjectURL(event.files[0]);
+        // Actualizar el estado con la nueva URL
         setImageUrl(objectUrl);
       })
       .catch((error) => {
-        console.error(error);
-        setMessage({
-          severity: "error",
-          summary: "Error",
-          detail: error.message,
-        });
-      });
-    if (fileUploadRef.current) {
-      fileUploadRef.current.clear();
-    }
-  };
-
-  const customBytesUploader = async (event: FileUploadHandlerEvent) => {
-    fileConverter(event.files[0])
-      .then((data) => {
-        formik.setFieldValue("cv_socioempleo", data);
-        setMessage({ severity: "info", detail: "Archivo Cargado" });
-      })
-      .catch((error) => {
-        console.error(error);
         setMessage({
           severity: "error",
           summary: "Error",
@@ -127,6 +97,26 @@ const Persona = () => {
       fileUploadRef.current.clear();
     }
   };
+  const customBytesUploader = async (event: FileUploadHandlerEvent) => {
+    fileConverter(event.files[0])
+      .then((data) => {
+        formik.setFieldValue("cv_socioempleo", data);
+        setMessage({ severity: "info", detail: "Archivo Cargado" });
+      })
+      .catch((error) => {
+        setMessage({
+          severity: "error",
+          summary: "Error",
+          detail: error.message,
+        });
+      });
+
+    if (fileUploadRef.current) {
+      // clean the file uploaded
+      fileUploadRef.current.clear();
+    }
+  };
+
   const customBytesUploaderMecanizado = async (
     event: FileUploadHandlerEvent
   ) => {
@@ -136,7 +126,6 @@ const Persona = () => {
         setMessage({ severity: "info", detail: "Archivo Cargado" });
       })
       .catch((error) => {
-        console.error(error);
         setMessage({
           severity: "error",
           summary: "Error",
@@ -150,16 +139,13 @@ const Persona = () => {
     }
   };
 
-  const customBytesUploaderDocumentos = async (
-    event: FileUploadHandlerEvent
-  ) => {
+  const customBytesUploaderPersona = async (event: FileUploadHandlerEvent) => {
     fileConverter(event.files[0])
       .then((data) => {
         formik.setFieldValue("documentos_personales", data);
         setMessage({ severity: "info", detail: "Archivo Cargado" });
       })
       .catch((error) => {
-        console.error(error);
         setMessage({
           severity: "error",
           summary: "Error",
@@ -188,7 +174,7 @@ const Persona = () => {
       link.download = "Evidencia.pdf";
       link.click();
       swal({
-        title: "Publicación",
+        title: "Evidencia",
         text: "Descargando pdf....",
         icon: "success",
         timer: 1000,
@@ -196,7 +182,7 @@ const Persona = () => {
 
       URL.revokeObjectURL(fileUrl);
     } catch (error) {
-      console.error("Error al decodificar la cadena base64:", error);
+      swal("Eliminado", "El registro ha sido eliminado correctamente", "error");
     }
   };
 
@@ -219,9 +205,9 @@ const Persona = () => {
       idioma_secundario: "",
       foto: "",
       cv_socioempleo: null,
-      mecanizado_iess: null,
-      documentos_personales: null,
       descripcion_perfil: "",
+      mecanizado_iess: "",
+      documentos_personales: "",
       pais_residencia: "",
       provincia_residencia: "",
       canton_residencia: "",
@@ -267,7 +253,7 @@ const Persona = () => {
       if (!values.pais_natal) {
         errors.pais_natal = "Pais Natal es requerido";
       }
-      if (values.edad == 0) {
+      if (values.edad === 0) {
         errors.edad = "Edad es requerida";
       }
       if (!values.estado_civil) {
@@ -336,9 +322,6 @@ const Persona = () => {
       if (!values.cv_socioempleo) {
         errors.cv_socioempleo = "El Curriculum Vitae es requerido";
       }
-      if (!values.mecanizado_iess) {
-        errors.mecanizado_iess = "El Mecanizado del IESS es requerido";
-      }
       return errors;
     },
   });
@@ -348,97 +331,19 @@ const Persona = () => {
   }, []);
 
   const fetchItems = () => {
-    if (idPersona !== undefined) {
-      apiService
-        .getAllByPersona(idPersona)
-        .then((response) => {
-          setItems(response);
-          loadExcelReportData(response);
-        })
-        .catch((error) => {
-          console.error(error);
-          setMessage({
-            severity: "error",
-            summary: "Error",
-            detail: error.message,
-          });
+    apiService
+      .getAll()
+      .then((response) => {
+        setItems(response);
+      })
+      .catch((error) => {
+        setMessage({
+          severity: "error",
+          summary: "Error",
+          detail: error.message,
         });
-    } else {
-      // Manejar el caso en que id_persona es undefined
-      console.error("id_persona es undefined");
-      // Puedes establecer un mensaje de error o realizar alguna otra acción apropiada aquí
-    }
+      });
   };
-
-  function loadExcelReportData(data: IPersona[]) {
-    const reportName = "Persona";
-    const rowData = data.map((item) => ({
-      cedula: item.cedula,
-      nombres: item.primer_nombre + " " + item.segundo_nombre,
-      apellidos: item.apellido_paterno + " " + item.apellido_materno,
-      correo_institucional: item.correo_institucional,
-      correo: item.correo,
-      celular: item.celular,
-      telefono: item.telefono,
-      fecha_nacimiento: new Date(item.fecha_nacimiento!).toLocaleDateString(
-        "es-ES",
-        {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-        }
-      ),
-      edad: item.edad,
-      pais_natal: item.pais_natal,
-      genero: item.genero,
-      sexo: item.sexo,
-      tipo_sangre: item.tipo_sangre,
-      estado_civil: item.estado_civil,
-      etnia: item.etnia,
-      idioma_raiz: item.idioma_raiz,
-      idioma_secundario: item.idioma_secundario,
-      pais_residencia: item.pais_residencia,
-      provincia_residencia: item.provincia_residencia,
-      canton_residencia: item.canton_residencia,
-      parroquia_residencia: item.parroquia_residencia,
-      calles: item.calles,
-      numero_casa: item.numero_casa,
-      sector: item.sector,
-      referencia: item.referencia,
-    }));
-    const headerItems: IHeaderItem[] = [
-      { header: "CEDULA" },
-      { header: "NOMBRES" },
-      { header: "APELLIDOS" },
-      { header: "CORREO INSTITUCIONAL" },
-      { header: "CORREO PERSONAL" },
-      { header: "CELULAR" },
-      { header: "TELEFONO" },
-      { header: "FECHA DE NACIMIENTO" },
-      { header: "EDAD" },
-      { header: "PAIS NATAL" },
-      { header: "GENERO" },
-      { header: "SEXO" },
-      { header: "TIPO DE SANGRE" },
-      { header: "ESTADO CIVIL" },
-      { header: "ETNIA" },
-      { header: "IDIOMA RAIZ" },
-      { header: "IDIOMA SECUNDARIO" },
-      { header: "PAIS DE RESIDENCIA" },
-      { header: "PROVINCIA DE RESIDENCIA" },
-      { header: "CANTON DE RESIDENCIA" },
-      { header: "PARROQUIA DE RESIDENCIA" },
-      { header: "CALLES" },
-      { header: "Nº DE CASA" },
-      { header: "SECTOR" },
-      { header: "REFERENCIA" },
-    ];
-    setExcelReportData({
-      reportName,
-      headerItems,
-      rowData,
-    });
-  }
 
   useEffect(() => {
     if (formik.values.cedula.length === 10) {
@@ -458,10 +363,10 @@ const Persona = () => {
             if (!isNaN(fechaNacimientoDate.getTime())) {
               formik.setFieldValue("fecha_nacimiento", fechaNacimientoDate);
             } else {
-              console.error("Fecha de nacimiento no válida");
+              swal("Error", "Fecha de Nacimiento no valida", "error");
             }
           } else {
-            console.error("Fecha de nacimiento vacía o null");
+            swal("Eliminado", "Fecha de Nacimiento nula", "error");
           }
           if (persona.pais_natal === "CUENCA") {
             formik.setFieldValue("pais_natal", "ECUADOR");
@@ -538,7 +443,6 @@ const Persona = () => {
           setMessage({ severity: "success", detail: "Registro actualizado" });
         })
         .catch((error) => {
-          console.error(error);
           setMessage({
             severity: "error",
             summary: "Error",
@@ -547,7 +451,6 @@ const Persona = () => {
         });
     }
   }, [formik.values.cedula]);
-
   const handleSubmit = async (data: IPersona) => {
     if (selectedItem) {
       await apiService
@@ -563,7 +466,6 @@ const Persona = () => {
           setMessage({ severity: "success", detail: "Registro creado" });
         })
         .catch((error) => {
-          console.error(error);
           setMessage({
             severity: "error",
             summary: "Error",
@@ -604,7 +506,6 @@ const Persona = () => {
               );
             })
             .catch((error) => {
-              console.error("Error al eliminar el registro:", error);
               swal(
                 "Error",
                 "Ha ocurrido un error al eliminar el registro",
@@ -909,6 +810,14 @@ const Persona = () => {
             </small>
           </div>
 
+          <div className="field col-1">
+            <label className="font-medium"></label>
+          </div>
+
+          <div className="field col-4">
+            <label className="font-medium"></label>
+          </div>
+
           <Divider align="center">
             <h2 className="text-6xl font-smibold lg:md-2">Dirección</h2>
           </Divider>
@@ -1200,17 +1109,13 @@ const Persona = () => {
               {formik.touched.carnet_conadis && formik.errors.carnet_conadis}
             </small>
           </div>
-          <div className="field col-2"></div>
-          <div className="field col-4">
-            <label className="font-medium"></label>
-          </div>
+
           <Divider align="left">
             <div className="inline-flex align-items-center">
               <i className="pi pi-file-pdf mr-2"></i>
               <b>Anexos</b>
             </div>
           </Divider>
-
           <div className="field col-4 flex flex-column">
             <label className="font-medium" htmlFor="cv_socioempleo">
               Curriculum Vitae SocioEmpleo
@@ -1218,7 +1123,8 @@ const Persona = () => {
             <FileUpload
               id="cv_socioempleo"
               ref={fileUploadRef}
-              name="file_socioempleo"
+              mode="advanced"
+              name="file"
               accept=".pdf"
               customUpload
               uploadHandler={customBytesUploader}
@@ -1238,14 +1144,14 @@ const Persona = () => {
             </small>
           </div>
           <div className="field col-4 flex flex-column">
-            <label className="font-medium" htmlFor="mecanizado_iess">
+            <label className="font-medium" htmlFor="mecanizado">
               Mecanizado del IESS
             </label>
             <FileUpload
-              id="mecanizado_iess"
+              id="mecanizado"
               ref={fileUploadRef}
               mode="advanced"
-              name="file_mecanizado"
+              name="file"
               accept=".pdf"
               customUpload
               uploadHandler={customBytesUploaderMecanizado}
@@ -1265,17 +1171,17 @@ const Persona = () => {
             </small>
           </div>
           <div className="field col-4 flex flex-column">
-            <label className="font-medium" htmlFor="documentos_personales">
+            <label className="font-medium" htmlFor="documentos">
               Documentos Personales
             </label>
             <FileUpload
-              id="documentos_personales"
+              id="documentos"
               ref={fileUploadRef}
               mode="advanced"
-              name="documentos_personales"
+              name="file"
               accept=".pdf"
               customUpload
-              uploadHandler={customBytesUploaderDocumentos}
+              uploadHandler={customBytesUploaderPersona}
               chooseLabel="Seleccionar"
               uploadLabel="Subir"
               cancelLabel="Cancelar"
@@ -1288,71 +1194,53 @@ const Persona = () => {
               }
             />
             <small className="p-error w-full">
-              {formik.touched.mecanizado_iess && formik.errors.mecanizado_iess}
+              {formik.touched.documentos_personales &&
+                formik.errors.documentos_personales}
             </small>
           </div>
-          <div className="field col-1">
-            <label className="font-medium"></label>
-          </div>
           <div
-            className="field  flex flex-column"
-            style={{ marginLeft: "35%" }}
+            className="field col- flex flex-column"
+            style={{ marginLeft: "43%" }}
           >
-            <label className="font-medium" htmlFor="foto">
+            <label className="font-medium" htmlFor="foto"  >
               Foto Personal
             </label>
-            <img src={imageUrl} height={200} width={200} alt="" />
-            <label className="font-medium" htmlFor="foto"></label>
+            <img src={imageUrl} height={200} width={200} />
             <FileUpload
               id="foto"
               ref={fileUploadRef}
               mode="basic"
               name="file"
-              chooseLabel="Escoger"
-              uploadLabel="Cargar"
-              cancelLabel="Cancelar"
               accept="image/*"
               auto
               customUpload
+              chooseLabel="Seleccionar"
               uploadHandler={imageUploader}
-              emptyTemplate={
-                <p className="m-0 p-button-rounded">
-                  Arrastre y suelte los archivos aquí para cargarlos.
-                </p>
-              }
             />
+          </div>
+          <div className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-5 gap-5 flex-wrap mt-5">
+            <div className="flex align-items-center justify-content-center w-auto min-w-min">
+              <Button
+                type="submit"
+                label={selectedItem ? "Actualizar" : "Guardar"}
+                severity={selectedItem ? "warning" : "success"}
+                rounded
+              />
+            </div>
+            <div className="flex align-items-center justify-content-center w-auto min-w-min">
+              <Button
+                type="button"
+                label="Cancelar"
+                severity="secondary"
+                rounded
+                onClick={() => {
+                  formik.resetForm();
+                  setSelectedItem(null);
+                }}
+              />
+            </div>
           </div>
         </form>
-        <div className="flex flex-row  w-full h-full justify-content-center  flex-grow-1  row-gap-8 gap-8 flex-wrap mt-6">
-          <div className="flex align-items-center justify-content-center w-auto min-w-min">
-            <Button
-              type="submit"
-              label={selectedItem ? "Actualizar" : "Guardar"}
-              severity={selectedItem ? "warning" : "success"}
-              rounded
-              className="w-full text-3xl min-w-min "
-            />
-          </div>
-          <div className="flex align-items-center justify-content-center w-auto min-w-min">
-            <Button
-              type="button"
-              label="Cancelar"
-              severity="secondary"
-              className="w-full text-3xl min-w-min "
-              rounded
-              onClick={() => {
-                formik.resetForm();
-                setSelectedItem(null);
-              }}
-            />
-          </div>
-        </div>
-
-        <ReportBar
-          reportName={excelReportData?.reportName!}
-          headerItems={excelReportData?.headerItems!}
-          rowData={excelReportData?.rowData!}
-        />
         <table
           style={{ minWidth: "40rem" }}
           className="mt-4  w-full h-full text-3xl font-large"
@@ -1367,8 +1255,9 @@ const Persona = () => {
               <th>Correo</th>
               <th>Discapacidad</th>
               <th>Operaciones</th>
-              <th>Curriculum Vitae</th>
+              <th>Socio Empleo</th>
               <th>Mecanizado IESS</th>
+              <th>Doc. Personales</th>
             </tr>
           </thead>
           <tbody>
@@ -1446,6 +1335,25 @@ const Persona = () => {
                         justifyContent: "center",
                       }}
                       onClick={() => decodeBase64(per.mecanizado_iess!)}
+                    />
+                  ) : (
+                    <span>Sin evidencia</span>
+                  )}
+                </td>
+                <td>
+                  {per.documentos_personales ? (
+                    <Button
+                      type="button"
+                      className=""
+                      label="Descargar PDF"
+                      style={{
+                        background: "#009688",
+                        borderRadius: "10%",
+                        fontSize: "12px",
+                        color: "black",
+                        justifyContent: "center",
+                      }}
+                      onClick={() => decodeBase64(per.documentos_personales!)}
                     />
                   ) : (
                     <span>Sin evidencia</span>

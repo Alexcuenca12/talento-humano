@@ -1,7 +1,8 @@
 import axios from "axios";
+import { environment } from "../environments/environment";
 
 export class PeriodoAcaService {
-  baseUrl = "http://localhost:8080/api/periodoacademico/";
+  baseUrl =  `${environment.baseUrl}/api/periodoacademico/`;
 
   //Metodo para listar todas los periodos
   getAll() {

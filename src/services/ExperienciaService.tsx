@@ -1,7 +1,8 @@
 import axios, { AxiosInstance } from "axios";
 import { IExperiencia } from "../interfaces/Primary/IExperiencia";
+import { environment } from "../environments/environment";
 
-const API_BASE_URL = "http://localhost:8080/api/experiencia";
+const API_BASE_URL =  `${environment.baseUrl}api/experiencia`;
 
 export class ExperienciaService {
   private api: AxiosInstance;

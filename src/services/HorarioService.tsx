@@ -1,37 +1,60 @@
 import axios from "axios";
+import { environment } from "../environments/environment";
 
 export class HorarioService {
-  baseUrl = "http://localhost:8080/api/horario/";
+  baseUrl = `${environment.baseUrl}api/horario/`;
 
-  //Metodo para listar todas los horarios
+  // Obtener el token almacenado en sessionStorage
+  getToken() {
+    const user = JSON.parse(sessionStorage.getItem("user") || "{}");
+    return user?.token || "";
+  }
+  
+
+  // Método para configurar los encabezados de autorización en las solicitudes axios
+  getHeaders() {
+    const token = this.getToken();
+    
+    return {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  }
+
+  // Método para listar todas los horarios
   getAll() {
-    return axios.get(this.baseUrl + "read").then((res) => res.data);
-  }
-  //Crear
-  save(horario: any) {
-    return axios.post(this.baseUrl + "create", horario).then((res) => res.data);
+    return axios.get(this.baseUrl + "read", this.getHeaders()).then((res) => res.data);
   }
 
+  // Crear
+  save(horario: any) {
+    return axios.post(this.baseUrl + "create", horario, this.getHeaders()).then((res) => res.data);
+  }
+
+  // Obtener todos por horario
   getAllByHorario(id: number) {
     return axios
-      .get(`${this.baseUrl}readHorario/${id}`)
+      .get(`${this.baseUrl}readHorario/${id}`, this.getHeaders())
       .then((res) => res.data);
   }
 
+  // Obtener todos por persona
   getAllByPersona(id: number) {
     return axios
-      .get(`${this.baseUrl}readHorarioPersona/${id}`)
+      .get(`${this.baseUrl}readHorarioPersona/${id}`, this.getHeaders())
       .then((res) => res.data);
   }
 
-  //(Eliminado lógico)
+  // (Eliminado lógico)
   delete(id: number) {
-    return axios.delete(`${this.baseUrl}delete/${id}`).then((res) => res.data);
+    return axios.delete(`${this.baseUrl}delete/${id}`, this.getHeaders()).then((res) => res.data);
   }
-  //Metodo para actualizar un horario basado en el id de la misma
+
+  // Método para actualizar un horario basado en el id
   update(id: number, user: any) {
     return axios
-      .put(this.baseUrl + "update/" + id.toString(), user)
+      .put(this.baseUrl + "update/" + id.toString(), user, this.getHeaders())
       .then((res) => res.data);
   }
 }

@@ -1,7 +1,8 @@
 import axios from "axios";
+import { environment } from "../environments/environment";
 
 export class VfichapersonaService {
-  baseUrl = "http://localhost:8080/api/vfichaP/";
+  baseUrl =  `${environment.baseUrl}/api/vfichaP/`;
 
   //Metodo para listar todas los Contratos
   getAll() {

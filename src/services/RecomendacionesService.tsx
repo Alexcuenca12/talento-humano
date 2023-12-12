@@ -1,9 +1,10 @@
 import axios from "axios";
+import { environment } from "../environments/environment";
 
 export class RecomendacionesService {
   //url base para el componente usuario, esta url se encuentra expresada
   //en la api
-  baseUrl = "http://localhost:8080/api/recomendaciones/";
+  baseUrl =  `${environment.baseUrl}/api/recomendaciones/`;
 
   getAll() {
     //Método para listar todas los Usuarios

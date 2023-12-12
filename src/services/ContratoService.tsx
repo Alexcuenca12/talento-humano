@@ -1,7 +1,8 @@
 import axios from "axios";
+import { environment } from "../environments/environment";
 
 export class ContratoService {
-  baseUrl = "http://localhost:8080/api/contrato/";
+  baseUrl =  `${environment.baseUrl}api/contrato/`;
 
   //Metodo para listar todas los Contratos
   getAll() {
