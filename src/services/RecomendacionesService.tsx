@@ -4,7 +4,7 @@ import { environment } from "../environments/environment";
 export class RecomendacionesService {
   //url base para el componente usuario, esta url se encuentra expresada
   //en la api
-  baseUrl =  `${environment.baseUrl}/api/recomendaciones/`;
+  baseUrl =  `${environment.baseUrl}api/recomendaciones/`;
 
   getAll() {
     //Método para listar todas los Usuarios

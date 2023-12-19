@@ -23,6 +23,7 @@ function CapacitacionesContext() {
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+  const rol = userObj.rol;
 
   const [contra1, setcontra1] = useState<ICapacitaciones[]>([]);
   const [formData, setFormData] = useState<ICapacitaciones>({
@@ -100,21 +101,34 @@ function CapacitacionesContext() {
   const [excelReportData, setExcelReportData] =
     useState<IExcelReportParams | null>(null);
 
-  const loadData = () => {
-    capaService
-      .getAllByPersona(idPersona)
-      .then((data) => {
-        setcontra1(data);
-        setDataLoaded(true); // Marcar los datos como cargados
-        loadExcelReportData(data);
-      })
-      .catch((error) => {
-        console.error("Error al obtener los datos:", error);
-      });
-  };
-  useEffect(() => {
-    loadData();
-  }, []);
+    const loadData = () => {
+      if (rol === 1) {
+        // Si el rol es 1, traer todos los datos
+        capaService.getAllCap().then((data) => {
+          setcontra1(data);
+          setDataLoaded(true); // Marcar los datos como cargados
+          loadExcelReportData(data);
+        }).catch((error) => {
+          console.error("Error al obtener los datos:", error);
+        });
+      } else if (rol === 3) {
+        // Si el rol es 3, traer un dato específico
+        capaService.getAllByCapacitaciones(idPersona).then((data) => {
+          setcontra1(data);
+          setDataLoaded(true); // Marcar los datos como cargados
+          loadExcelReportData(data);
+        }).catch((error) => {
+          console.error("Error al obtener los datos:", error);
+        });
+      } else {
+        console.error("Rol no reconocido");
+      }
+    };
+    
+    useEffect(() => {
+      loadData();
+    }, []);
+    
 
   function loadExcelReportData(data: ICapacitaciones[]) {
     const reportName = "Capacitaciones";

@@ -26,6 +26,7 @@ function HorarioContext() {
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+  const rol = userObj.rol;
 
   const [horario1, sethorario1] = useState<IHorarioData[]>([]);
   const [excelReportData, setExcelReportData] =
@@ -99,20 +100,33 @@ function HorarioContext() {
   const horarioService = new HorarioService();
 
   const loadData = () => {
-    horarioService
-      .getAllByPersona(idPersona)
-      .then((data) => {
+    if (rol === 1) {
+      // Si el rol es 1, traer todos los datos
+      horarioService.getAll().then((data) => {
         sethorario1(data);
         setDataLoaded(true); // Marcar los datos como cargados
         loadExcelReportData(data);
-      })
-      .catch((error) => {
+      }).catch((error) => {
         console.error("Error al obtener los datos:", error);
       });
+    } else if (rol === 3) {
+      // Si el rol es 3, traer datos específicos
+      horarioService.getAllByPersona(idPersona).then((data) => {
+        sethorario1(data);
+        setDataLoaded(true); // Marcar los datos como cargados
+        loadExcelReportData(data);
+      }).catch((error) => {
+        console.error("Error al obtener los datos:", error);
+      });
+    } else {
+      console.error("Rol no reconocido");
+    }
   };
+  
   useEffect(() => {
     loadData();
   }, []);
+  
 
   function loadExcelReportData(data: IHorarioData[]) {
     const reportName = "DISTRIBUTIVO";

@@ -22,6 +22,8 @@ function ContratoContext() {
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+  const rol = userObj.rol;
+
 
   const [excelReportData, setExcelReportData] =
     useState<IExcelReportParams | null>(null);
@@ -73,19 +75,32 @@ function ContratoContext() {
   };
 
   useEffect(() => {
-    contratService
-      .getAllByPersona(idPersona)
-      .then((data) => {
+    if (rol === 1) {
+      // Si el rol es 1, traer todos los datos
+      contratService.getAll().then((data) => {
         setcontra1(data);
         loadExcelReportData(data);
-      })
-      .catch((error) => {
+      }).catch((error) => {
         console.error("Error al obtener los datos:", error);
       });
-    if (!formData.contrato_vigente) {
-      setFormData((prevFormData) => ({ ...prevFormData, fecha_fin: "" }));
+    } else if (rol === 3) {
+      // Si el rol es 3, traer datos específicos según el contrato vigente
+      contratService.getAllByPersona(idPersona).then((data) => {
+        setcontra1(data);
+        loadExcelReportData(data);
+      }).catch((error) => {
+        console.error("Error al obtener los datos:", error);
+      });
+  
+      // Lógica para ajustar el formulario si no hay contrato vigente
+      if (!formData.contrato_vigente) {
+        setFormData((prevFormData) => ({ ...prevFormData, fecha_fin: "" }));
+      }
+    } else {
+      console.error("Rol no reconocido");
     }
   }, [formData.contrato_vigente]);
+  
 
   const customBytesUploader = (event: FileUploadSelectEvent) => {
     if (event.files && event.files.length > 0) {

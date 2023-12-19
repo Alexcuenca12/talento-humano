@@ -2,7 +2,7 @@ import axios from "axios";
 import { environment } from "../environments/environment";
 
 export class vDocenteService {
-  baseUrl =  `${environment.baseUrl}/api/vDocente/`;
+  baseUrl =  `${environment.baseUrl}api/vDocente/`;
 
   getAll() {
     return axios.get(this.baseUrl + "read").then((res) => res.data);

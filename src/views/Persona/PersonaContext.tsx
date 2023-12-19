@@ -24,6 +24,11 @@ const apiViewService = new VistaPersonaService();
 const apiService = new PersonaService();
 
 const Persona = () => {
+  const userData = sessionStorage.getItem("user");
+  const userObj = JSON.parse(userData || "{}");
+  const idPersona = userObj.id;
+  const rol = userObj.rol;
+  
   const [items, setItems] = useState<IPersona[]>([]);
   const [message, setMessage] = useState<IMessage | null>(null);
   const [selectedItem, setSelectedItem] = useState<IPersona | null>(null);
@@ -331,19 +336,33 @@ const Persona = () => {
   }, []);
 
   const fetchItems = () => {
-    apiService
-      .getAll()
-      .then((response) => {
+    if (rol === 1) {
+      // Si el rol es 1, traer todos los datos
+      apiService.getAll().then((response) => {
         setItems(response);
-      })
-      .catch((error) => {
+      }).catch((error) => {
         setMessage({
           severity: "error",
           summary: "Error",
           detail: error.message,
         });
       });
+    } else if (rol === 3) {
+      // Si el rol es 3, traer datos específicos
+      apiService.getAllByPersona(idPersona).then((response) => {
+        setItems(response);
+      }).catch((error) => {
+        setMessage({
+          severity: "error",
+          summary: "Error",
+          detail: error.message,
+        });
+      });
+    } else {
+      console.error("Rol no reconocido");
+    }
   };
+  
 
   useEffect(() => {
     if (formik.values.cedula.length === 10) {

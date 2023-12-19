@@ -2,7 +2,7 @@ import axios from "axios";
 import { environment } from "../environments/environment";
 
 export class VFiltrosService {
-  baseUrl =  `${environment.baseUrl}/api/vFiltros/`;
+  baseUrl =  `${environment.baseUrl}api/vFiltros/`;
 
   async getFiltros() {
     try {

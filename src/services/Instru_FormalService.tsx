@@ -4,7 +4,7 @@ import { environment } from "../environments/environment";
 export class Instruc_FormalService {
   //url base para el componente usuario, esta url se encuentra expresada
   //en la api
-  baseUrl =  `${environment.baseUrl}/api/InstruccionFormal/`;
+  baseUrl =  `${environment.baseUrl}api/InstruccionFormal/`;
 
   getAll() {
     //Método para listar todas los Usuarios

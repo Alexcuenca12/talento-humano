@@ -22,6 +22,8 @@ function CargaFamiliarContext() {
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+  const rol = userObj.rol;
+
 
   const [excelReportData, setExcelReportData] =
     useState<IExcelReportParams | null>(null);
@@ -44,20 +46,33 @@ function CargaFamiliarContext() {
   const cargaService = new CargaFamiliarService();
 
   const loadData = () => {
-    cargaService
-      .getAllByPersona(idPersona)
-      .then((data) => {
+    if (rol === 1) {
+      // Si el rol es 1, traer todos los datos
+      cargaService.getAll().then((data) => {
         setcontra1(data);
         loadExcelReportData(data);
         setDataLoaded(true); // Marcar los datos como cargados
-      })
-      .catch((error) => {
+      }).catch((error) => {
         console.error("Error al obtener los datos:", error);
       });
+    } else if (rol === 3) {
+      // Si el rol es 3, traer un dato específico
+      cargaService.getAllByPersona(idPersona).then((data) => {
+        setcontra1(data);
+        loadExcelReportData(data);
+        setDataLoaded(true); // Marcar los datos como cargados
+      }).catch((error) => {
+        console.error("Error al obtener los datos:", error);
+      });
+    } else {
+      console.error("Rol no reconocido");
+    }
   };
+  
   useEffect(() => {
     loadData();
   }, []);
+  
 
   function loadExcelReportData(data: ICargaFamiliar[]) {
     const reportName = "Carga Familiar";

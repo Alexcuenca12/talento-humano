@@ -4,7 +4,7 @@ import { environment } from "../environments/environment";
 export class EvaluacionService {
   //url base para el componente usuario, esta url se encuentra expresada
   //en la api
-  baseUrl =  `${environment.baseUrl}/api/evaluaciondocente/`;
+  baseUrl =  `${environment.baseUrl}api/evaluaciondocente/`;
 
   //Metodo para listar todas los horarios
   getAll() {

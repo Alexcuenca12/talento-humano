@@ -19,6 +19,7 @@ function HabilidadesContext() {
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+  const rol = userObj.rol;
 
   const [excelReportData, setExcelReportData] = useState<IExcelReportParams | null>(null);
 
@@ -33,17 +34,32 @@ function HabilidadesContext() {
   const [editItemId, setEditItemId] = useState<number | undefined>(undefined);
   const habilidadService = new HabilidadesService();
 
-  useEffect(() => {
-    habilidadService
-      .getAllByPersona(idPersona)
-      .then((data) => {
+  const loadData = () => {
+    if (rol === 1) {
+      // Si el rol es 1, traer todos los datos
+      habilidadService.getAll().then((data) => {
         sethabi1(data);
         loadExcelReportData(data);
-      })
-      .catch((error) => {
+      }).catch((error) => {
         console.error("Error al obtener los datos:", error);
       });
+    } else if (rol === 3) {
+      // Si el rol es 3, traer datos específicos
+      habilidadService.getAllByPersona(idPersona).then((data) => {
+        sethabi1(data);
+        loadExcelReportData(data);
+      }).catch((error) => {
+        console.error("Error al obtener los datos:", error);
+      });
+    } else {
+      console.error("Rol no reconocido");
+    }
+  };
+  
+  useEffect(() => {
+    loadData();
   }, []);
+  
 
   function loadExcelReportData(data: IHabilidadesData[]) {
     const reportName = "Habilidades";

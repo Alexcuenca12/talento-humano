@@ -2,7 +2,7 @@ import axios from "axios";
 import { environment } from "../environments/environment";
 
 export class HabilidadesService {
-  baseUrl =  `${environment.baseUrl}/api/habilidades/`;
+  baseUrl =  `${environment.baseUrl}api/habilidades/`;
 
   //Metodo para listar todas las habilidades
   getAll() {

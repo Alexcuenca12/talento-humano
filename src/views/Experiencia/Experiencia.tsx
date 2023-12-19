@@ -22,6 +22,7 @@ function Experiencia() {
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+  const rol = userObj.rol;
 
   const [exp1, setexp1] = useState<IExperiencia[]>([]);
   const [formData, setFormData] = useState<IExperiencia>({
@@ -54,20 +55,33 @@ function Experiencia() {
   const expService = new ExperienciaService();
 
   const loadData = () => {
-    expService
-      .getAllByPersona(idPersona)
-      .then((data) => {
+    if (rol === 1) {
+      // Si el rol es 1, traer todos los datos
+      expService.getAllItems().then((data) => {
         setexp1(data);
         setDataLoaded(true); // Marcar los datos como cargados
         loadExcelReportData(data);
-      })
-      .catch((error) => {
+      }).catch((error) => {
         console.error("Error al obtener los datos:", error);
       });
+    } else if (rol === 3) {
+      // Si el rol es 3, traer datos específicos
+      expService.getAllByPersona(idPersona).then((data) => {
+        setexp1(data);
+        setDataLoaded(true); // Marcar los datos como cargados
+        loadExcelReportData(data);
+      }).catch((error) => {
+        console.error("Error al obtener los datos:", error);
+      });
+    } else {
+      console.error("Rol no reconocido");
+    }
   };
+  
   useEffect(() => {
     loadData();
   }, []);
+  
 
   const customBytesUploader = (event: FileUploadSelectEvent) => {
     if (event.files && event.files.length > 0) {

@@ -24,6 +24,8 @@ function EvaDocenteContext() {
   const userData = sessionStorage.getItem("user");
   const userObj = JSON.parse(userData || "{}");
   const idPersona = userObj.id;
+  const rol = userObj.rol;
+
 
   const [excelReportData, setExcelReportData] =
     useState<IExcelReportParams | null>(null);
@@ -84,22 +86,34 @@ function EvaDocenteContext() {
     };
     loadPeriodo();
   }, []);
-
   const loadData = () => {
-    evaService
-      .getAllByPersona(idPersona)
-      .then((data) => {
+    if (rol === 1) {
+      // Si el rol es 1, traer todos los datos
+      evaService.getAll().then((data) => {
         seteva1(data);
         setDataLoaded(true); // Marcar los datos como cargados
         loadExcelReportData(data);
-      })
-      .catch((error) => {
+      }).catch((error) => {
         console.error("Error al obtener los datos:", error);
       });
+    } else if (rol === 3) {
+      // Si el rol es 3, traer datos específicos
+      evaService.getAllByPersona(idPersona).then((data) => {
+        seteva1(data);
+        setDataLoaded(true); // Marcar los datos como cargados
+        loadExcelReportData(data);
+      }).catch((error) => {
+        console.error("Error al obtener los datos:", error);
+      });
+    } else {
+      console.error("Rol no reconocido");
+    }
   };
+  
   useEffect(() => {
     loadData();
   }, []);
+  
   function loadExcelReportData(data: IEvaDocente[]) {
     const reportName = "Evaluacion Docente";
     const rowData = data.map((item) => ({

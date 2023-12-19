@@ -3,7 +3,7 @@ import { AxiosInstance } from "axios/index";
 import { environment } from "../environments/environment";
 
 export class VistaPersonaService {
-  baseUrl =  `${environment.baseUrl}/api/fenix/cedula/`;
+  baseUrl =  `${environment.baseUrl}api/fenix/cedula/`;
 
   private api: AxiosInstance;
 

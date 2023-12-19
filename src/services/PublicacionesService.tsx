@@ -2,7 +2,7 @@ import axios from "axios";
 import { environment } from "../environments/environment";
 
 export class PublicacionesService {
-  baseUrl =  `${environment.baseUrl}/api/publicaciones/`;
+  baseUrl =  `${environment.baseUrl}api/publicaciones/`;
 
   //Metodo para listar todas los horarios
   getAll() {
