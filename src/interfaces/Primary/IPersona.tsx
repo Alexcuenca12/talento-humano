@@ -7,7 +7,6 @@ export interface IPersona {
   segundo_nombre: string;
   fecha_nacimiento: Date | null;
   pais_natal: string;
-  edad: number;
   genero: string;
   sexo: string;
   tipo_sangre: string;

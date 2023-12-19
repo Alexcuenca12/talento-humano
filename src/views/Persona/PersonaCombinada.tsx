@@ -55,7 +55,6 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
     telefono: string;
     paisnacimiento: string;
     paisresidencia: string;
-    edad: number;
     estadocivil: string;
     idiomaraiz: string;
     idiomasecundario: string;
@@ -180,7 +179,6 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
       telefono: data.persona.telefono,
       paisnacimiento: data.persona.pais_natal,
       paisresidencia: data.persona.pais_residencia,
-      edad: data.persona.edad,
       estadocivil: data.persona.estado_civil,
       idiomaraiz: data.persona.idioma_raiz,
       idiomasecundario: data.persona.idioma_secundario,
@@ -400,7 +398,7 @@ function PersonaCombinada({ personaId }: { personaId: number }) {
                 </View>
                 <View style={styles.rightColumn}>
                   <Text style={styles.sectionContentinfo}>
-                    Información: {data.edad} años, {data.estadocivil},{" "}
+                    Información: {data.estadocivil},{" "}
                     {data.genero}, {data.paisresidencia}
                   </Text>
                   <Text style={styles.sectionContentinfo}>

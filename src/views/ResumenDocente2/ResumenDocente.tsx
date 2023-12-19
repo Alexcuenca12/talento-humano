@@ -315,10 +315,6 @@ function ResumenDocente() {
           <h2 className="text-3xl">Estado Civil: </h2>
           <p className="text-2xl">{rowData.estado_civil}</p>
         </div>
-        <div className=" mr-4">
-          <h2 className="text-3xl">Edad: </h2>
-          <p className="text-2xl">{rowData.edad}</p>
-        </div>
       </div>
     );
   };

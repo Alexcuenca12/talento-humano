@@ -12,7 +12,6 @@ import { useFormik } from "formik";
 import { IPersona } from "../../interfaces/Primary/IPersona";
 import { VistaPersonaService } from "../../services/VistaPersonaService";
 import { PersonaService } from "../../services/PersonaService";
-import { InputNumber } from "primereact/inputnumber";
 import { FileUpload, FileUploadHandlerEvent } from "primereact/fileupload";
 import { fileConverter } from "../../services/functions/fileConverter";
 import { InputTextarea } from "primereact/inputtextarea";
@@ -200,7 +199,6 @@ const Persona = () => {
       segundo_nombre: "",
       fecha_nacimiento: new Date(),
       pais_natal: "",
-      edad: edadCalculada,
       genero: "",
       sexo: "",
       tipo_sangre: "",
@@ -257,9 +255,6 @@ const Persona = () => {
       }
       if (!values.pais_natal) {
         errors.pais_natal = "Pais Natal es requerido";
-      }
-      if (values.edad === 0) {
-        errors.edad = "Edad es requerida";
       }
       if (!values.estado_civil) {
         errors.estado_civil = "Estado Civil es requerido";
@@ -654,22 +649,6 @@ const Persona = () => {
             />
             <small className="p-error">
               {formik.touched.estado_civil && formik.errors.estado_civil}
-            </small>
-          </div>
-          <div className="field col-4">
-            <label className="font-medium" htmlFor="edad">
-              Edad
-            </label>
-            <InputNumber
-              id="edad"
-              className="p-inputtext-lg w-full text-2xl"
-              name="edad"
-              value={formik.values.edad}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            <small className="p-error">
-              {formik.touched.edad && formik.errors.edad}
             </small>
           </div>
           <div className="field col-4">
@@ -1268,7 +1247,6 @@ const Persona = () => {
             <tr style={{ backgroundColor: "#0C3255", color: "white" }}>
               <th>Cedula</th>
               <th>Docente</th>
-              <th>Edad</th>
               <th>Sexo</th>
               <th>Celular</th>
               <th>Correo</th>
@@ -1284,7 +1262,6 @@ const Persona = () => {
               <tr className="text-center" key={per.id_persona?.toString()}>
                 <td>{per.cedula}</td>
                 <td>{per.apellido_paterno + " " + per.primer_nombre}</td>
-                <td>{per.edad}</td>
                 <td>{per.sexo}</td>
                 <td>{per.celular}</td>
                 <td>{per.correo}</td>

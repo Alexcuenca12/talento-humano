@@ -61,7 +61,6 @@ function PersonaContextDes() {
     segundo_nombre: "",
     fecha_nacimiento: new Date(),
     pais_natal: "",
-    edad: 0,
     genero: "",
     sexo: "",
     tipo_sangre: "",
@@ -112,7 +111,6 @@ function PersonaContextDes() {
             segundo_nombre: contratoData.segundo_nombre,
             fecha_nacimiento: contratoData.fecha_nacimiento,
             pais_natal: contratoData.pais_natal,
-            edad: contratoData.edad,
             genero: contratoData.genero,
             sexo: contratoData.sexo,
             tipo_sangre: contratoData.tipo_sangre,
@@ -228,7 +226,6 @@ function PersonaContextDes() {
           day: "2-digit",
         }
       ),
-      edad: item.edad,
       pais_natal: item.pais_natal,
       genero: item.genero,
       sexo: item.sexo,
@@ -365,18 +362,6 @@ function PersonaContextDes() {
               disabled={formDisabled}
               name="estado_civil"
               value={formData.estado_civil}
-            />
-          </div>
-          <div className="field col-4">
-            <label className="font-medium" htmlFor="edad">
-              Edad
-            </label>
-            <InputNumber
-              id="edad"
-              className="p-inputtext-lg w-full text-2xl"
-              name="edad"
-              disabled={formDisabled}
-              value={formData.edad}
             />
           </div>
           <div className="field col-4">
@@ -749,7 +734,6 @@ function PersonaContextDes() {
             <tr style={{ backgroundColor: "#0C3255", color: "white" }}>
               <th>Cedula</th>
               <th>Docente</th>
-              <th>Edad</th>
               <th>Sexo</th>
               <th>Celular</th>
               <th>Correo</th>
@@ -763,7 +747,6 @@ function PersonaContextDes() {
               <tr className="text-center" key={per.id_persona?.toString()}>
                 <td>{per.cedula}</td>
                 <td>{per.apellido_paterno + " " + per.primer_nombre}</td>
-                <td>{per.edad}</td>
                 <td>{per.sexo}</td>
                 <td>{per.celular}</td>
                 <td>{per.correo}</td>
